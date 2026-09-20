@@ -8,7 +8,7 @@ Last checkpoint: **20 September 2026, 23:10 IST — reproducible IIT Dholakpur d
 - Eight fictional personas, two hostels, CSE/Mechanical/Coding club, four topics, nine reports in several real workflow states, public replies/private note, assigned collaborator, private independent review, draft and reviewed knowledge. Shared seed supports the future Cognito AWS mode too.
 - Full check gate PASS: contracts/types, 82 API + 5 web + 6 CDK + 3 demo tests and production builds. All 9 DynamoDB integration scenarios PASS. **105 automated tests total**.
 - Browser verified the owner-proposal/reporter-confirmation loop, independent review, scoped feeds and private staff-note filtering. Confirmed changes survive an app/database restart. Final reset leaves the exact starting dataset for the recording.
-- Public repository defaults to main. Publish the tested commit there by fast-forward, retaining all existing history; do not force push or create a deployment to bypass the current account blocker.
+- Public repository defaults to main. Implementation commit `5403d08` was fast-forward merged into local main and atomically pushed to origin/main and origin/codex/campusfix-lld. All prior history is retained; no force push or cloud deployment.
 - `DEMO.md` is the local run/reset guide, `DEMO-VIDEO.md` the <=3-minute recording plan and `SUBMISSION.md` ready-to-review form copy. No video has been recorded/uploaded by this task; the user still supplies YouTube and personal profile URLs.
 - **Still pending:** live AWS/Cognito acceptance, enabled cloud evidence, campus onboarding/admin, notifications/outbox delivery, overdue escalation, review appeals/files/reassignment, optional AI and community modules. This is a working accountability-core demo, not the entire LLD.
 - Next immediate step: record the seeded walkthrough, upload unlisted/public YouTube, fill the user's personal submission details and select an eligible track. The official Ship It track requires AWS deployment; the local release documents actual AWS SDK/CDK/Local usage for evaluating Build It.
@@ -175,3 +175,9 @@ Last checkpoint: **20 September 2026, 23:10 IST — reproducible IIT Dholakpur d
 - Seeded collaborator assignment and canonical source checks fixed an inaccessible shortcut for Neha. Added an actual membership view for My access. Local boot resumes incomplete seeding and preserves completed edits; reset targets only the three exact loopback demo tables.
 - Fixed a missing dataset-version import found by infrastructure typecheck; reran the complete check gate successfully. Integration seed replay and audience/reviewer isolation pass with the expanded dataset. No external credentials, real college data or generated local database files are committed.
 - Persistent restart accepted; demo reset and final Git publication are recorded in the final release handoff. No paid deployment, YouTube publication or full-product completion is claimed.
+
+## Final recording handoff
+
+- Reset PASS: after npm run demo:reset, the browser observed the purifier issue back in progress and the rehearsal proposal/confirmation removed. The confirmed Wi-Fi library card and private independent review were separately opened successfully.
+- Left the app running at http://127.0.0.1:3002 on the clean IIT Dholakpur overview; the owned database is file-backed. Stop with Ctrl+C before any further reset.
+- Local checkout is main. Implementation published as 5403d08; final documentation handoff follows it. No video was recorded or uploaded. User action remains recording/upload and personal submission fields.
