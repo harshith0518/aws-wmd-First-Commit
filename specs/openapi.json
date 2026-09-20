@@ -4054,7 +4054,9 @@
               }
             }
           }
-        }
+        },
+        "x-implementation-status": "partial",
+        "x-implementation-notes": "Implemented for ISSUE posts and private ISSUE drafts. Other parent modules are pending. AWS adapter and trusted version-bound scan worker are implemented; real cloud scanning acceptance is pending and uploads default disabled."
       }
     },
     "/api/v1/campuses/{campusId}/attachments/{attachmentId}": {
@@ -4159,7 +4161,9 @@
           "503": {
             "$ref": "#/components/responses/StandardError"
           }
-        }
+        },
+        "x-implementation-status": "partial",
+        "x-implementation-notes": "Implemented for ISSUE posts and private ISSUE drafts. Other parent modules are pending. AWS adapter and trusted version-bound scan worker are implemented; real cloud scanning acceptance is pending and uploads default disabled."
       }
     },
     "/api/v1/campuses/{campusId}/attachments/{attachmentId}/complete": {
@@ -4277,7 +4281,9 @@
               }
             }
           }
-        }
+        },
+        "x-implementation-status": "partial",
+        "x-implementation-notes": "Implemented for ISSUE posts and private ISSUE drafts. Other parent modules are pending. AWS adapter and trusted version-bound scan worker are implemented; real cloud scanning acceptance is pending and uploads default disabled."
       }
     },
     "/api/v1/campuses/{campusId}/attachments/{attachmentId}/download": {
@@ -4395,7 +4401,9 @@
           "503": {
             "$ref": "#/components/responses/StandardError"
           }
-        }
+        },
+        "x-implementation-status": "partial",
+        "x-implementation-notes": "Implemented for ISSUE posts and private ISSUE drafts. Other parent modules are pending. AWS adapter and trusted version-bound scan worker are implemented; real cloud scanning acceptance is pending and uploads default disabled."
       }
     },
     "/api/v1/campuses/{campusId}/attachments/{attachmentId}/remove": {
@@ -4513,7 +4521,9 @@
               }
             }
           }
-        }
+        },
+        "x-implementation-status": "partial",
+        "x-implementation-notes": "Implemented for ISSUE posts and private ISSUE drafts. Other parent modules are pending. AWS adapter and trusted version-bound scan worker are implemented; real cloud scanning acceptance is pending and uploads default disabled."
       }
     },
     "/api/v1/campuses/{campusId}/questions": {
@@ -14434,7 +14444,7 @@
       "put": {
         "operationId": "issue_caseHandlers",
         "summary": "Set authoritative sensitive-case handler list",
-        "description": "Restricted issues only. Primary owner with active sensitive-handler grant, or explicitly designated sensitive unit lead, may set 1\u00e2\u20ac\u201c9 eligible active sensitive-handler IDs including current primary owner. Exclude complaint subjects/conflicts. Ordinary admin/lead insufficient. Transaction checks membership/authVersion, issue version, updates ACL+aclVersion, feed pointers and attributed event.",
+        "description": "Restricted issues only. Primary owner with active sensitive-handler grant, or explicitly designated sensitive unit lead, may set 1â€“9 eligible active sensitive-handler IDs including current primary owner. Exclude complaint subjects/conflicts. Ordinary admin/lead insufficient. Transaction checks membership/authVersion, issue version, updates ACL+aclVersion, feed pointers and attributed event.",
         "x-release": "R1",
         "x-implemented": false,
         "tags": [
@@ -15245,6 +15255,87 @@
             }
           }
         }
+      }
+    },
+    "/api/v1/campuses/{campusId}/posts/{postId}/attachments": {
+      "get": {
+        "operationId": "file_listForPost",
+        "summary": "List permitted evidence and unfinished upload reservations",
+        "description": "Maximum three allocated files. Rechecks current source access, even for an empty list. Unselected draft reservations remain visible only to their uploader.",
+        "x-release": "R1",
+        "x-implemented": false,
+        "tags": [
+          "file"
+        ],
+        "parameters": [
+          {
+            "name": "campusId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "postId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AttachmentList"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/StandardError"
+          },
+          "401": {
+            "$ref": "#/components/responses/StandardError"
+          },
+          "403": {
+            "$ref": "#/components/responses/StandardError"
+          },
+          "404": {
+            "$ref": "#/components/responses/StandardError"
+          },
+          "409": {
+            "$ref": "#/components/responses/StandardError"
+          },
+          "413": {
+            "$ref": "#/components/responses/StandardError"
+          },
+          "422": {
+            "$ref": "#/components/responses/StandardError"
+          },
+          "429": {
+            "$ref": "#/components/responses/StandardError"
+          },
+          "500": {
+            "$ref": "#/components/responses/StandardError"
+          },
+          "503": {
+            "$ref": "#/components/responses/StandardError"
+          }
+        },
+        "x-implementation-status": "partial",
+        "x-implementation-notes": "Implemented for ISSUE posts and their private drafts. Other post types are pending."
       }
     }
   },
@@ -17841,6 +17932,15 @@
           "sourceEventId": {
             "type": "string",
             "format": "uuid"
+          },
+          "attachmentIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "maxItems": 3,
+            "uniqueItems": true
           }
         },
         "required": [
@@ -18376,50 +18476,18 @@
       },
       "UploadFields": {
         "type": "object",
-        "properties": {
-          "key": {
-            "type": "string",
-            "maxLength": 512
-          },
-          "policy": {
-            "type": "string",
-            "maxLength": 20000
-          },
-          "x-amz-algorithm": {
-            "type": "string",
-            "maxLength": 100
-          },
-          "x-amz-credential": {
-            "type": "string",
-            "maxLength": 500
-          },
-          "x-amz-date": {
-            "type": "string",
-            "maxLength": 100
-          },
-          "x-amz-signature": {
-            "type": "string",
-            "maxLength": 500
-          },
-          "x-amz-security-token": {
-            "type": "string",
-            "maxLength": 10000
-          },
-          "Content-Type": {
-            "type": "string",
-            "maxLength": 100
-          }
+        "description": "Opaque, case-sensitive form fields returned by AWS signing. Send every key/value unchanged; append the file last. Field names include mixed-case X-Amz-* and Policy.",
+        "minProperties": 1,
+        "maxProperties": 30,
+        "propertyNames": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
         },
-        "required": [
-          "key",
-          "policy",
-          "x-amz-algorithm",
-          "x-amz-credential",
-          "x-amz-date",
-          "x-amz-signature",
-          "Content-Type"
-        ],
-        "additionalProperties": false
+        "additionalProperties": {
+          "type": "string",
+          "maxLength": 20000
+        }
       },
       "UploadReservation": {
         "type": "object",
@@ -25213,6 +25281,26 @@
         "required": [
           "text",
           "sourceIds"
+        ],
+        "additionalProperties": false
+      },
+      "AttachmentList": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Attachment"
+            },
+            "maxItems": 3
+          },
+          "uploadsEnabled": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "items",
+          "uploadsEnabled"
         ],
         "additionalProperties": false
       }

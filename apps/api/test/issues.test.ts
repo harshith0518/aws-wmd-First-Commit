@@ -107,7 +107,7 @@ test('publication rejects unauthorized groups, cross-campus references, unavaila
       { ...f.input, attachmentIds: [randomUUID()] },
       'bad-evidence-123456',
     ),
-    code('UPLOADS_UNAVAILABLE'),
+    code('DRAFT_REQUIRED'),
   );
   const owner = (await f.store.get(f.config.CORE_TABLE, keys.member(f.campus, f.owner)))!;
   f.store.seed(f.config.CORE_TABLE, { ...owner, status: 'REVOKED', version: 2 });

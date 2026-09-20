@@ -66,6 +66,7 @@ export const eventSchema = z.strictObject({
     .optional(),
   visibility: z.enum(['PUBLIC', 'HANDLERS', 'REPORTER_HANDLERS']),
   sourceEventId: idSchema.optional(),
+  attachmentIds: uniqueIds(3).optional(),
 });
 export const eventPageSchema = z.strictObject({
   items: z.array(eventSchema).max(25),

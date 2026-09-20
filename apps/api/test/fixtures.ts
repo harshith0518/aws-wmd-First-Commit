@@ -24,14 +24,15 @@ export class MemoryStore implements Store {
     return item ? structuredClone(item) : undefined;
   }
   async query(q: Query) {
-    const pk = q.index ? `${q.index}pk` : 'pk';
-    const sk = q.index ? `${q.index}sk` : 'sk';
+    const pk = q.index === 'ready' ? 'readyPk' : q.index ? `${q.index}pk` : 'pk';
+    const sk = q.index === 'ready' ? 'readySk' : q.index ? `${q.index}sk` : 'sk';
     const matches = [...this.items.entries()]
       .filter(
         ([key, i]) =>
           JSON.parse(key)[0] === q.table &&
           i[pk] === q.pk &&
-          (!q.prefix || String(i[sk]).startsWith(q.prefix)),
+          (!q.prefix || String(i[sk]).startsWith(q.prefix)) &&
+          (!q.sortAtMost || String(i[sk]) <= q.sortAtMost),
       )
       .map(([, i]) => structuredClone(i))
       .sort((a, b) => String(a[sk]).localeCompare(String(b[sk])));

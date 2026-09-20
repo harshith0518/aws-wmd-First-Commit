@@ -1,3 +1,4 @@
+import { canReadAttachment, fileKey } from './files/policy.js';
 import { randomUUID } from 'node:crypto';
 import {
   issueCommandSchema,
@@ -88,15 +89,34 @@ export class WorkflowService {
             'The issue changed. Review the latest record before submitting.',
             Number(post.version),
           );
-        if (
-          ('attachmentIds' in data && data.attachmentIds?.length) ||
-          (data.action === 'propose-resolution' && data.resolution.evidenceIds?.length)
-        )
-          throw new ApiError(
-            503,
-            'UPLOADS_UNAVAILABLE',
-            'Secure evidence uploads are not available yet.',
-          );
+        const evidenceIds =
+          data.action === 'propose-resolution'
+            ? (data.resolution.evidenceIds ?? [])
+            : 'attachmentIds' in data
+              ? (data.attachmentIds ?? [])
+              : [];
+        const evidenceGuards: Write[] = [];
+        for (const fid of evidenceIds) {
+          const file = await this.store.get(this.config.CORE_TABLE, fileKey(campus, id, fid));
+          if (
+            !file ||
+            file.state !== 'CLEAN' ||
+            !(post.attachmentIds as string[]).includes(fid) ||
+            !canReadAttachment(ctx.member, post, file)
+          )
+            throw new ApiError(
+              422,
+              'FILE_NOT_READY',
+              'Choose clean evidence attached to this issue.',
+            );
+          if (data.action === 'propose-resolution' && file.scope === 'HANDLERS')
+            throw new ApiError(
+              422,
+              'EVIDENCE_NOT_REVIEWABLE',
+              'Resolution evidence must be visible to the reporter.',
+            );
+          evidenceGuards.push(this.issues.guard(file));
+        }
         const d = { ...(post.detail as Record<string, unknown>) };
         const previous = String(d.status),
           version = data.expectedVersion + 1,
@@ -119,7 +139,7 @@ export class WorkflowService {
           );
         if ('nextUpdateAt' in data && Date.parse(data.nextUpdateAt) <= Date.now())
           throw new ApiError(422, 'INVALID_NEXT_UPDATE', 'Choose a future next-update time.');
-        const writes: Write[] = [];
+        const writes: Write[] = [...evidenceGuards];
         if ('nextAction' in data) d.nextAction = data.nextAction;
         if ('nextUpdateAt' in data) d.nextUpdateAt = data.nextUpdateAt;
         if (data.action === 'acknowledge') {
@@ -137,7 +157,7 @@ export class WorkflowService {
         }
         let resolution: Resolution | undefined;
         if (data.action === 'propose-resolution') {
-          if (!data.resolution.evidenceOmissionReason)
+          if (!evidenceIds.length && !data.resolution.evidenceOmissionReason)
             throw new ApiError(
               422,
               'EVIDENCE_REASON_REQUIRED',
@@ -153,7 +173,7 @@ export class WorkflowService {
             createdAt: now,
             updatedAt: now,
             ...data.resolution,
-            evidenceIds: [],
+            evidenceIds,
             proposedBy: await this.issues.person(campus, actor),
             proposedAt: now,
             state: 'PROPOSED',
@@ -273,6 +293,7 @@ export class WorkflowService {
             summary: summaries[data.action]!,
             ...('reason' in data ? { reason: data.reason } : {}),
             changes,
+            ...(evidenceIds.length ? { attachmentIds: evidenceIds } : {}),
           },
         };
       },
@@ -312,7 +333,9 @@ export class WorkflowService {
       if (
         e.campusId !== campus ||
         (e.visibility === 'AUTHOR' && post.authorId !== actor) ||
-        !['AUTHOR', 'READERS'].includes(String(e.visibility))
+        (e.visibility === 'HANDLERS' &&
+          !canManageIssue(ctx.member, postAccessSchema.parse(post), true)) ||
+        !['AUTHOR', 'READERS', 'HANDLERS'].includes(String(e.visibility))
       )
         continue;
       items.push(
@@ -327,7 +350,21 @@ export class WorkflowService {
           summary: e.summary ?? String(e.eventType).replaceAll('_', ' ').toLowerCase(),
           ...(e.reason ? { reason: e.reason } : {}),
           ...(e.changes ? { changes: e.changes } : {}),
-          visibility: e.visibility === 'AUTHOR' ? 'REPORTER_HANDLERS' : 'PUBLIC',
+          visibility:
+            e.visibility === 'AUTHOR'
+              ? 'REPORTER_HANDLERS'
+              : e.visibility === 'HANDLERS'
+                ? 'HANDLERS'
+                : 'PUBLIC',
+          ...(Array.isArray(e.attachmentIds)
+            ? {
+                attachmentIds: await this.issues.visibleFileIds(
+                  post,
+                  ctx.member,
+                  e.attachmentIds as string[],
+                ),
+              }
+            : {}),
         }),
       );
     }
@@ -355,17 +392,11 @@ export class WorkflowService {
       limit,
       ...(cursor ? { after: this.identity.cursors.decode(cursor, binding) } : {}),
     });
-    const items = page.items
-      .filter((i) => i.campusId === campus && i.postId === id)
-      .map((i) =>
-        resolutionSchema.parse(
-          Object.fromEntries(
-            Object.keys(resolutionSchema.shape)
-              .filter((k) => i[k] !== undefined)
-              .map((k) => [k, i[k]]),
-          ),
-        ),
-      );
+    const items = await Promise.all(
+      page.items
+        .filter((i) => i.campusId === campus && i.postId === id)
+        .map((i) => this.issues.resolutionDto(i, post, ctx.member)),
+    );
     await this.recheck(actor, campus, id, post.version, ctx.member.authVersion);
     return resolutionPageSchema.parse({
       items,

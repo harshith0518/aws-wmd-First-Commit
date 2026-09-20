@@ -16,6 +16,26 @@ const envSchema = z.object({
   COGNITO_CLIENT_ID: z.string().min(1).optional(),
   COGNITO_DOMAIN: z.url().optional(),
   CURSOR_SECRET: z.string().min(32).optional(),
+  FILE_SCHEDULE_ARN: z
+    .string()
+    .regex(/^arn:aws:events:[a-z0-9-]+:\d{12}:rule\/[A-Za-z0-9_-]+$/)
+    .optional(),
+  FILES_ENABLED: z
+    .enum(['true', 'false'])
+    .default('false')
+    .transform((v) => v === 'true'),
+  QUARANTINE_BUCKET: z
+    .string()
+    .regex(/^[a-z0-9][a-z0-9.-]{1,61}[a-z0-9]$/)
+    .optional(),
+  EVIDENCE_BUCKET: z
+    .string()
+    .regex(/^[a-z0-9][a-z0-9.-]{1,61}[a-z0-9]$/)
+    .optional(),
+  GUARD_DUTY_PLAN_ARN: z
+    .string()
+    .regex(/^arn:aws:guardduty:[a-z0-9-]+:\d{12}:malware-protection-plan\/[A-Za-z0-9-]+$/)
+    .optional(),
 });
 export type Config = z.infer<typeof envSchema>;
 export function readConfig(env: NodeJS.ProcessEnv = process.env): Config {
@@ -53,6 +73,16 @@ export function readConfig(env: NodeJS.ProcessEnv = process.env): Config {
   )
     throw new Error(
       'Production requires Cognito, a cursor secret and explicit production tables; local endpoints are forbidden.',
+    );
+  if (
+    c.FILES_ENABLED &&
+    (!c.QUARANTINE_BUCKET ||
+      !c.EVIDENCE_BUCKET ||
+      !c.GUARD_DUTY_PLAN_ARN ||
+      c.QUARANTINE_BUCKET === c.EVIDENCE_BUCKET)
+  )
+    throw new Error(
+      'Enabled evidence requires separate versioned buckets and an approved GuardDuty plan.',
     );
   return c;
 }

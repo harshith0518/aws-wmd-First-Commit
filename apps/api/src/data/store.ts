@@ -10,7 +10,8 @@ export type Query = {
   table: string;
   pk: string;
   prefix?: string;
-  index?: 'gsi1' | 'gsi2';
+  index?: 'gsi1' | 'gsi2' | 'ready';
+  sortAtMost?: string;
   limit: number;
   descending?: boolean;
   after?: Key;

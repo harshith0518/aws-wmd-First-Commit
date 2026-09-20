@@ -1,3 +1,6 @@
+import { FileService } from './files/service.js';
+import { fileRoutes } from './files/routes.js';
+import type { EvidenceStorage } from './files/storage.js';
 import { IssueService } from './issues.js';
 import { issueRoutes } from './issue-routes.js';
 import { randomUUID } from 'node:crypto';
@@ -10,7 +13,13 @@ import { type Authenticator, type Principal, unconfiguredAuth } from './auth.js'
 import { type IdentityService, pageQuery } from './identity-service.js';
 
 type Environment = { Variables: { principal: Principal; requestId: string } };
-export function createApp(dependencies: { auth?: Authenticator; identity?: IdentityService } = {}) {
+export function createApp(
+  dependencies: {
+    auth?: Authenticator;
+    identity?: IdentityService;
+    evidence?: EvidenceStorage;
+  } = {},
+) {
   const app = new Hono<Environment>();
   const auth = dependencies.auth ?? unconfiguredAuth;
   app.use('*', async (c, next) => {
@@ -79,8 +88,11 @@ export function createApp(dependencies: { auth?: Authenticator; identity?: Ident
       await service().membership(c.get('principal').sub, idSchema.parse(c.req.param('campusId'))),
     ),
   );
-  if (dependencies.identity)
-    app.route('/api/v1/campuses', issueRoutes(new IssueService(dependencies.identity)));
+  if (dependencies.identity) {
+    const issues = new IssueService(dependencies.identity);
+    app.route('/api/v1/campuses', issueRoutes(issues));
+    app.route('/api/v1/campuses', fileRoutes(new FileService(issues, dependencies.evidence)));
+  }
   app.notFound((c) =>
     c.json(
       { code: 'NOT_FOUND', message: 'This item is unavailable.', requestId: c.get('requestId') },

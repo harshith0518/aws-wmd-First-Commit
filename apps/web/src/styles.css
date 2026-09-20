@@ -726,3 +726,33 @@ form label:first-child {
 .resolution-fields dd {
   text-transform: none;
 }
+
+.evidence-panel {
+  margin: 1.5rem 0;
+  padding: 1.2rem;
+  border: 1px solid var(--line, #d7dfdb);
+  border-radius: 12px;
+  background: #fff;
+}
+.evidence-panel h2 {
+  margin: 0;
+  font-size: 1.15rem;
+}
+.evidence-list {
+  list-style: none;
+  padding: 0;
+}
+.evidence-list li {
+  padding: 1rem 0;
+  border-top: 1px solid #e5e9e7;
+  overflow-wrap: anywhere;
+}
+.evidence-list .status-label {
+  margin-left: 0.6rem;
+}
+.evidence-upload {
+  max-width: 34rem;
+}
+.evidence-upload input {
+  max-width: 100%;
+}

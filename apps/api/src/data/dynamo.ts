@@ -32,15 +32,22 @@ export class DynamoStore implements Store {
     return r.Item as Item | undefined;
   }
   async query(q: Query) {
-    const pk = q.index ? `${q.index}pk` : 'pk';
-    const sk = q.index ? `${q.index}sk` : 'sk';
+    if (q.prefix && q.sortAtMost) throw new Error('Only one sort-key condition is supported.');
+    const pk = q.index === 'ready' ? 'readyPk' : q.index ? `${q.index}pk` : 'pk';
+    const sk = q.index === 'ready' ? 'readySk' : q.index ? `${q.index}sk` : 'sk';
     const r = await this.client.send(
       new QueryCommand({
         TableName: q.table,
         ...(q.index ? { IndexName: q.index } : { ConsistentRead: true }),
-        KeyConditionExpression: '#pk = :pk' + (q.prefix ? ' AND begins_with(#sk, :prefix)' : ''),
-        ExpressionAttributeNames: { '#pk': pk, ...(q.prefix ? { '#sk': sk } : {}) },
-        ExpressionAttributeValues: { ':pk': q.pk, ...(q.prefix ? { ':prefix': q.prefix } : {}) },
+        KeyConditionExpression:
+          '#pk = :pk' +
+          (q.prefix ? ' AND begins_with(#sk, :prefix)' : q.sortAtMost ? ' AND #sk <= :max' : ''),
+        ExpressionAttributeNames: { '#pk': pk, ...(q.prefix || q.sortAtMost ? { '#sk': sk } : {}) },
+        ExpressionAttributeValues: {
+          ':pk': q.pk,
+          ...(q.prefix ? { ':prefix': q.prefix } : {}),
+          ...(q.sortAtMost ? { ':max': q.sortAtMost } : {}),
+        },
         Limit: q.limit,
         ScanIndexForward: !q.descending,
         ...(q.after ? { ExclusiveStartKey: q.after } : {}),

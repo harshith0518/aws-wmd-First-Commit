@@ -1,3 +1,4 @@
+import { S3EvidenceStorage } from './files/s3.js';
 import { randomBytes } from 'node:crypto';
 import { createApp } from './app.js';
 import { createAuthenticator, unconfiguredAuth } from './auth.js';
@@ -20,5 +21,20 @@ export function createRuntime() {
     config,
     new CursorCodec(config.CURSOR_SECRET ?? randomBytes(32).toString('hex')),
   );
-  return { config, app: createApp({ auth, identity }) };
+  return {
+    config,
+    app: createApp({
+      auth,
+      identity,
+      ...(config.FILES_ENABLED
+        ? {
+            evidence: new S3EvidenceStorage(
+              config.AWS_REGION,
+              config.QUARANTINE_BUCKET!,
+              config.EVIDENCE_BUCKET!,
+            ),
+          }
+        : {}),
+    }),
+  };
 }

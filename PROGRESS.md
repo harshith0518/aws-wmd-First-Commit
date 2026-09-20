@@ -1,15 +1,15 @@
 # CampusFix progress
 
-Last verified checkpoint: **20 September 2026, 12:24 IST**. Overnight implementation is stopped and its heartbeat is **PAUSED**.
+Last checkpoint: **20 September 2026, afternoon**. Implementation resumed under the user’s new instruction to push and finish the LLD for tonight’s deadline. The expired overnight heartbeat remains PAUSED; current work is directly authorized.
 
 ## Current result
 
 - Working local vertical flow: private draft / direct report → eligible owner → staff queue → acknowledgement → work/progress/wait/resume → structured resolution proposal → reporter confirmation → reporter reopening with prior attempt retained and invalidated.
 - Real API and DynamoDB Local persistence back the UI. Browser verification used separately signed synthetic student and owner identities. Real Cognito login has not been configured or accepted against AWS.
-- `npm.cmd run check` PASS: 168-operation / 233-schema / 3-table contract checks; strict workspace TypeScript checks; 31 API + 3 browser-auth unit/security tests; Lambda and Vite builds.
-- `npm.cmd run test:integration` PASS: two isolated real DynamoDB Local integration scenarios, including concurrent profile/publication/command retries, source version races, owner/reporter resolution lifecycle, queue removal/restoration, history and revocation. **36 automated tests total.**
-- Frontend JS: 110.04 kB gzip. Lambda ESM bundle: approximately 2.1 MB. No cloud resources were provisioned.
-- OpenAPI marks **13 operations fully implemented and six partial**. Partial operations support ISSUE only, eight of the designed issue commands, and a queue for one authorized unit at a time; future types/actions are not claimed complete.
+- `npm.cmd run check` PASS: 169-operation / 234-schema / 3-table contract checks; strict workspace TypeScript checks; 41 API + 3 browser-auth unit/security tests; Lambda and Vite builds.
+- `npm.cmd run test:integration` PASS: three isolated real DynamoDB Local integration scenarios, including concurrent profile/publication/command retries, source version races, owner/reporter resolution lifecycle, queue removal/restoration, history and revocation. **47 automated tests total.**
+- Frontend JS: 112.86 kB gzip. API Lambda ESM approximately 3.6 MB; evidence worker approximately 3.4 MB. No cloud resources were provisioned.
+- OpenAPI marks **13 operations fully implemented and twelve partial**. Partial operations support ISSUE only, eight of the designed issue commands, and a queue for one authorized unit at a time; future types/actions are not claimed complete.
 
 ## Authorization, cutoff and repository
 
@@ -18,7 +18,7 @@ Last verified checkpoint: **20 September 2026, 12:24 IST**. Overnight implementa
 - Heartbeat `campusfix-overnight-implementation` was explicitly set to PAUSED after the cutoff. Do not restart it without a new user request.
 - Coding workspace: `C:\Users\ASUS\Desktop\my_files\Competitions\AWS Hackathon CampusFix`.
 - Original task cwd is sibling `aws - first commit`; only scratch generation scripts live there. Never copy its stale staging tree over this project.
-- Branch `codex/campusfix-lld`, origin `harshith0518/aws-wmd-First-Commit`. Design and implementation edits remain local and uncommitted. No new remote push has been made.
+- Branch `codex/campusfix-lld`, origin `harshith0518/aws-wmd-First-Commit`. Baseline design/implementation committed and pushed as df2c0ad. The evidence milestone is verified and included in the next commit/push. GitHub connector refused draft PR creation with 403; Git push itself succeeded.
 - Preserve all files and user remarks. Latest developer instruction forbids proactive subagents; implement locally unless explicitly requested.
 
 ## Implemented behavior
@@ -64,8 +64,8 @@ Last verified checkpoint: **20 September 2026, 12:24 IST**. Overnight implementa
 
 ## Remaining work — do not claim complete
 
-1. Secure evidence reservation/upload/quarantine/scanning/download/revocation. Attachment IDs currently fail closed with UPLOADS_UNAVAILABLE.
-2. Finish M3: replies, support, assignment/collaborators, transfer acceptance/expiry, decline/duplicate/priority commands, due workers and independent service reviews with conflict-free reviewer selection. Review and appeal workflows are not implemented.
+1. Real AWS evidence deployment/acceptance: private versioned buckets, GuardDuty/EventBridge, IAM/CORS/lifecycle/alarms and Linux Sharp packaging. Local evidence implementation is complete; production uploads default disabled.
+2. Next implementation priority — finish M3: replies, support, assignment/collaborators, transfer acceptance/expiry, decline/duplicate/priority commands, due workers and independent service reviews with conflict-free reviewer selection. Review and appeal workflows are not implemented.
 3. Outbox consumption, in-app/email delivery and delivery-status UI. Atomic outbox records exist, but no notifications are delivered.
 4. Real campus onboarding, approved invitations/joins, directory administration, verified privileged MFA and trusted account/email-change revocation hook. Active open sessions currently detect external email changes at next profile sync.
 5. Knowledge entries, source validation/invalidation integration and optional Bedrock AI. `knowledgeValid=false` prevents treating current attempts as a published knowledge source; no knowledge index exists yet.
@@ -83,3 +83,14 @@ Last verified checkpoint: **20 September 2026, 12:24 IST**. Overnight implementa
 - Use Node 24 / `npm.cmd`; PowerShell npm shim is broken. Initialize/seed after restarting the local DB. M2 seed was refreshed successfully.
 - Development API/web were running in exec session 47181 on ports 3001/5173; check readiness before creating duplicates. Test browser server is stopped. Browser runtime can be reused if alive, but its temporary tab was closed.
 - Actual project is outside original sandbox write root; authorized edits/builds used escalation. There is no unresolved approval rejection or dependency-install failure.
+
+## Afternoon evidence milestone
+
+- Implemented ISSUE/draft evidence reserve → direct upload → immutable receipt → trusted scan/structural validation → sanitized/original variants → scoped short download → tombstone/queued deletion. Maximum three files / 5 MiB each; source versions, idempotency, audit and quota guards apply.
+- Added worker leases, exact-version scan records, stale/missing/failed scan rejection, bounded due queries/retries, hold-aware cleanup and discoverable FAILED jobs. Concurrent scan delivery/removal cannot resurrect files or delete another generation’s accepted derivatives.
+- Added React upload/status/scope/download/removal controls. Draft publication includes only selected ready proof and requires explicit omission of unfinished files. Unsaved report text is preserved while file operations advance the source version.
+- Resolution commands now accept clean reporter-visible evidence; current/history DTOs filter narrower or removed proof IDs. Original reads are logged and handler-scoped.
+- Final evidence verification PASS: npm.cmd run check (169 operations, 234 schemas, 41 API + 3 frontend-auth tests, typechecks and builds) plus npm.cmd run test:integration (3 real DynamoDB Local tests). 47 tests total. Offline AWS policy test was corrected to the actual lowercase conditions field and passed.
+- Browser upload/publication passed, corrected same-tab safe download produced a download event, and a narrow mobile layout had equal 360px document/scroll widths. Browser removal succeeded; final console warning/error list was empty. Viewport reset, tab closed, and rig stopped. Cleanup is limited to the nine exact tables created for suffixes d72e286d-4e62-433d-afa8-23457b1a11e4, 50e4b991-8621-4059-91c0-195a563de595 and 3ab491fc-2205-4182-9bcf-437a411c9a3b. No real data is present.
+- No paid resources or deployment. Production file parent support remains ISSUE-only; other modules are not claimed complete. The quota is a logical-original admission counter, not a complete S3 bill cap. Lifecycle for replayed/orphan objects, cloud scan acceptance and deployment packaging remain explicit blockers for real evidence use.
+- Next: publish this verified evidence checkpoint, then implement replies/support as the next real M3 slice. Continue through remaining LLD modules without claiming the entire product complete.

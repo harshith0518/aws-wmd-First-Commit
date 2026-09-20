@@ -1,3 +1,4 @@
+import { fileKey, canReadAttachment } from './files/policy.js';
 import { randomUUID } from 'node:crypto';
 import { z } from 'zod';
 import {
@@ -15,6 +16,7 @@ import {
   publishDraftSchema,
   issueSchema,
   personSchema,
+  resolutionSchema,
   baseShape,
   audienceSchema,
   versionOnlySchema,
@@ -320,6 +322,27 @@ export class IssueService {
     if (!profile || !member) return { id: user, displayName: 'Former campus member' };
     return personSchema.parse({ id: user, displayName: profile.displayName });
   }
+  async visibleFileIds(post: Item, member: MemberRecord, ids: string[]) {
+    return (
+      await Promise.all(
+        ids.map(async (id) => {
+          const file = await this.store.get(
+            this.config.CORE_TABLE,
+            fileKey(String(post.campusId), String(post.id), id),
+          );
+          return file && canReadAttachment(member, post, file) ? id : null;
+        }),
+      )
+    ).filter((id): id is string => id !== null);
+  }
+  async resolutionDto(value: Item | Record<string, unknown>, post: Item, member?: MemberRecord) {
+    return resolutionSchema.parse({
+      ...fields(value as Item, resolutionSchema),
+      evidenceIds: member
+        ? await this.visibleFileIds(post, member, (value.evidenceIds ?? []) as string[])
+        : (value.evidenceIds ?? []),
+    });
+  }
   async issueDto(post: Item, member?: MemberRecord): Promise<Issue> {
     const d = post.detail as Record<string, unknown>;
     const author = await this.person(String(post.campusId), String(post.authorId));
@@ -327,6 +350,9 @@ export class IssueService {
     return issueSchema.parse({
       ...fields(post, issueSchema),
       author,
+      ...(member
+        ? { attachmentIds: await this.visibleFileIds(post, member, post.attachmentIds as string[]) }
+        : {}),
       capabilities: member
         ? [
             ...(canManageIssue(member, postAccessSchema.parse(post), true) ? ['MANAGE_ISSUE'] : []),
@@ -348,7 +374,9 @@ export class IssueService {
         status: d.status,
         severity: d.severity,
         supportCount: d.supportCount,
-        currentResolution: d.currentResolution ?? null,
+        currentResolution: d.currentResolution
+          ? await this.resolutionDto(d.currentResolution as Record<string, unknown>, post, member)
+          : null,
         ...(d.nextAction ? { nextAction: d.nextAction } : {}),
         ...(d.nextUpdateAt ? { nextUpdateAt: d.nextUpdateAt } : {}),
         ...(d.waitingReason ? { waitingReason: d.waitingReason } : {}),
@@ -397,12 +425,8 @@ export class IssueService {
       key,
       parsed,
       async (ctx) => {
-        if (data.attachmentIds?.length)
-          throw new ApiError(
-            503,
-            'UPLOADS_UNAVAILABLE',
-            'Evidence uploads are not available until file scanning is configured. Submit without attachments or keep a draft.',
-          );
+        if (data.attachmentIds?.length && !draftId)
+          throw new ApiError(422, 'DRAFT_REQUIRED', 'Save a draft before attaching evidence.');
         const old = draftId ? (await this.authorDraft(actor, campus, draftId)).post : undefined;
         if (
           old &&
@@ -422,6 +446,24 @@ export class IssueService {
             'This draft changed. Reload before publishing.',
             Number(old.version),
           );
+        }
+        const fileGuards: Write[] = [];
+        for (const fid of data.attachmentIds ?? []) {
+          const file = await this.store.get(this.config.CORE_TABLE, fileKey(campus, draftId!, fid));
+          if (
+            !file ||
+            file.parentId !== draftId ||
+            file.ownerId !== actor ||
+            file.parentKind !== 'POST' ||
+            file.state !== 'CLEAN' ||
+            !((old?.attachmentIds as string[]) ?? []).includes(fid)
+          )
+            throw new ApiError(
+              422,
+              'FILE_NOT_READY',
+              'Only clean evidence belonging to this draft can be published.',
+            );
+          fileGuards.push(this.guard(file));
         }
         const category = categorySchema.parse(
           fields(await this.directory(campus, 'CATEGORY', data.categoryId), categorySchema),
@@ -525,7 +567,8 @@ export class IssueService {
           audience: data.audience,
           aclVersion: 1,
           publication: restricted ? 'RESTRICTED' : 'PUBLISHED',
-          attachmentIds: [],
+          attachmentIds: data.attachmentIds ?? [],
+          fileSlotIds: old?.fileSlotIds ?? data.attachmentIds ?? [],
           tags: data.tags ?? [],
           detail: {
             unitId: unit.id,
@@ -556,6 +599,7 @@ export class IssueService {
         ]);
         const writes: Write[] = [
           ...guards,
+          ...fileGuards,
           {
             table: this.config.CORE_TABLE,
             key: keys.post(campus, id),

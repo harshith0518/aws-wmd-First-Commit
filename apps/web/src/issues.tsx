@@ -1,3 +1,5 @@
+import { FilePanel } from './files';
+import { type Attachment } from '@campusfix/contracts';
 import { WorkflowPanel, StaffQueue } from './workflow';
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import {
@@ -179,6 +181,10 @@ function ReportForm({
     [notice, setNotice] = useState(''),
     [conflict, setConflict] = useState(false);
   const [latestComparison, setLatestComparison] = useState<Draft>();
+  const [files, setFiles] = useState<Attachment[]>([]),
+    [fileBusy, setFileBusy] = useState(false),
+    [filesKnown, setFilesKnown] = useState(!draftId),
+    [omitPending, setOmitPending] = useState(false);
   const request = useRef<{ fingerprint: string; key: string } | undefined>(undefined);
   function retryKey(input: unknown, operation: string) {
     const fingerprint = JSON.stringify([operation, input]);
@@ -244,6 +250,16 @@ function ReportForm({
       setError('Select between one and four approved groups.');
       return;
     }
+    if (
+      mode === 'publish' &&
+      draft &&
+      (!filesKnown || fileBusy || (files.some((f) => f.state !== 'CLEAN') && !omitPending))
+    ) {
+      setError(
+        'Wait for evidence checks, or explicitly choose to publish without unfinished files.',
+      );
+      return;
+    }
     const common = {
       type: 'ISSUE' as const,
       title,
@@ -261,7 +277,7 @@ function ReportForm({
       audience,
       audienceConfirmed: confirmed,
       severity,
-      attachmentIds: [],
+      attachmentIds: files.filter((f) => f.state === 'CLEAN').map((f) => f.id),
     };
     if (mode === 'publish') {
       const parsed = issueCreateSchema.safeParse(payload);
@@ -371,7 +387,7 @@ function ReportForm({
             void submit('publish');
           }}
         >
-          <fieldset disabled={busy || (!!draftId && !draft)}>
+          <fieldset disabled={busy || fileBusy || (!!draftId && !draft)}>
             <legend className="sr-only">Issue details</legend>
             <label htmlFor="issue-title">Issue title</label>
             <input
@@ -520,10 +536,55 @@ function ReportForm({
               />
               I have checked the audience and want to share this report with them.
             </label>
-            <p className="hint">
-              Evidence uploads are currently unavailable. You can keep a private draft and add
-              evidence when uploads become available.
-            </p>
+            {draft ? (
+              <FilePanel
+                apiPrefix={apiPrefix}
+                postId={draft.id}
+                canUpload
+                disabled={busy}
+                onBusyChange={setFileBusy}
+                onChange={async (values) => {
+                  setFiles(values);
+                  setFilesKnown(true);
+                  const latest = await api(`${apiPrefix}/drafts/${draft.id}`, draftSchema);
+                  if (
+                    JSON.stringify([
+                      draft.title,
+                      draft.body,
+                      draft.categoryId,
+                      draft.audience,
+                      draft.locationLabel,
+                    ]) !==
+                    JSON.stringify([
+                      latest.title,
+                      latest.body,
+                      latest.categoryId,
+                      latest.audience,
+                      latest.locationLabel,
+                    ])
+                  ) {
+                    setLatestComparison(latest);
+                    setConflict(true);
+                    setError(
+                      'This draft was edited elsewhere. Compare the latest version before saving.',
+                    );
+                  } else setDraft(latest);
+                }}
+              />
+            ) : (
+              <p className="hint">Save a private draft first to add evidence before publishing.</p>
+            )}
+            {draft && files.some((f) => f.state !== 'CLEAN') && (
+              <label className="check">
+                <input
+                  type="checkbox"
+                  checked={omitPending}
+                  onChange={(e) => setOmitPending(e.target.checked)}
+                />
+                Publish without unfinished or rejected evidence. These files will not become visible
+                automatically.
+              </label>
+            )}
             <div className="actions">
               <button
                 type="submit"
@@ -935,6 +996,15 @@ function IssueDetail({
           </p>
         </aside>
       </div>
+      <FilePanel
+        apiPrefix={apiPrefix}
+        postId={issue.id}
+        canUpload={
+          membership.user.id === issue.author?.id || issue.capabilities.includes('MANAGE_ISSUE')
+        }
+        isHandler={issue.capabilities.includes('MANAGE_ISSUE')}
+        onChange={async () => setIssue(await api(`${apiPrefix}/posts/${issue.id}`, issueSchema))}
+      />
       <WorkflowPanel
         issue={issue}
         apiPrefix={apiPrefix}

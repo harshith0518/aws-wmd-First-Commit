@@ -15,6 +15,7 @@ export type CommandPlan<T> = {
   newPost?: boolean;
   event?: {
     summary: string;
+    attachmentIds?: string[];
     reason?: string;
     changes?: Array<{
       field: string;

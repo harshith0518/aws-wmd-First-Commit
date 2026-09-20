@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import {
   eventPageSchema,
+  attachmentListSchema,
+  type Attachment,
   issueSchema,
   issuePageSchema,
   resolutionPageSchema,
@@ -71,6 +73,24 @@ export function WorkflowPanel({
     [busy, setBusy] = useState(false),
     [error, setError] = useState(''),
     [notice, setNotice] = useState('');
+  const [evidence, setEvidence] = useState<Attachment[]>([]),
+    [evidenceIds, setEvidenceIds] = useState<string[]>([]);
+  useEffect(() => {
+    const controller = new AbortController();
+    api(`${apiPrefix}/posts/${issue.id}/attachments`, attachmentListSchema, {
+      signal: controller.signal,
+    })
+      .then((p) => {
+        setEvidence(p.items.filter((f) => f.state === 'CLEAN' && f.scope !== 'HANDLERS'));
+        setEvidenceIds((ids) =>
+          ids.filter((id) =>
+            p.items.some((f) => f.id === id && f.state === 'CLEAN' && f.scope !== 'HANDLERS'),
+          ),
+        );
+      })
+      .catch(() => setEvidence([]));
+    return () => controller.abort();
+  }, [issue.id, issue.version, apiPrefix]);
   const request = useRef<{ body: string; key: string } | undefined>(undefined);
   const actionSignature = actions.join('|');
   useEffect(() => {
@@ -100,7 +120,8 @@ export function WorkflowPanel({
           ...(cause ? { cause } : {}),
           action: work,
           outcome,
-          evidenceOmissionReason: omission,
+          evidenceIds,
+          ...(omission ? { evidenceOmissionReason: omission } : {}),
         };
       if (action === 'confirm') value.resolutionId = issue.detail.currentResolution?.id;
       const parsed = issueCommandSchema.safeParse(value);
@@ -269,19 +290,40 @@ export function WorkflowPanel({
                   value={outcome}
                   onChange={(e) => setOutcome(e.target.value)}
                 />
+                {evidence.length > 0 && (
+                  <fieldset>
+                    <legend>Evidence supporting this resolution</legend>
+                    {evidence.map((f) => (
+                      <label className="check" key={f.id}>
+                        <input
+                          type="checkbox"
+                          checked={evidenceIds.includes(f.id)}
+                          onChange={(e) =>
+                            setEvidenceIds((ids) =>
+                              e.target.checked ? [...ids, f.id] : ids.filter((id) => id !== f.id),
+                            )
+                          }
+                        />
+                        {f.originalName}
+                      </label>
+                    ))}
+                  </fieldset>
+                )}
                 <label htmlFor="evidence-omission">
-                  Why is evidence unsuitable or unavailable?
+                  {evidenceIds.length
+                    ? 'Evidence note (optional)'
+                    : 'Why is evidence unsuitable or unavailable?'}
                 </label>
                 <textarea
                   id="evidence-omission"
-                  required
+                  required={!evidenceIds.length}
                   maxLength={1000}
                   value={omission}
                   onChange={(e) => setOmission(e.target.value)}
                 />
                 <p className="hint">
-                  Secure evidence uploads are not available in this build. Record the limitation
-                  honestly.
+                  Choose ready evidence above, or explain why it is unsuitable. The reporter must be
+                  able to review the selected proof.
                 </p>
               </>
             )}

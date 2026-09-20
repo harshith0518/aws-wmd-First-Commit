@@ -198,7 +198,7 @@ test('workflow rejects wrong actor, wrong state, stale version, expired times, u
       },
       randomUUID(),
     ),
-    code('UPLOADS_UNAVAILABLE'),
+    code('FILE_NOT_READY'),
   );
   assert.equal((await f.issues.getIssue(f.user, f.campus, f.issue.id)).version, 1);
 });
