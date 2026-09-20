@@ -1,3 +1,4 @@
+import { WorkflowService } from '../apps/api/src/workflow.js';
 // Standalone synthetic browser test rig. Never imported by the application or deployment bundle.
 import sharp from 'sharp';
 import { writeFile } from 'node:fs/promises';
@@ -26,7 +27,7 @@ import { IdentityService } from '../apps/api/src/identity-service.js';
 import { CursorCodec } from '../apps/api/src/cursor.js';
 import { issueFixture } from '../apps/api/test/issue-fixture.js';
 import { keys } from '../apps/api/src/data/keys.js';
-import {hash} from '../apps/api/src/identity-service.js';
+import { hash } from '../apps/api/src/identity-service.js';
 const root = fileURLToPath(new URL('../', import.meta.url));
 const id = randomUUID();
 const prefix = `campusfix-browser-test-${id}`;
@@ -79,11 +80,36 @@ try {
       },
     ],
   });
-  const reviewer=randomUUID();
-  fixture.store.seed(fixture.config.CORE_TABLE,{...fixture.profile,...keys.profile(reviewer),id:reviewer,displayName:'Independent reviewer',verifiedEmail:'reviewer@example.test'});
-  fixture.store.seed(fixture.config.CORE_TABLE,{...fixture.member,...keys.member(fixture.campus,reviewer),id:randomUUID(),userId:reviewer,groupIds:[],verifiedEmailHash:hash('reviewer@example.test'),roles:[{id:randomUUID(),role:'REVIEWER',scope:'UNIT',scopeId:fixture.unit,expiresAt:'2099-01-01T00:00:00Z'}]});
-  const testCampus=(await fixture.store.get(fixture.config.CORE_TABLE,keys.campus(fixture.campus)))!;
-  fixture.store.seed(fixture.config.CORE_TABLE,{...testCampus,independentReviewerId:reviewer});
+  const reviewer = randomUUID();
+  fixture.store.seed(fixture.config.CORE_TABLE, {
+    ...fixture.profile,
+    ...keys.profile(reviewer),
+    id: reviewer,
+    displayName: 'Independent reviewer',
+    verifiedEmail: 'reviewer@example.test',
+  });
+  fixture.store.seed(fixture.config.CORE_TABLE, {
+    ...fixture.member,
+    ...keys.member(fixture.campus, reviewer),
+    id: randomUUID(),
+    userId: reviewer,
+    groupIds: [],
+    verifiedEmailHash: hash('reviewer@example.test'),
+    roles: [
+      {
+        id: randomUUID(),
+        role: 'REVIEWER',
+        scope: 'UNIT',
+        scopeId: fixture.unit,
+        expiresAt: '2099-01-01T00:00:00Z',
+      },
+    ],
+  });
+  const testCampus = (await fixture.store.get(
+    fixture.config.CORE_TABLE,
+    keys.campus(fixture.campus),
+  ))!;
+  fixture.store.seed(fixture.config.CORE_TABLE, { ...testCampus, independentReviewerId: reviewer });
   await store.transact(
     [...fixture.store.items.values()].map((item) => ({
       table: config.CORE_TABLE,
@@ -144,8 +170,18 @@ try {
     .setExpirationTime('2h')
     .setProtectedHeader({ alg: 'RS256', kid: jwk.kid })
     .sign(pair.privateKey);
-  const reviewerMembership=await identity.membership(reviewer,fixture.campus);
-  const reviewerToken=await new SignJWT({token_use:'access',client_id:clientId,scope:'openid email campusfix/api'}).setSubject(reviewer).setIssuer(issuer).setIssuedAt().setExpirationTime('2h').setProtectedHeader({alg:'RS256',kid:jwk.kid}).sign(pair.privateKey);
+  const reviewerMembership = await identity.membership(reviewer, fixture.campus);
+  const reviewerToken = await new SignJWT({
+    token_use: 'access',
+    client_id: clientId,
+    scope: 'openid email campusfix/api',
+  })
+    .setSubject(reviewer)
+    .setIssuer(issuer)
+    .setIssuedAt()
+    .setExpirationTime('2h')
+    .setProtectedHeader({ alg: 'RS256', kid: jwk.kid })
+    .sign(pair.privateKey);
   const campus = {
     id: fixture.campus,
     name: 'Synthetic Browser Test Campus',
@@ -210,6 +246,60 @@ try {
     demoObject.version,
     'NO_THREATS_FOUND',
     'synthetic-seed-only',
+  );
+  // Confirmed historical sample created through the same domain commands as the UI.
+  const workflow = new WorkflowService(files.issues);
+  let historical = await files.issues.publish(
+    fixture.user,
+    fixture.campus,
+    { ...fixture.input, title: 'Synthetic confirmed router repair' },
+    randomUUID(),
+  );
+  const next = {
+    nextAction: 'Inspect the router',
+    nextUpdateAt: new Date(Date.now() + 86400000).toISOString(),
+  };
+  historical = await workflow.command(
+    fixture.owner,
+    fixture.campus,
+    historical.id,
+    { action: 'acknowledge', expectedVersion: historical.version, ...next },
+    randomUUID(),
+  );
+  historical = await workflow.command(
+    fixture.owner,
+    fixture.campus,
+    historical.id,
+    { action: 'start', expectedVersion: historical.version, ...next },
+    randomUUID(),
+  );
+  historical = await workflow.command(
+    fixture.owner,
+    fixture.campus,
+    historical.id,
+    {
+      action: 'propose-resolution',
+      expectedVersion: historical.version,
+      resolution: {
+        symptom: 'Router power adapter fails',
+        cause: 'Faulty power adapter',
+        action: 'Replace the router adapter',
+        outcome: 'Students confirmed stable network access',
+        evidenceOmissionReason: 'Synthetic text-only browser fixture',
+      },
+    },
+    randomUUID(),
+  );
+  await workflow.command(
+    fixture.user,
+    fixture.campus,
+    historical.id,
+    {
+      action: 'confirm',
+      expectedVersion: historical.version,
+      resolutionId: historical.detail.currentResolution!.id,
+    },
+    randomUUID(),
   );
   const currentDraft = await files.issues.getDraft(fixture.user, fixture.campus, demoDraft.id);
   await files.issues.publish(

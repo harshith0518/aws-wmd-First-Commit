@@ -1804,7 +1804,7 @@
           }
         },
         "x-implementation-status": "partial",
-        "x-implementation-notes": "Issue draft publication implemented. Other post types remain future milestones. Evidence uploads are disabled."
+        "x-implementation-notes": "Issue draft publication implemented. Other post types remain future milestones. Issue evidence has scoped, version-bound scanning and lifecycle checks; production upload remains gated on real storage/scanner configuration."
       }
     },
     "/api/v1/campuses/{campusId}/drafts/{postId}/discard": {
@@ -3282,7 +3282,7 @@
             }
           }
         },
-        "x-implementation-notes": "Text reports implemented. Nonempty attachmentIds fail closed with UPLOADS_UNAVAILABLE until scanning is configured."
+        "x-implementation-notes": "Issue publication verifies selected clean, current-parent evidence; unrelated, incomplete and unauthorized files fail closed. Other post types remain pending."
       }
     },
     "/api/v1/campuses/{campusId}/issues/{postId}/support": {
@@ -7892,7 +7892,7 @@
         "summary": "Find up to 100 recent permitted reviewed precedents",
         "description": "Bound total retrieval to 100 candidates. Authorize current source, source ACL and currently confirmed resolution before matching and serializing. Search is scoped recent history, not exhaustive.",
         "x-release": "R1",
-        "x-implemented": false,
+        "x-implemented": true,
         "tags": [
           "knowledge"
         ],
@@ -8008,14 +8008,16 @@
           "503": {
             "$ref": "#/components/responses/StandardError"
           }
-        }
+        },
+        "x-implementation-status": "implemented",
+        "x-implementation-notes": "Current source ACL and confirmed resolution required. Curation uses current scoped UNIT_LEAD or REVIEWER. Search shares a maximum 100 recent discovery rows across permitted audiences, ranks eligible cards, and revalidates encrypted snapshot pagination."
       },
       "post": {
         "operationId": "knowledge_create",
         "summary": "Curator creates reviewed entry from confirmed resolution",
         "description": "Authorize the current actor and canonical target; never trust discovery projections as access grants.",
         "x-release": "R2",
-        "x-implemented": false,
+        "x-implemented": true,
         "tags": [
           "knowledge"
         ],
@@ -8089,7 +8091,9 @@
               }
             }
           }
-        }
+        },
+        "x-implementation-status": "implemented",
+        "x-implementation-notes": "Current source ACL and confirmed resolution required. Curation uses current scoped UNIT_LEAD or REVIEWER. Search shares a maximum 100 recent discovery rows across permitted audiences, ranks eligible cards, and revalidates encrypted snapshot pagination."
       }
     },
     "/api/v1/campuses/{campusId}/knowledge/{knowledgeId}": {
@@ -8098,7 +8102,7 @@
         "summary": "Read eligible reviewed resolution and source",
         "description": "Authorize the current actor and canonical target; never trust discovery projections as access grants.",
         "x-release": "R1",
-        "x-implemented": false,
+        "x-implemented": true,
         "tags": [
           "knowledge"
         ],
@@ -8168,7 +8172,9 @@
           "503": {
             "$ref": "#/components/responses/StandardError"
           }
-        }
+        },
+        "x-implementation-status": "implemented",
+        "x-implementation-notes": "Current source ACL and confirmed resolution required. Curation uses current scoped UNIT_LEAD or REVIEWER. Search shares a maximum 100 recent discovery rows across permitted audiences, ranks eligible cards, and revalidates encrypted snapshot pagination."
       }
     },
     "/api/v1/campuses/{campusId}/knowledge/{knowledgeId}/commands": {
@@ -8177,7 +8183,7 @@
         "summary": "Flag stale, retire or rereview entry",
         "description": "Members may flag stale with reason; only authorized curator retires/reviews. Reopening/restricting source invalidates derived answers automatically.",
         "x-release": "R2",
-        "x-implemented": false,
+        "x-implemented": true,
         "tags": [
           "knowledge"
         ],
@@ -8260,7 +8266,9 @@
               }
             }
           }
-        }
+        },
+        "x-implementation-status": "implemented",
+        "x-implementation-notes": "Current source ACL and confirmed resolution required. Curation uses current scoped UNIT_LEAD or REVIEWER. Search shares a maximum 100 recent discovery rows across permitted audiences, ranks eligible cards, and revalidates encrypted snapshot pagination."
       }
     },
     "/api/v1/campuses/{campusId}/ai/suggestions": {
@@ -16402,6 +16410,10 @@
           "appealContact": {
             "type": "string",
             "maxLength": 200
+          },
+          "knowledgeId": {
+            "type": "string",
+            "format": "uuid"
           }
         },
         "required": [
@@ -16711,7 +16723,8 @@
                 "RESPOND_TRANSFER",
                 "DECLINE",
                 "DUPLICATE",
-                "SET_PRIORITY"
+                "SET_PRIORITY",
+                "CURATE_KNOWLEDGE"
               ]
             },
             "maxItems": 20
@@ -16852,7 +16865,8 @@
                 "RESPOND_TRANSFER",
                 "DECLINE",
                 "DUPLICATE",
-                "SET_PRIORITY"
+                "SET_PRIORITY",
+                "CURATE_KNOWLEDGE"
               ]
             },
             "maxItems": 20
@@ -16993,7 +17007,8 @@
                 "RESPOND_TRANSFER",
                 "DECLINE",
                 "DUPLICATE",
-                "SET_PRIORITY"
+                "SET_PRIORITY",
+                "CURATE_KNOWLEDGE"
               ]
             },
             "maxItems": 20
@@ -17134,7 +17149,8 @@
                 "RESPOND_TRANSFER",
                 "DECLINE",
                 "DUPLICATE",
-                "SET_PRIORITY"
+                "SET_PRIORITY",
+                "CURATE_KNOWLEDGE"
               ]
             },
             "maxItems": 20
@@ -17275,7 +17291,8 @@
                 "RESPOND_TRANSFER",
                 "DECLINE",
                 "DUPLICATE",
-                "SET_PRIORITY"
+                "SET_PRIORITY",
+                "CURATE_KNOWLEDGE"
               ]
             },
             "maxItems": 20
@@ -20307,6 +20324,40 @@
               "STALE",
               "REVOKED"
             ]
+          },
+          "capabilities": {
+            "type": "array",
+            "maxItems": 3,
+            "items": {
+              "type": "string",
+              "enum": [
+                "FLAG_STALE",
+                "REVIEW",
+                "RETIRE"
+              ]
+            }
+          },
+          "lastChange": {
+            "type": "object",
+            "properties": {
+              "actor": {
+                "$ref": "#/components/schemas/Person"
+              },
+              "reason": {
+                "type": "string",
+                "maxLength": 1000
+              },
+              "at": {
+                "type": "string",
+                "format": "date-time"
+              }
+            },
+            "required": [
+              "actor",
+              "reason",
+              "at"
+            ],
+            "additionalProperties": false
           }
         },
         "required": [
@@ -20325,7 +20376,9 @@
           "outcome",
           "reviewer",
           "reviewedAt",
-          "state"
+          "state",
+          "reviewDueAt",
+          "capabilities"
         ],
         "additionalProperties": false
       },

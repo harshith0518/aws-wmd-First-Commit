@@ -11,7 +11,7 @@ export type CommandPlan<T> = {
   writes: Write[];
   eventType: string;
   eventScope: 'AUTHOR' | 'READERS' | 'HANDLERS' | 'REVIEW_PARTIES' | 'REVIEWERS';
-  resourceKind?: 'POST' | 'REVIEW';
+  resourceKind?: 'POST' | 'REVIEW' | 'KNOWLEDGE';
   sourceVersion: number;
   newPost?: boolean;
   event?: {
@@ -81,8 +81,8 @@ export class CampusCommands {
     const eventId = randomUUID();
     const eventKey = {
       pk:
-        prepared.resourceKind === 'REVIEW'
-          ? `C#${campus}#REVIEW#${prepared.resourceId}`
+        prepared.resourceKind && prepared.resourceKind !== 'POST'
+          ? `C#${campus}#${prepared.resourceKind}#${prepared.resourceId}`
           : keys.post(campus, prepared.resourceId).pk,
       sk: `EVENT#${date}#${eventId}`,
     };
@@ -209,7 +209,13 @@ export class CampusCommands {
           if (w.guard.now > prior.guard.now) prior.guard.now = w.guard.now;
           continue;
         }
-        if (prior.item || w.item || JSON.stringify(prior.guard) !== JSON.stringify(w.guard))
+        if (
+          prior.item ||
+          w.item ||
+          prior.delete ||
+          w.delete ||
+          JSON.stringify(prior.guard) !== JSON.stringify(w.guard)
+        )
           throw new Error('Conflicting transaction actions.');
         continue;
       }
@@ -225,8 +231,8 @@ export class CampusCommands {
       context = await this.identity.member(actor, campus);
       const current = await store.get(
         config.CORE_TABLE,
-        prepared.resourceKind === 'REVIEW'
-          ? { pk: `C#${campus}#REVIEW#${prepared.resourceId}`, sk: 'META' }
+        prepared.resourceKind && prepared.resourceKind !== 'POST'
+          ? { pk: `C#${campus}#${prepared.resourceKind}#${prepared.resourceId}`, sk: 'META' }
           : keys.post(campus, prepared.resourceId),
       );
       throw new ApiError(

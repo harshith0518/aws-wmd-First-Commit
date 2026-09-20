@@ -88,6 +88,8 @@ export class DynamoStore implements Store {
                   ConditionExpression: 'attribute_not_exists(pk) OR expiresAt <= :now',
                   ExpressionAttributeValues: { ':now': w.guard.now },
                 };
+      if (w.item && w.delete) throw new Error('A write cannot put and delete the same item.');
+      if (w.delete) return { Delete: { TableName: w.table, Key: w.key, ...condition } };
       return w.item
         ? { Put: { TableName: w.table, Item: w.item, ...condition } }
         : { ConditionCheck: { TableName: w.table, Key: w.key, ...condition } };

@@ -361,6 +361,11 @@ export class IssueService {
             'REPLY',
             'SUPPORT',
             'REQUEST_REVIEW',
+            ...(d.status === 'CONFIRMED_CLOSED' &&
+            (hasRole(member, 'UNIT_LEAD', String(d.unitId)) ||
+              hasRole(member, 'REVIEWER', String(d.unitId)))
+              ? ['CURATE_KNOWLEDGE']
+              : []),
             ...(['SUBMITTED', 'ACKNOWLEDGED', 'IN_PROGRESS', 'WAITING', 'REOPENED'].includes(
               String(d.status),
             ) &&
@@ -400,6 +405,9 @@ export class IssueService {
           : {}),
         status: d.status,
         severity: d.severity,
+        ...(d.status === 'CONFIRMED_CLOSED' && d.resolutionId
+          ? await this.knowledgeReference(post, String(d.resolutionId))
+          : {}),
         ...(member ? await this.visibleDuplicate(post, member) : {}),
         ...(d.declineReason ? { declineReason: d.declineReason } : {}),
         ...(d.appealContact ? { appealContact: d.appealContact } : {}),
@@ -424,6 +432,13 @@ export class IssueService {
           : {}),
       },
     });
+  }
+  async knowledgeReference(post: Item, resolutionId: string) {
+    const ref = await this.store.get(this.config.CORE_TABLE, {
+      pk: post.pk,
+      sk: `KNOWLEDGE#${resolutionId}`,
+    });
+    return typeof ref?.knowledgeId === 'string' ? { knowledgeId: ref.knowledgeId } : {};
   }
   async visibleDuplicate(post: Item, member: MemberRecord) {
     const id = (post.detail as Record<string, unknown>).duplicateOf;

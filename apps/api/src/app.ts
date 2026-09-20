@@ -1,3 +1,5 @@
+import { KnowledgeService } from './knowledge.js';
+import { knowledgeRoutes } from './knowledge-routes.js';
 import { ReviewService } from './reviews.js';
 import { reviewRoutes } from './review-routes.js';
 import { DiscussionService } from './discussion.js';
@@ -95,6 +97,7 @@ export function createApp(
   if (dependencies.identity) {
     const issues = new IssueService(dependencies.identity);
     app.route('/api/v1/campuses', issueRoutes(issues));
+    app.route('/api/v1/campuses', knowledgeRoutes(new KnowledgeService(issues)));
     app.route('/api/v1/campuses', reviewRoutes(new ReviewService(issues)));
     app.route('/api/v1/campuses', discussionRoutes(new DiscussionService(issues)));
     app.route('/api/v1/campuses', fileRoutes(new FileService(issues, dependencies.evidence)));

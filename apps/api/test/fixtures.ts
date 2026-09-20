@@ -64,7 +64,11 @@ export class MemoryStore implements Store {
       )
         throw new WriteConflict();
     }
-    for (const w of writes) if (w.item) this.seed(w.table, w.item);
+    for (const w of writes) {
+      if (w.item && w.delete) throw new Error('Conflicting write');
+      if (w.delete) this.items.delete(this.key(w.table, w.key));
+      else if (w.item) this.seed(w.table, w.item);
+    }
   }
 }
 export function fixture() {

@@ -5,7 +5,7 @@ export type Guard =
   | { kind: 'version'; version: number }
   | { kind: 'expired'; now: number }
   | { kind: 'member'; version: number; now: string };
-export type Write = { table: string; key: Key; guard: Guard; item?: Item };
+export type Write = { table: string; key: Key; guard: Guard; item?: Item; delete?: true };
 export type Query = {
   table: string;
   pk: string;

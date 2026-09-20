@@ -1,0 +1,222 @@
+{
+  "synthetic": true,
+  "scope": "Deterministic retrieval only; this is not a Bedrock generation or routing evaluation.",
+  "sources": [
+    {
+      "key": "router",
+      "category": "network",
+      "symptom": "Wireless router loses power",
+      "cause": "Burnt adapter",
+      "fix": "Replace the router power adapter",
+      "outcome": "Network restored"
+    },
+    {
+      "key": "dns",
+      "category": "network",
+      "symptom": "Domain lookup failure",
+      "cause": "Stale resolver cache",
+      "fix": "Flush DNS resolver cache",
+      "outcome": "Hostnames resolve"
+    },
+    {
+      "key": "dhcp",
+      "category": "network",
+      "symptom": "Clients receive no address",
+      "cause": "DHCP address pool exhausted",
+      "fix": "Extend the lease pool",
+      "outcome": "Addresses assigned"
+    },
+    {
+      "key": "tap",
+      "category": "plumbing",
+      "symptom": "Tap continues dripping",
+      "cause": "Worn faucet washer",
+      "fix": "Replace the faucet washer",
+      "outcome": "Dripping stops"
+    },
+    {
+      "key": "pipe",
+      "category": "plumbing",
+      "symptom": "Pipe joint leaks",
+      "cause": "Cracked pipe elbow",
+      "fix": "Replace the pipe elbow fitting",
+      "outcome": "Joint remains dry"
+    },
+    {
+      "key": "drain",
+      "category": "plumbing",
+      "symptom": "Washroom drain blocked",
+      "cause": "Debris in strainer",
+      "fix": "Clean the drain strainer",
+      "outcome": "Water drains freely"
+    },
+    {
+      "key": "light",
+      "category": "electrical",
+      "symptom": "Tube light flickers",
+      "cause": "Failed fluorescent ballast",
+      "fix": "Replace the fluorescent ballast",
+      "outcome": "Lighting stable"
+    },
+    {
+      "key": "fan",
+      "category": "electrical",
+      "symptom": "Ceiling fan speed fluctuates",
+      "cause": "Faulty speed regulator",
+      "fix": "Replace the ceiling fan regulator",
+      "outcome": "Speed remains stable"
+    }
+  ],
+  "cases": [
+    {
+      "category": "network",
+      "query": "router adapter",
+      "expected": "router"
+    },
+    {
+      "category": "network",
+      "query": "router power",
+      "expected": "router"
+    },
+    {
+      "category": "network",
+      "query": "burnt adapter",
+      "expected": "router"
+    },
+    {
+      "category": "network",
+      "query": "resolver cache",
+      "expected": "dns"
+    },
+    {
+      "category": "network",
+      "query": "dns lookup",
+      "expected": "dns"
+    },
+    {
+      "category": "network",
+      "query": "hostnames cache",
+      "expected": "dns"
+    },
+    {
+      "category": "network",
+      "query": "dhcp pool",
+      "expected": "dhcp"
+    },
+    {
+      "category": "network",
+      "query": "address exhausted",
+      "expected": "dhcp"
+    },
+    {
+      "category": "network",
+      "query": "lease pool",
+      "expected": "dhcp"
+    },
+    {
+      "category": "plumbing",
+      "query": "faucet washer",
+      "expected": "tap"
+    },
+    {
+      "category": "plumbing",
+      "query": "tap dripping",
+      "expected": "tap"
+    },
+    {
+      "category": "plumbing",
+      "query": "worn washer",
+      "expected": "tap"
+    },
+    {
+      "category": "plumbing",
+      "query": "pipe elbow",
+      "expected": "pipe"
+    },
+    {
+      "category": "plumbing",
+      "query": "joint leaks",
+      "expected": "pipe"
+    },
+    {
+      "category": "plumbing",
+      "query": "cracked fitting",
+      "expected": "pipe"
+    },
+    {
+      "category": "plumbing",
+      "query": "drain strainer",
+      "expected": "drain"
+    },
+    {
+      "category": "plumbing",
+      "query": "debris strainer",
+      "expected": "drain"
+    },
+    {
+      "category": "plumbing",
+      "query": "blocked drain",
+      "expected": "drain"
+    },
+    {
+      "category": "electrical",
+      "query": "fluorescent ballast",
+      "expected": "light"
+    },
+    {
+      "category": "electrical",
+      "query": "tube flickers",
+      "expected": "light"
+    },
+    {
+      "category": "electrical",
+      "query": "failed ballast",
+      "expected": "light"
+    },
+    {
+      "category": "electrical",
+      "query": "fan regulator",
+      "expected": "fan"
+    },
+    {
+      "category": "electrical",
+      "query": "ceiling speed",
+      "expected": "fan"
+    },
+    {
+      "category": "electrical",
+      "query": "faulty regulator",
+      "expected": "fan"
+    },
+    {
+      "category": "network",
+      "query": "orbital antenna",
+      "expected": null
+    },
+    {
+      "category": "network",
+      "query": "expired oldmodem",
+      "expected": null
+    },
+    {
+      "category": "network",
+      "query": "reopened fibrepair",
+      "expected": null
+    },
+    {
+      "category": "network",
+      "query": "otherhostel secretmesh",
+      "expected": null
+    },
+    {
+      "category": "network",
+      "query": "foreigncampus privateproxy",
+      "expected": null
+    },
+    {
+      "category": "plumbing",
+      "query": "unseen sewage pump",
+      "expected": null
+    }
+  ]
+}

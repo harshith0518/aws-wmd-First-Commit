@@ -5,3 +5,4 @@ export * from './files.js';
 export * from './discussion.js';
 export * from './ownership.js';
 export * from './reviews.js';
+export * from './knowledge.js';

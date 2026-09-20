@@ -1,3 +1,4 @@
+import { KnowledgeWorkspace } from './knowledge';
 import { ReviewWorkspace } from './reviews';
 import { OwnershipPanel } from './ownership';
 import { DiscussionPanel, SupportControl } from './discussion';
@@ -92,6 +93,9 @@ export function IssueWorkspace({
             >
               My drafts
             </button>
+            <button className="tab" onClick={() => navigate(`${prefix}/library`)}>
+              Resolution library
+            </button>
             <button className="tab" onClick={() => navigate(`${prefix}/service-reviews`)}>
               Service reviews
             </button>
@@ -117,6 +121,15 @@ export function IssueWorkspace({
         </div>
       ) : !configuration ? (
         <p role="status">Loading your campus and current permissions…</p>
+      ) : tail.startsWith('/library') ? (
+        <KnowledgeWorkspace
+          apiPrefix={apiPrefix}
+          tail={tail}
+          configuration={configuration}
+          membership={membership}
+          navigate={navigate}
+          routePrefix={prefix}
+        />
       ) : tail.startsWith('/service-reviews') ? (
         <ReviewWorkspace
           apiPrefix={apiPrefix}
@@ -146,6 +159,13 @@ export function IssueWorkspace({
         <IssueDetail
           key={issueId}
           onReview={() => navigate(`${prefix}/service-reviews/new?issue=${issueId}`)}
+          onCurate={(knowledgeId) =>
+            navigate(
+              knowledgeId
+                ? `${prefix}/library/${knowledgeId}`
+                : `${prefix}/library/new?issue=${issueId}`,
+            )
+          }
           id={issueId}
           onRelated={(id) => navigate(`${prefix}/issues/${id}`)}
           apiPrefix={apiPrefix}
@@ -905,6 +925,7 @@ function DraftList({ apiPrefix, open }: { apiPrefix: string; open: (id: string) 
   );
 }
 function IssueDetail({
+  onCurate,
   onRelated,
   onReview,
   id,
@@ -914,6 +935,7 @@ function IssueDetail({
 }: {
   id: string;
   onReview: () => void;
+  onCurate: (knowledgeId?: string) => void;
   onRelated: (id: string) => void;
   apiPrefix: string;
   configuration: PublicConfiguration;
@@ -1054,6 +1076,17 @@ function IssueDetail({
           );
         }}
       />
+      {(issue.detail.knowledgeId || issue.capabilities.includes('CURATE_KNOWLEDGE')) && (
+        <button
+          type="button"
+          className="secondary"
+          onClick={() => onCurate(issue.detail.knowledgeId)}
+        >
+          {issue.detail.knowledgeId
+            ? 'Open resolution library card'
+            : 'Review for resolution library'}
+        </button>
+      )}
       <WorkflowPanel
         onRelated={onRelated}
         issue={issue}
