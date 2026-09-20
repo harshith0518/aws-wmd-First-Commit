@@ -1,0 +1,22 @@
+{
+  "name": "@campusfix/api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "build": "esbuild src/lambda.ts --bundle --platform=node --target=node24 --format=esm --banner:js=\"import { createRequire } from 'node:module'; const require = createRequire(import.meta.url);\" --outfile=dist/lambda.mjs",
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "node --import tsx --test test/*.test.ts",
+    "test:integration": "node --import tsx --test integration/*.test.ts"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "3.1136.0",
+    "@aws-sdk/lib-dynamodb": "3.1136.0",
+    "@campusfix/contracts": "0.1.0",
+    "@hono/node-server": "2.1.1",
+    "@js-temporal/polyfill": "0.5.1",
+    "hono": "4.13.7",
+    "jose": "6.2.12"
+  }
+}

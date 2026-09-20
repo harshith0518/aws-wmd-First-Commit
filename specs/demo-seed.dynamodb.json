@@ -1,0 +1,2320 @@
+{
+  "synthetic": true,
+  "identities": {
+    "alice": "64e37050-764b-5753-a20b-e55d52a77933",
+    "bob": "71145609-8114-5a77-b6d4-ed3fe7245079",
+    "staff": "8a381ff8-19d9-54fe-b54d-35637b278a47",
+    "reviewer": "c4d9e101-db6d-520d-bf7e-1552b830c3c2",
+    "other": "cc2d8fb6-3006-5716-95a5-6b8f3a0b6e0b"
+  },
+  "campuses": {
+    "demo": "0a9db255-3522-53e5-a485-843fb69a141d",
+    "other": "4388f523-e895-51ba-9754-a29ce387f6bf"
+  },
+  "groups": {
+    "hostel-a": "83848ee1-ef31-5e45-9dfa-efece90ef592",
+    "hostel-b": "46ac92b5-927d-5a0a-9fba-fa94decef82c",
+    "cse": "154d3445-b132-5ce4-9a86-6821b20dfd19"
+  },
+  "units": {
+    "it": "106eb8e5-fdc6-526c-8e1f-50c5f7e06691",
+    "facilities": "9f44538b-7b21-5f21-8d63-1ad808086e27",
+    "triage": "fc46c0eb-9afe-5a4c-950c-4c778295194e"
+  },
+  "batches": [
+    {
+      "RequestItems": {
+        "campusfix-local-core": [
+          {
+            "PutRequest": {
+              "Item": {
+                "pk": {
+                  "S": "C#0a9db255-3522-53e5-a485-843fb69a141d"
+                },
+                "sk": {
+                  "S": "CONFIG"
+                },
+                "entityType": {
+                  "S": "CAMPUS"
+                },
+                "schemaVersion": {
+                  "N": "1"
+                },
+                "campusId": {
+                  "S": "0a9db255-3522-53e5-a485-843fb69a141d"
+                },
+                "id": {
+                  "S": "0a9db255-3522-53e5-a485-843fb69a141d"
+                },
+                "createdAt": {
+                  "S": "2026-09-20T00:00:00Z"
+                },
+                "updatedAt": {
+                  "S": "2026-09-20T00:00:00Z"
+                },
+                "version": {
+                  "N": "1"
+                },
+                "name": {
+                  "S": "Demo Campus"
+                },
+                "slug": {
+                  "S": "demo"
+                },
+                "status": {
+                  "S": "ACTIVE"
+                },
+                "timezone": {
+                  "S": "Asia/Kolkata"
+                },
+                "verifiedDomains": {
+                  "L": [
+                    {
+                      "S": "example.test"
+                    }
+                  ]
+                },
+                "featureFlags": {
+                  "M": {
+                    "questions": {
+                      "BOOL": false
+                    },
+                    "activities": {
+                      "BOOL": false
+                    },
+                    "marketplace": {
+                      "BOOL": false
+                    },
+                    "ai": {
+                      "BOOL": false
+                    },
+                    "sensitiveCases": {
+                      "BOOL": false
+                    }
+                  }
+                },
+                "policyVersion": {
+                  "N": "1"
+                },
+                "quotas": {
+                  "M": {
+                    "postsPerHour": {
+                      "N": "5"
+                    },
+                    "postsPerDay": {
+                      "N": "30"
+                    }
+                  }
+                },
+                "retentionPolicy": {
+                  "M": {
+                    "issueMonths": {
+                      "N": "24"
+                    },
+                    "attachmentMonths": {
+                      "N": "12"
+                    },
+                    "communityDays": {
+                      "N": "90"
+                    }
+                  }
+                },
+                "businessCalendar": {
+                  "M": {
+                    "timezone": {
+                      "S": "Asia/Kolkata"
+                    },
+                    "workingDays": {
+                      "L": [
+                        {
+                          "S": "MON"
+                        },
+                        {
+                          "S": "TUE"
+                        },
+                        {
+                          "S": "WED"
+                        },
+                        {
+                          "S": "THU"
+                        },
+                        {
+                          "S": "FRI"
+                        }
+                      ]
+                    },
+                    "opensAt": {
+                      "S": "09:00"
+                    },
+                    "closesAt": {
+                      "S": "17:00"
+                    },
+                    "holidays": {
+                      "L": []
+                    }
+                  }
+                },
+                "serviceTargets": {
+                  "M": {
+                    "acknowledgeWorkingDays": {
+                      "N": "1"
+                    },
+                    "updateWorkingDays": {
+                      "N": "3"
+                    },
+                    "reviewWorkingDays": {
+                      "N": "5"
+                    }
+                  }
+                },
+                "synthetic": {
+                  "BOOL": true
+                },
+                "emergencyContacts": {
+                  "L": []
+                }
+              }
+            }
+          },
+          {
+            "PutRequest": {
+              "Item": {
+                "pk": {
+                  "S": "C#4388f523-e895-51ba-9754-a29ce387f6bf"
+                },
+                "sk": {
+                  "S": "CONFIG"
+                },
+                "entityType": {
+                  "S": "CAMPUS"
+                },
+                "schemaVersion": {
+                  "N": "1"
+                },
+                "campusId": {
+                  "S": "4388f523-e895-51ba-9754-a29ce387f6bf"
+                },
+                "id": {
+                  "S": "4388f523-e895-51ba-9754-a29ce387f6bf"
+                },
+                "createdAt": {
+                  "S": "2026-09-20T00:00:00Z"
+                },
+                "updatedAt": {
+                  "S": "2026-09-20T00:00:00Z"
+                },
+                "version": {
+                  "N": "1"
+                },
+                "name": {
+                  "S": "Isolation Test Campus"
+                },
+                "slug": {
+                  "S": "isolation"
+                },
+                "status": {
+                  "S": "ACTIVE"
+                },
+                "timezone": {
+                  "S": "Asia/Kolkata"
+                },
+                "verifiedDomains": {
+                  "L": [
+                    {
+                      "S": "example.test"
+                    }
+                  ]
+                },
+                "featureFlags": {
+                  "M": {
+                    "questions": {
+                      "BOOL": false
+                    },
+                    "activities": {
+                      "BOOL": false
+                    },
+                    "marketplace": {
+                      "BOOL": false
+                    },
+                    "ai": {
+                      "BOOL": false
+                    },
+                    "sensitiveCases": {
+                      "BOOL": false
+                    }
+                  }
+                },
+                "policyVersion": {
+                  "N": "1"
+                },
+                "quotas": {
+                  "M": {
+                    "postsPerHour": {
+                      "N": "5"
+                    },
+                    "postsPerDay": {
+                      "N": "30"
+                    }
+                  }
+                },
+                "retentionPolicy": {
+                  "M": {
+                    "issueMonths": {
+                      "N": "24"
+                    },
+                    "attachmentMonths": {
+                      "N": "12"
+                    },
+                    "communityDays": {
+                      "N": "90"
+                    }
+                  }
+                },
+                "businessCalendar": {
+                  "M": {
+                    "timezone": {
+                      "S": "Asia/Kolkata"
+                    },
+                    "workingDays": {
+                      "L": [
+                        {
+                          "S": "MON"
+                        },
+                        {
+                          "S": "TUE"
+                        },
+                        {
+                          "S": "WED"
+                        },
+                        {
+                          "S": "THU"
+                        },
+                        {
+                          "S": "FRI"
+                        }
+                      ]
+                    },
+                    "opensAt": {
+                      "S": "09:00"
+                    },
+                    "closesAt": {
+                      "S": "17:00"
+                    },
+                    "holidays": {
+                      "L": []
+                    }
+                  }
+                },
+                "serviceTargets": {
+                  "M": {
+                    "acknowledgeWorkingDays": {
+                      "N": "1"
+                    },
+                    "updateWorkingDays": {
+                      "N": "3"
+                    },
+                    "reviewWorkingDays": {
+                      "N": "5"
+                    }
+                  }
+                },
+                "synthetic": {
+                  "BOOL": true
+                },
+                "emergencyContacts": {
+                  "L": []
+                }
+              }
+            }
+          },
+          {
+            "PutRequest": {
+              "Item": {
+                "pk": {
+                  "S": "C#0a9db255-3522-53e5-a485-843fb69a141d"
+                },
+                "sk": {
+                  "S": "GROUP#83848ee1-ef31-5e45-9dfa-efece90ef592"
+                },
+                "entityType": {
+                  "S": "GROUP"
+                },
+                "schemaVersion": {
+                  "N": "1"
+                },
+                "campusId": {
+                  "S": "0a9db255-3522-53e5-a485-843fb69a141d"
+                },
+                "id": {
+                  "S": "83848ee1-ef31-5e45-9dfa-efece90ef592"
+                },
+                "createdAt": {
+                  "S": "2026-09-20T00:00:00Z"
+                },
+                "updatedAt": {
+                  "S": "2026-09-20T00:00:00Z"
+                },
+                "version": {
+                  "N": "1"
+                },
+                "name": {
+                  "S": "hostel-a"
+                },
+                "kind": {
+                  "S": "HOSTEL"
+                },
+                "approverIds": {
+                  "L": [
+                    {
+                      "S": "c4d9e101-db6d-520d-bf7e-1552b830c3c2"
+                    }
+                  ]
+                },
+                "active": {
+                  "BOOL": true
+                }
+              }
+            }
+          },
+          {
+            "PutRequest": {
+              "Item": {
+                "pk": {
+                  "S": "C#0a9db255-3522-53e5-a485-843fb69a141d"
+                },
+                "sk": {
+                  "S": "GROUP#46ac92b5-927d-5a0a-9fba-fa94decef82c"
+                },
+                "entityType": {
+                  "S": "GROUP"
+                },
+                "schemaVersion": {
+                  "N": "1"
+                },
+                "campusId": {
+                  "S": "0a9db255-3522-53e5-a485-843fb69a141d"
+                },
+                "id": {
+                  "S": "46ac92b5-927d-5a0a-9fba-fa94decef82c"
+                },
+                "createdAt": {
+                  "S": "2026-09-20T00:00:00Z"
+                },
+                "updatedAt": {
+                  "S": "2026-09-20T00:00:00Z"
+                },
+                "version": {
+                  "N": "1"
+                },
+                "name": {
+                  "S": "hostel-b"
+                },
+                "kind": {
+                  "S": "HOSTEL"
+                },
+                "approverIds": {
+                  "L": [
+                    {
+                      "S": "c4d9e101-db6d-520d-bf7e-1552b830c3c2"
+                    }
+                  ]
+                },
+                "active": {
+                  "BOOL": true
+                }
+              }
+            }
+          },
+          {
+            "PutRequest": {
+              "Item": {
+                "pk": {
+                  "S": "C#0a9db255-3522-53e5-a485-843fb69a141d"
+                },
+                "sk": {
+                  "S": "GROUP#154d3445-b132-5ce4-9a86-6821b20dfd19"
+                },
+                "entityType": {
+                  "S": "GROUP"
+                },
+                "schemaVersion": {
+                  "N": "1"
+                },
+                "campusId": {
+                  "S": "0a9db255-3522-53e5-a485-843fb69a141d"
+                },
+                "id": {
+                  "S": "154d3445-b132-5ce4-9a86-6821b20dfd19"
+                },
+                "createdAt": {
+                  "S": "2026-09-20T00:00:00Z"
+                },
+                "updatedAt": {
+                  "S": "2026-09-20T00:00:00Z"
+                },
+                "version": {
+                  "N": "1"
+                },
+                "name": {
+                  "S": "cse"
+                },
+                "kind": {
+                  "S": "DEPARTMENT"
+                },
+                "approverIds": {
+                  "L": [
+                    {
+                      "S": "c4d9e101-db6d-520d-bf7e-1552b830c3c2"
+                    }
+                  ]
+                },
+                "active": {
+                  "BOOL": true
+                }
+              }
+            }
+          },
+          {
+            "PutRequest": {
+              "Item": {
+                "pk": {
+                  "S": "C#0a9db255-3522-53e5-a485-843fb69a141d"
+                },
+                "sk": {
+                  "S": "UNIT#106eb8e5-fdc6-526c-8e1f-50c5f7e06691"
+                },
+                "entityType": {
+                  "S": "UNIT"
+                },
+                "schemaVersion": {
+                  "N": "1"
+                },
+                "campusId": {
+                  "S": "0a9db255-3522-53e5-a485-843fb69a141d"
+                },
+                "id": {
+                  "S": "106eb8e5-fdc6-526c-8e1f-50c5f7e06691"
+                },
+                "createdAt": {
+                  "S": "2026-09-20T00:00:00Z"
+                },
+                "updatedAt": {
+                  "S": "2026-09-20T00:00:00Z"
+                },
+                "version": {
+                  "N": "1"
+                },
+                "name": {
+                  "S": "it"
+                },
+                "leadId": {
+                  "S": "8a381ff8-19d9-54fe-b54d-35637b278a47"
+                },
+                "backupId": {
+                  "S": "c4d9e101-db6d-520d-bf7e-1552b830c3c2"
+                },
+                "escalationId": {
+                  "S": "c4d9e101-db6d-520d-bf7e-1552b830c3c2"
+                },
+                "active": {
+                  "BOOL": true
+                }
+              }
+            }
+          },
+          {
+            "PutRequest": {
+              "Item": {
+                "pk": {
+                  "S": "C#0a9db255-3522-53e5-a485-843fb69a141d"
+                },
+                "sk": {
+                  "S": "UNIT#9f44538b-7b21-5f21-8d63-1ad808086e27"
+                },
+                "entityType": {
+                  "S": "UNIT"
+                },
+                "schemaVersion": {
+                  "N": "1"
+                },
+                "campusId": {
+                  "S": "0a9db255-3522-53e5-a485-843fb69a141d"
+                },
+                "id": {
+                  "S": "9f44538b-7b21-5f21-8d63-1ad808086e27"
+                },
+                "createdAt": {
+                  "S": "2026-09-20T00:00:00Z"
+                },
+                "updatedAt": {
+                  "S": "2026-09-20T00:00:00Z"
+                },
+                "version": {
+                  "N": "1"
+                },
+                "name": {
+                  "S": "facilities"
+                },
+                "leadId": {
+                  "S": "8a381ff8-19d9-54fe-b54d-35637b278a47"
+                },
+                "backupId": {
+                  "S": "c4d9e101-db6d-520d-bf7e-1552b830c3c2"
+                },
+                "escalationId": {
+                  "S": "c4d9e101-db6d-520d-bf7e-1552b830c3c2"
+                },
+                "active": {
+                  "BOOL": true
+                }
+              }
+            }
+          },
+          {
+            "PutRequest": {
+              "Item": {
+                "pk": {
+                  "S": "C#0a9db255-3522-53e5-a485-843fb69a141d"
+                },
+                "sk": {
+                  "S": "UNIT#fc46c0eb-9afe-5a4c-950c-4c778295194e"
+                },
+                "entityType": {
+                  "S": "UNIT"
+                },
+                "schemaVersion": {
+                  "N": "1"
+                },
+                "campusId": {
+                  "S": "0a9db255-3522-53e5-a485-843fb69a141d"
+                },
+                "id": {
+                  "S": "fc46c0eb-9afe-5a4c-950c-4c778295194e"
+                },
+                "createdAt": {
+                  "S": "2026-09-20T00:00:00Z"
+                },
+                "updatedAt": {
+                  "S": "2026-09-20T00:00:00Z"
+                },
+                "version": {
+                  "N": "1"
+                },
+                "name": {
+                  "S": "triage"
+                },
+                "leadId": {
+                  "S": "8a381ff8-19d9-54fe-b54d-35637b278a47"
+                },
+                "backupId": {
+                  "S": "c4d9e101-db6d-520d-bf7e-1552b830c3c2"
+                },
+                "escalationId": {
+                  "S": "c4d9e101-db6d-520d-bf7e-1552b830c3c2"
+                },
+                "active": {
+                  "BOOL": true
+                }
+              }
+            }
+          },
+          {
+            "PutRequest": {
+              "Item": {
+                "pk": {
+                  "S": "C#0a9db255-3522-53e5-a485-843fb69a141d"
+                },
+                "sk": {
+                  "S": "CATEGORY#0fe26d07-7ed8-56dc-842e-15c8d28a3224"
+                },
+                "entityType": {
+                  "S": "CATEGORY"
+                },
+                "schemaVersion": {
+                  "N": "1"
+                },
+                "campusId": {
+                  "S": "0a9db255-3522-53e5-a485-843fb69a141d"
+                },
+                "id": {
+                  "S": "0fe26d07-7ed8-56dc-842e-15c8d28a3224"
+                },
+                "createdAt": {
+                  "S": "2026-09-20T00:00:00Z"
+                },
+                "updatedAt": {
+                  "S": "2026-09-20T00:00:00Z"
+                },
+                "version": {
+                  "N": "1"
+                },
+                "name": {
+                  "S": "Hostel and residence"
+                },
+                "defaultUnitId": {
+                  "S": "fc46c0eb-9afe-5a4c-950c-4c778295194e"
+                },
+                "sensitiveDefault": {
+                  "BOOL": false
+                },
+                "allowedPostTypes": {
+                  "L": [
+                    {
+                      "S": "ISSUE"
+                    },
+                    {
+                      "S": "QUESTION"
+                    }
+                  ]
+                },
+                "active": {
+                  "BOOL": true
+                },
+                "description": {
+                  "S": "Synthetic demo category."
+                }
+              }
+            }
+          },
+          {
+            "PutRequest": {
+              "Item": {
+                "pk": {
+                  "S": "C#0a9db255-3522-53e5-a485-843fb69a141d"
+                },
+                "sk": {
+                  "S": "CATEGORY#171fbeeb-57ff-5b53-9c7a-641f2c44a0b4"
+                },
+                "entityType": {
+                  "S": "CATEGORY"
+                },
+                "schemaVersion": {
+                  "N": "1"
+                },
+                "campusId": {
+                  "S": "0a9db255-3522-53e5-a485-843fb69a141d"
+                },
+                "id": {
+                  "S": "171fbeeb-57ff-5b53-9c7a-641f2c44a0b4"
+                },
+                "createdAt": {
+                  "S": "2026-09-20T00:00:00Z"
+                },
+                "updatedAt": {
+                  "S": "2026-09-20T00:00:00Z"
+                },
+                "version": {
+                  "N": "1"
+                },
+                "name": {
+                  "S": "Mess and canteen"
+                },
+                "defaultUnitId": {
+                  "S": "fc46c0eb-9afe-5a4c-950c-4c778295194e"
+                },
+                "sensitiveDefault": {
+                  "BOOL": false
+                },
+                "allowedPostTypes": {
+                  "L": [
+                    {
+                      "S": "ISSUE"
+                    },
+                    {
+                      "S": "QUESTION"
+                    }
+                  ]
+                },
+                "active": {
+                  "BOOL": true
+                },
+                "description": {
+                  "S": "Synthetic demo category."
+                }
+              }
+            }
+          },
+          {
+            "PutRequest": {
+              "Item": {
+                "pk": {
+                  "S": "C#0a9db255-3522-53e5-a485-843fb69a141d"
+                },
+                "sk": {
+                  "S": "CATEGORY#fa75c10c-b5b4-5d0a-bb8f-ff74097cacc2"
+                },
+                "entityType": {
+                  "S": "CATEGORY"
+                },
+                "schemaVersion": {
+                  "N": "1"
+                },
+                "campusId": {
+                  "S": "0a9db255-3522-53e5-a485-843fb69a141d"
+                },
+                "id": {
+                  "S": "fa75c10c-b5b4-5d0a-bb8f-ff74097cacc2"
+                },
+                "createdAt": {
+                  "S": "2026-09-20T00:00:00Z"
+                },
+                "updatedAt": {
+                  "S": "2026-09-20T00:00:00Z"
+                },
+                "version": {
+                  "N": "1"
+                },
+                "name": {
+                  "S": "Department and academics"
+                },
+                "defaultUnitId": {
+                  "S": "fc46c0eb-9afe-5a4c-950c-4c778295194e"
+                },
+                "sensitiveDefault": {
+                  "BOOL": false
+                },
+                "allowedPostTypes": {
+                  "L": [
+                    {
+                      "S": "ISSUE"
+                    },
+                    {
+                      "S": "QUESTION"
+                    }
+                  ]
+                },
+                "active": {
+                  "BOOL": true
+                },
+                "description": {
+                  "S": "Synthetic demo category."
+                }
+              }
+            }
+          },
+          {
+            "PutRequest": {
+              "Item": {
+                "pk": {
+                  "S": "C#0a9db255-3522-53e5-a485-843fb69a141d"
+                },
+                "sk": {
+                  "S": "CATEGORY#bc89ca03-c00b-5e24-806d-9c011bfc021a"
+                },
+                "entityType": {
+                  "S": "CATEGORY"
+                },
+                "schemaVersion": {
+                  "N": "1"
+                },
+                "campusId": {
+                  "S": "0a9db255-3522-53e5-a485-843fb69a141d"
+                },
+                "id": {
+                  "S": "bc89ca03-c00b-5e24-806d-9c011bfc021a"
+                },
+                "createdAt": {
+                  "S": "2026-09-20T00:00:00Z"
+                },
+                "updatedAt": {
+                  "S": "2026-09-20T00:00:00Z"
+                },
+                "version": {
+                  "N": "1"
+                },
+                "name": {
+                  "S": "Examinations and records"
+                },
+                "defaultUnitId": {
+                  "S": "fc46c0eb-9afe-5a4c-950c-4c778295194e"
+                },
+                "sensitiveDefault": {
+                  "BOOL": false
+                },
+                "allowedPostTypes": {
+                  "L": [
+                    {
+                      "S": "ISSUE"
+                    },
+                    {
+                      "S": "QUESTION"
+                    }
+                  ]
+                },
+                "active": {
+                  "BOOL": true
+                },
+                "description": {
+                  "S": "Synthetic demo category."
+                }
+              }
+            }
+          },
+          {
+            "PutRequest": {
+              "Item": {
+                "pk": {
+                  "S": "C#0a9db255-3522-53e5-a485-843fb69a141d"
+                },
+                "sk": {
+                  "S": "CATEGORY#4e4bfd42-44cf-547b-93b0-850877746b7b"
+                },
+                "entityType": {
+                  "S": "CATEGORY"
+                },
+                "schemaVersion": {
+                  "N": "1"
+                },
+                "campusId": {
+                  "S": "0a9db255-3522-53e5-a485-843fb69a141d"
+                },
+                "id": {
+                  "S": "4e4bfd42-44cf-547b-93b0-850877746b7b"
+                },
+                "createdAt": {
+                  "S": "2026-09-20T00:00:00Z"
+                },
+                "updatedAt": {
+                  "S": "2026-09-20T00:00:00Z"
+                },
+                "version": {
+                  "N": "1"
+                },
+                "name": {
+                  "S": "Campus infrastructure"
+                },
+                "defaultUnitId": {
+                  "S": "9f44538b-7b21-5f21-8d63-1ad808086e27"
+                },
+                "sensitiveDefault": {
+                  "BOOL": false
+                },
+                "allowedPostTypes": {
+                  "L": [
+                    {
+                      "S": "ISSUE"
+                    },
+                    {
+                      "S": "QUESTION"
+                    }
+                  ]
+                },
+                "active": {
+                  "BOOL": true
+                },
+                "description": {
+                  "S": "Synthetic demo category."
+                }
+              }
+            }
+          },
+          {
+            "PutRequest": {
+              "Item": {
+                "pk": {
+                  "S": "C#0a9db255-3522-53e5-a485-843fb69a141d"
+                },
+                "sk": {
+                  "S": "CATEGORY#0ac5fa02-2868-5d14-a74f-32ba83f186e3"
+                },
+                "entityType": {
+                  "S": "CATEGORY"
+                },
+                "schemaVersion": {
+                  "N": "1"
+                },
+                "campusId": {
+                  "S": "0a9db255-3522-53e5-a485-843fb69a141d"
+                },
+                "id": {
+                  "S": "0ac5fa02-2868-5d14-a74f-32ba83f186e3"
+                },
+                "createdAt": {
+                  "S": "2026-09-20T00:00:00Z"
+                },
+                "updatedAt": {
+                  "S": "2026-09-20T00:00:00Z"
+                },
+                "version": {
+                  "N": "1"
+                },
+                "name": {
+                  "S": "IT and connectivity"
+                },
+                "defaultUnitId": {
+                  "S": "106eb8e5-fdc6-526c-8e1f-50c5f7e06691"
+                },
+                "sensitiveDefault": {
+                  "BOOL": false
+                },
+                "allowedPostTypes": {
+                  "L": [
+                    {
+                      "S": "ISSUE"
+                    },
+                    {
+                      "S": "QUESTION"
+                    }
+                  ]
+                },
+                "active": {
+                  "BOOL": true
+                },
+                "description": {
+                  "S": "Synthetic demo category."
+                }
+              }
+            }
+          },
+          {
+            "PutRequest": {
+              "Item": {
+                "pk": {
+                  "S": "C#0a9db255-3522-53e5-a485-843fb69a141d"
+                },
+                "sk": {
+                  "S": "CATEGORY#720e7772-e136-57bc-a341-3a91cc76ac92"
+                },
+                "entityType": {
+                  "S": "CATEGORY"
+                },
+                "schemaVersion": {
+                  "N": "1"
+                },
+                "campusId": {
+                  "S": "0a9db255-3522-53e5-a485-843fb69a141d"
+                },
+                "id": {
+                  "S": "720e7772-e136-57bc-a341-3a91cc76ac92"
+                },
+                "createdAt": {
+                  "S": "2026-09-20T00:00:00Z"
+                },
+                "updatedAt": {
+                  "S": "2026-09-20T00:00:00Z"
+                },
+                "version": {
+                  "N": "1"
+                },
+                "name": {
+                  "S": "Library and learning spaces"
+                },
+                "defaultUnitId": {
+                  "S": "fc46c0eb-9afe-5a4c-950c-4c778295194e"
+                },
+                "sensitiveDefault": {
+                  "BOOL": false
+                },
+                "allowedPostTypes": {
+                  "L": [
+                    {
+                      "S": "ISSUE"
+                    },
+                    {
+                      "S": "QUESTION"
+                    }
+                  ]
+                },
+                "active": {
+                  "BOOL": true
+                },
+                "description": {
+                  "S": "Synthetic demo category."
+                }
+              }
+            }
+          },
+          {
+            "PutRequest": {
+              "Item": {
+                "pk": {
+                  "S": "C#0a9db255-3522-53e5-a485-843fb69a141d"
+                },
+                "sk": {
+                  "S": "CATEGORY#5410353c-af74-5ad3-a6c6-68f95d9a31d1"
+                },
+                "entityType": {
+                  "S": "CATEGORY"
+                },
+                "schemaVersion": {
+                  "N": "1"
+                },
+                "campusId": {
+                  "S": "0a9db255-3522-53e5-a485-843fb69a141d"
+                },
+                "id": {
+                  "S": "5410353c-af74-5ad3-a6c6-68f95d9a31d1"
+                },
+                "createdAt": {
+                  "S": "2026-09-20T00:00:00Z"
+                },
+                "updatedAt": {
+                  "S": "2026-09-20T00:00:00Z"
+                },
+                "version": {
+                  "N": "1"
+                },
+                "name": {
+                  "S": "Transport and parking"
+                },
+                "defaultUnitId": {
+                  "S": "fc46c0eb-9afe-5a4c-950c-4c778295194e"
+                },
+                "sensitiveDefault": {
+                  "BOOL": false
+                },
+                "allowedPostTypes": {
+                  "L": [
+                    {
+                      "S": "ISSUE"
+                    },
+                    {
+                      "S": "QUESTION"
+                    }
+                  ]
+                },
+                "active": {
+                  "BOOL": true
+                },
+                "description": {
+                  "S": "Synthetic demo category."
+                }
+              }
+            }
+          },
+          {
+            "PutRequest": {
+              "Item": {
+                "pk": {
+                  "S": "C#0a9db255-3522-53e5-a485-843fb69a141d"
+                },
+                "sk": {
+                  "S": "CATEGORY#505ad4f4-15be-5112-9cfa-c90e441852ac"
+                },
+                "entityType": {
+                  "S": "CATEGORY"
+                },
+                "schemaVersion": {
+                  "N": "1"
+                },
+                "campusId": {
+                  "S": "0a9db255-3522-53e5-a485-843fb69a141d"
+                },
+                "id": {
+                  "S": "505ad4f4-15be-5112-9cfa-c90e441852ac"
+                },
+                "createdAt": {
+                  "S": "2026-09-20T00:00:00Z"
+                },
+                "updatedAt": {
+                  "S": "2026-09-20T00:00:00Z"
+                },
+                "version": {
+                  "N": "1"
+                },
+                "name": {
+                  "S": "Placement and careers"
+                },
+                "defaultUnitId": {
+                  "S": "fc46c0eb-9afe-5a4c-950c-4c778295194e"
+                },
+                "sensitiveDefault": {
+                  "BOOL": false
+                },
+                "allowedPostTypes": {
+                  "L": [
+                    {
+                      "S": "ISSUE"
+                    },
+                    {
+                      "S": "QUESTION"
+                    }
+                  ]
+                },
+                "active": {
+                  "BOOL": true
+                },
+                "description": {
+                  "S": "Synthetic demo category."
+                }
+              }
+            }
+          },
+          {
+            "PutRequest": {
+              "Item": {
+                "pk": {
+                  "S": "C#0a9db255-3522-53e5-a485-843fb69a141d"
+                },
+                "sk": {
+                  "S": "CATEGORY#573ce165-4435-515c-86e1-5e6aeb255b8e"
+                },
+                "entityType": {
+                  "S": "CATEGORY"
+                },
+                "schemaVersion": {
+                  "N": "1"
+                },
+                "campusId": {
+                  "S": "0a9db255-3522-53e5-a485-843fb69a141d"
+                },
+                "id": {
+                  "S": "573ce165-4435-515c-86e1-5e6aeb255b8e"
+                },
+                "createdAt": {
+                  "S": "2026-09-20T00:00:00Z"
+                },
+                "updatedAt": {
+                  "S": "2026-09-20T00:00:00Z"
+                },
+                "version": {
+                  "N": "1"
+                },
+                "name": {
+                  "S": "Fees and scholarships"
+                },
+                "defaultUnitId": {
+                  "S": "fc46c0eb-9afe-5a4c-950c-4c778295194e"
+                },
+                "sensitiveDefault": {
+                  "BOOL": false
+                },
+                "allowedPostTypes": {
+                  "L": [
+                    {
+                      "S": "ISSUE"
+                    },
+                    {
+                      "S": "QUESTION"
+                    }
+                  ]
+                },
+                "active": {
+                  "BOOL": true
+                },
+                "description": {
+                  "S": "Synthetic demo category."
+                }
+              }
+            }
+          },
+          {
+            "PutRequest": {
+              "Item": {
+                "pk": {
+                  "S": "C#0a9db255-3522-53e5-a485-843fb69a141d"
+                },
+                "sk": {
+                  "S": "CATEGORY#6057aa41-a0b7-5161-8824-96adbf341c19"
+                },
+                "entityType": {
+                  "S": "CATEGORY"
+                },
+                "schemaVersion": {
+                  "N": "1"
+                },
+                "campusId": {
+                  "S": "0a9db255-3522-53e5-a485-843fb69a141d"
+                },
+                "id": {
+                  "S": "6057aa41-a0b7-5161-8824-96adbf341c19"
+                },
+                "createdAt": {
+                  "S": "2026-09-20T00:00:00Z"
+                },
+                "updatedAt": {
+                  "S": "2026-09-20T00:00:00Z"
+                },
+                "version": {
+                  "N": "1"
+                },
+                "name": {
+                  "S": "Clubs and student bodies"
+                },
+                "defaultUnitId": {
+                  "S": "fc46c0eb-9afe-5a4c-950c-4c778295194e"
+                },
+                "sensitiveDefault": {
+                  "BOOL": false
+                },
+                "allowedPostTypes": {
+                  "L": [
+                    {
+                      "S": "ISSUE"
+                    },
+                    {
+                      "S": "QUESTION"
+                    }
+                  ]
+                },
+                "active": {
+                  "BOOL": true
+                },
+                "description": {
+                  "S": "Synthetic demo category."
+                }
+              }
+            }
+          },
+          {
+            "PutRequest": {
+              "Item": {
+                "pk": {
+                  "S": "C#0a9db255-3522-53e5-a485-843fb69a141d"
+                },
+                "sk": {
+                  "S": "CATEGORY#097ea545-3717-59da-9794-85aa3ce11caf"
+                },
+                "entityType": {
+                  "S": "CATEGORY"
+                },
+                "schemaVersion": {
+                  "N": "1"
+                },
+                "campusId": {
+                  "S": "0a9db255-3522-53e5-a485-843fb69a141d"
+                },
+                "id": {
+                  "S": "097ea545-3717-59da-9794-85aa3ce11caf"
+                },
+                "createdAt": {
+                  "S": "2026-09-20T00:00:00Z"
+                },
+                "updatedAt": {
+                  "S": "2026-09-20T00:00:00Z"
+                },
+                "version": {
+                  "N": "1"
+                },
+                "name": {
+                  "S": "Sports and campus life"
+                },
+                "defaultUnitId": {
+                  "S": "fc46c0eb-9afe-5a4c-950c-4c778295194e"
+                },
+                "sensitiveDefault": {
+                  "BOOL": false
+                },
+                "allowedPostTypes": {
+                  "L": [
+                    {
+                      "S": "ISSUE"
+                    },
+                    {
+                      "S": "QUESTION"
+                    }
+                  ]
+                },
+                "active": {
+                  "BOOL": true
+                },
+                "description": {
+                  "S": "Synthetic demo category."
+                }
+              }
+            }
+          },
+          {
+            "PutRequest": {
+              "Item": {
+                "pk": {
+                  "S": "C#0a9db255-3522-53e5-a485-843fb69a141d"
+                },
+                "sk": {
+                  "S": "CATEGORY#d4d8caef-d885-5fce-b792-aac5e04b14f4"
+                },
+                "entityType": {
+                  "S": "CATEGORY"
+                },
+                "schemaVersion": {
+                  "N": "1"
+                },
+                "campusId": {
+                  "S": "0a9db255-3522-53e5-a485-843fb69a141d"
+                },
+                "id": {
+                  "S": "d4d8caef-d885-5fce-b792-aac5e04b14f4"
+                },
+                "createdAt": {
+                  "S": "2026-09-20T00:00:00Z"
+                },
+                "updatedAt": {
+                  "S": "2026-09-20T00:00:00Z"
+                },
+                "version": {
+                  "N": "1"
+                },
+                "name": {
+                  "S": "Safety and personal welfare"
+                },
+                "defaultUnitId": {
+                  "S": "fc46c0eb-9afe-5a4c-950c-4c778295194e"
+                },
+                "sensitiveDefault": {
+                  "BOOL": true
+                },
+                "allowedPostTypes": {
+                  "L": [
+                    {
+                      "S": "ISSUE"
+                    },
+                    {
+                      "S": "QUESTION"
+                    }
+                  ]
+                },
+                "active": {
+                  "BOOL": true
+                },
+                "description": {
+                  "S": "Synthetic demo category."
+                }
+              }
+            }
+          },
+          {
+            "PutRequest": {
+              "Item": {
+                "pk": {
+                  "S": "C#0a9db255-3522-53e5-a485-843fb69a141d"
+                },
+                "sk": {
+                  "S": "CATEGORY#dbb2d414-69ec-551e-80b7-810bbda16b55"
+                },
+                "entityType": {
+                  "S": "CATEGORY"
+                },
+                "schemaVersion": {
+                  "N": "1"
+                },
+                "campusId": {
+                  "S": "0a9db255-3522-53e5-a485-843fb69a141d"
+                },
+                "id": {
+                  "S": "dbb2d414-69ec-551e-80b7-810bbda16b55"
+                },
+                "createdAt": {
+                  "S": "2026-09-20T00:00:00Z"
+                },
+                "updatedAt": {
+                  "S": "2026-09-20T00:00:00Z"
+                },
+                "version": {
+                  "N": "1"
+                },
+                "name": {
+                  "S": "Other or unclear"
+                },
+                "defaultUnitId": {
+                  "S": "fc46c0eb-9afe-5a4c-950c-4c778295194e"
+                },
+                "sensitiveDefault": {
+                  "BOOL": false
+                },
+                "allowedPostTypes": {
+                  "L": [
+                    {
+                      "S": "ISSUE"
+                    },
+                    {
+                      "S": "QUESTION"
+                    }
+                  ]
+                },
+                "active": {
+                  "BOOL": true
+                },
+                "description": {
+                  "S": "Synthetic demo category."
+                }
+              }
+            }
+          },
+          {
+            "PutRequest": {
+              "Item": {
+                "pk": {
+                  "S": "C#0a9db255-3522-53e5-a485-843fb69a141d"
+                },
+                "sk": {
+                  "S": "MEMBER#64e37050-764b-5753-a20b-e55d52a77933"
+                },
+                "entityType": {
+                  "S": "MEMBERSHIP"
+                },
+                "schemaVersion": {
+                  "N": "1"
+                },
+                "campusId": {
+                  "S": "0a9db255-3522-53e5-a485-843fb69a141d"
+                },
+                "id": {
+                  "S": "d683fbe1-a1a0-5fe9-ae39-57c26457eead"
+                },
+                "createdAt": {
+                  "S": "2026-09-20T00:00:00Z"
+                },
+                "updatedAt": {
+                  "S": "2026-09-20T00:00:00Z"
+                },
+                "version": {
+                  "N": "1"
+                },
+                "userId": {
+                  "S": "64e37050-764b-5753-a20b-e55d52a77933"
+                },
+                "status": {
+                  "S": "ACTIVE"
+                },
+                "groupIds": {
+                  "L": [
+                    {
+                      "S": "83848ee1-ef31-5e45-9dfa-efece90ef592"
+                    },
+                    {
+                      "S": "154d3445-b132-5ce4-9a86-6821b20dfd19"
+                    }
+                  ]
+                },
+                "roles": {
+                  "L": [
+                    {
+                      "M": {
+                        "id": {
+                          "S": "627ff66c-fa3d-5aab-b5ae-4285316435f3"
+                        },
+                        "role": {
+                          "S": "STUDENT"
+                        },
+                        "scope": {
+                          "S": "CAMPUS"
+                        },
+                        "expiresAt": {
+                          "S": "2027-09-20T00:00:00Z"
+                        }
+                      }
+                    }
+                  ]
+                },
+                "authVersion": {
+                  "N": "1"
+                },
+                "joinedAt": {
+                  "S": "2026-09-20T00:00:00Z"
+                },
+                "expiresAt": {
+                  "S": "2027-09-20T00:00:00Z"
+                },
+                "gsi1pk": {
+                  "S": "USER#64e37050-764b-5753-a20b-e55d52a77933"
+                },
+                "gsi1sk": {
+                  "S": "CAMPUS#0a9db255-3522-53e5-a485-843fb69a141d"
+                },
+                "verifiedEmailHash": {
+                  "S": "69b1145a03334875161ea18c1373b5703aeeff144990a9f847867ff83ed5aaad"
+                }
+              }
+            }
+          },
+          {
+            "PutRequest": {
+              "Item": {
+                "pk": {
+                  "S": "U#64e37050-764b-5753-a20b-e55d52a77933"
+                },
+                "sk": {
+                  "S": "PROFILE"
+                },
+                "entityType": {
+                  "S": "PROFILE"
+                },
+                "id": {
+                  "S": "64e37050-764b-5753-a20b-e55d52a77933"
+                },
+                "displayName": {
+                  "S": "Alice Demo"
+                },
+                "schemaVersion": {
+                  "N": "1"
+                },
+                "version": {
+                  "N": "1"
+                },
+                "createdAt": {
+                  "S": "2026-09-20T00:00:00Z"
+                },
+                "updatedAt": {
+                  "S": "2026-09-20T00:00:00Z"
+                },
+                "verifiedEmail": {
+                  "S": "alice@example.test"
+                },
+                "emailVerified": {
+                  "BOOL": true
+                },
+                "mfaEnrolled": {
+                  "BOOL": false
+                }
+              }
+            }
+          },
+          {
+            "PutRequest": {
+              "Item": {
+                "pk": {
+                  "S": "C#0a9db255-3522-53e5-a485-843fb69a141d"
+                },
+                "sk": {
+                  "S": "MEMBER#71145609-8114-5a77-b6d4-ed3fe7245079"
+                },
+                "entityType": {
+                  "S": "MEMBERSHIP"
+                },
+                "schemaVersion": {
+                  "N": "1"
+                },
+                "campusId": {
+                  "S": "0a9db255-3522-53e5-a485-843fb69a141d"
+                },
+                "id": {
+                  "S": "5cf9630f-595c-57a8-8877-b456f5933f6a"
+                },
+                "createdAt": {
+                  "S": "2026-09-20T00:00:00Z"
+                },
+                "updatedAt": {
+                  "S": "2026-09-20T00:00:00Z"
+                },
+                "version": {
+                  "N": "1"
+                },
+                "userId": {
+                  "S": "71145609-8114-5a77-b6d4-ed3fe7245079"
+                },
+                "status": {
+                  "S": "ACTIVE"
+                },
+                "groupIds": {
+                  "L": [
+                    {
+                      "S": "46ac92b5-927d-5a0a-9fba-fa94decef82c"
+                    }
+                  ]
+                },
+                "roles": {
+                  "L": [
+                    {
+                      "M": {
+                        "id": {
+                          "S": "75bd9611-8526-5626-9e29-875963bcfa52"
+                        },
+                        "role": {
+                          "S": "STUDENT"
+                        },
+                        "scope": {
+                          "S": "CAMPUS"
+                        },
+                        "expiresAt": {
+                          "S": "2027-09-20T00:00:00Z"
+                        }
+                      }
+                    }
+                  ]
+                },
+                "authVersion": {
+                  "N": "1"
+                },
+                "joinedAt": {
+                  "S": "2026-09-20T00:00:00Z"
+                },
+                "expiresAt": {
+                  "S": "2027-09-20T00:00:00Z"
+                },
+                "gsi1pk": {
+                  "S": "USER#71145609-8114-5a77-b6d4-ed3fe7245079"
+                },
+                "gsi1sk": {
+                  "S": "CAMPUS#0a9db255-3522-53e5-a485-843fb69a141d"
+                },
+                "verifiedEmailHash": {
+                  "S": "25a2a844fdd9d5ab5129dc7a3d44b9539f7ce78441fe54425ad5cee3a67cd217"
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "RequestItems": {
+        "campusfix-local-core": [
+          {
+            "PutRequest": {
+              "Item": {
+                "pk": {
+                  "S": "U#71145609-8114-5a77-b6d4-ed3fe7245079"
+                },
+                "sk": {
+                  "S": "PROFILE"
+                },
+                "entityType": {
+                  "S": "PROFILE"
+                },
+                "id": {
+                  "S": "71145609-8114-5a77-b6d4-ed3fe7245079"
+                },
+                "displayName": {
+                  "S": "Bob Demo"
+                },
+                "schemaVersion": {
+                  "N": "1"
+                },
+                "version": {
+                  "N": "1"
+                },
+                "createdAt": {
+                  "S": "2026-09-20T00:00:00Z"
+                },
+                "updatedAt": {
+                  "S": "2026-09-20T00:00:00Z"
+                },
+                "verifiedEmail": {
+                  "S": "bob@example.test"
+                },
+                "emailVerified": {
+                  "BOOL": true
+                },
+                "mfaEnrolled": {
+                  "BOOL": false
+                }
+              }
+            }
+          },
+          {
+            "PutRequest": {
+              "Item": {
+                "pk": {
+                  "S": "C#0a9db255-3522-53e5-a485-843fb69a141d"
+                },
+                "sk": {
+                  "S": "MEMBER#8a381ff8-19d9-54fe-b54d-35637b278a47"
+                },
+                "entityType": {
+                  "S": "MEMBERSHIP"
+                },
+                "schemaVersion": {
+                  "N": "1"
+                },
+                "campusId": {
+                  "S": "0a9db255-3522-53e5-a485-843fb69a141d"
+                },
+                "id": {
+                  "S": "38b4242c-7837-5002-a001-215b1b0ea76e"
+                },
+                "createdAt": {
+                  "S": "2026-09-20T00:00:00Z"
+                },
+                "updatedAt": {
+                  "S": "2026-09-20T00:00:00Z"
+                },
+                "version": {
+                  "N": "1"
+                },
+                "userId": {
+                  "S": "8a381ff8-19d9-54fe-b54d-35637b278a47"
+                },
+                "status": {
+                  "S": "ACTIVE"
+                },
+                "groupIds": {
+                  "L": []
+                },
+                "roles": {
+                  "L": [
+                    {
+                      "M": {
+                        "id": {
+                          "S": "d5199004-68d9-566b-b799-5a577664fb69"
+                        },
+                        "role": {
+                          "S": "UNIT_LEAD"
+                        },
+                        "scope": {
+                          "S": "UNIT"
+                        },
+                        "scopeId": {
+                          "S": "106eb8e5-fdc6-526c-8e1f-50c5f7e06691"
+                        },
+                        "expiresAt": {
+                          "S": "2027-09-20T00:00:00Z"
+                        }
+                      }
+                    },
+                    {
+                      "M": {
+                        "id": {
+                          "S": "8daad538-28e9-567b-9b1a-0e6bfb0aba83"
+                        },
+                        "role": {
+                          "S": "UNIT_LEAD"
+                        },
+                        "scope": {
+                          "S": "UNIT"
+                        },
+                        "scopeId": {
+                          "S": "9f44538b-7b21-5f21-8d63-1ad808086e27"
+                        },
+                        "expiresAt": {
+                          "S": "2027-09-20T00:00:00Z"
+                        }
+                      }
+                    },
+                    {
+                      "M": {
+                        "id": {
+                          "S": "12a9fe4e-09d4-56b5-812f-246d3fb9e8e8"
+                        },
+                        "role": {
+                          "S": "UNIT_LEAD"
+                        },
+                        "scope": {
+                          "S": "UNIT"
+                        },
+                        "scopeId": {
+                          "S": "fc46c0eb-9afe-5a4c-950c-4c778295194e"
+                        },
+                        "expiresAt": {
+                          "S": "2027-09-20T00:00:00Z"
+                        }
+                      }
+                    }
+                  ]
+                },
+                "authVersion": {
+                  "N": "1"
+                },
+                "joinedAt": {
+                  "S": "2026-09-20T00:00:00Z"
+                },
+                "expiresAt": {
+                  "S": "2027-09-20T00:00:00Z"
+                },
+                "gsi1pk": {
+                  "S": "USER#8a381ff8-19d9-54fe-b54d-35637b278a47"
+                },
+                "gsi1sk": {
+                  "S": "CAMPUS#0a9db255-3522-53e5-a485-843fb69a141d"
+                },
+                "verifiedEmailHash": {
+                  "S": "ea7155153491506380b708ff3f2ef9db68a3616fd3f15da8746346de6e2175e3"
+                }
+              }
+            }
+          },
+          {
+            "PutRequest": {
+              "Item": {
+                "pk": {
+                  "S": "U#8a381ff8-19d9-54fe-b54d-35637b278a47"
+                },
+                "sk": {
+                  "S": "PROFILE"
+                },
+                "entityType": {
+                  "S": "PROFILE"
+                },
+                "id": {
+                  "S": "8a381ff8-19d9-54fe-b54d-35637b278a47"
+                },
+                "displayName": {
+                  "S": "Staff Demo"
+                },
+                "schemaVersion": {
+                  "N": "1"
+                },
+                "version": {
+                  "N": "1"
+                },
+                "createdAt": {
+                  "S": "2026-09-20T00:00:00Z"
+                },
+                "updatedAt": {
+                  "S": "2026-09-20T00:00:00Z"
+                },
+                "verifiedEmail": {
+                  "S": "staff@example.test"
+                },
+                "emailVerified": {
+                  "BOOL": true
+                },
+                "mfaEnrolled": {
+                  "BOOL": false
+                }
+              }
+            }
+          },
+          {
+            "PutRequest": {
+              "Item": {
+                "pk": {
+                  "S": "C#0a9db255-3522-53e5-a485-843fb69a141d"
+                },
+                "sk": {
+                  "S": "MEMBER#c4d9e101-db6d-520d-bf7e-1552b830c3c2"
+                },
+                "entityType": {
+                  "S": "MEMBERSHIP"
+                },
+                "schemaVersion": {
+                  "N": "1"
+                },
+                "campusId": {
+                  "S": "0a9db255-3522-53e5-a485-843fb69a141d"
+                },
+                "id": {
+                  "S": "b4024941-dabb-5657-933e-a1cf536b7cab"
+                },
+                "createdAt": {
+                  "S": "2026-09-20T00:00:00Z"
+                },
+                "updatedAt": {
+                  "S": "2026-09-20T00:00:00Z"
+                },
+                "version": {
+                  "N": "1"
+                },
+                "userId": {
+                  "S": "c4d9e101-db6d-520d-bf7e-1552b830c3c2"
+                },
+                "status": {
+                  "S": "ACTIVE"
+                },
+                "groupIds": {
+                  "L": []
+                },
+                "roles": {
+                  "L": [
+                    {
+                      "M": {
+                        "id": {
+                          "S": "cffd25b6-b4f4-53f8-ad48-94711cf6910e"
+                        },
+                        "role": {
+                          "S": "ADMIN"
+                        },
+                        "scope": {
+                          "S": "CAMPUS"
+                        },
+                        "expiresAt": {
+                          "S": "2027-09-20T00:00:00Z"
+                        }
+                      }
+                    },
+                    {
+                      "M": {
+                        "id": {
+                          "S": "96f2327d-85b1-5373-b628-4d62cb6c594e"
+                        },
+                        "role": {
+                          "S": "REVIEWER"
+                        },
+                        "scope": {
+                          "S": "CAMPUS"
+                        },
+                        "expiresAt": {
+                          "S": "2027-09-20T00:00:00Z"
+                        }
+                      }
+                    }
+                  ]
+                },
+                "authVersion": {
+                  "N": "1"
+                },
+                "joinedAt": {
+                  "S": "2026-09-20T00:00:00Z"
+                },
+                "expiresAt": {
+                  "S": "2027-09-20T00:00:00Z"
+                },
+                "gsi1pk": {
+                  "S": "USER#c4d9e101-db6d-520d-bf7e-1552b830c3c2"
+                },
+                "gsi1sk": {
+                  "S": "CAMPUS#0a9db255-3522-53e5-a485-843fb69a141d"
+                },
+                "verifiedEmailHash": {
+                  "S": "ed856f14ff9bca835c4855196eed191bee852b8fda6955ddc12c26f093cf0c1d"
+                }
+              }
+            }
+          },
+          {
+            "PutRequest": {
+              "Item": {
+                "pk": {
+                  "S": "U#c4d9e101-db6d-520d-bf7e-1552b830c3c2"
+                },
+                "sk": {
+                  "S": "PROFILE"
+                },
+                "entityType": {
+                  "S": "PROFILE"
+                },
+                "id": {
+                  "S": "c4d9e101-db6d-520d-bf7e-1552b830c3c2"
+                },
+                "displayName": {
+                  "S": "Reviewer Demo"
+                },
+                "schemaVersion": {
+                  "N": "1"
+                },
+                "version": {
+                  "N": "1"
+                },
+                "createdAt": {
+                  "S": "2026-09-20T00:00:00Z"
+                },
+                "updatedAt": {
+                  "S": "2026-09-20T00:00:00Z"
+                },
+                "verifiedEmail": {
+                  "S": "reviewer@example.test"
+                },
+                "emailVerified": {
+                  "BOOL": true
+                },
+                "mfaEnrolled": {
+                  "BOOL": false
+                }
+              }
+            }
+          },
+          {
+            "PutRequest": {
+              "Item": {
+                "pk": {
+                  "S": "C#4388f523-e895-51ba-9754-a29ce387f6bf"
+                },
+                "sk": {
+                  "S": "MEMBER#cc2d8fb6-3006-5716-95a5-6b8f3a0b6e0b"
+                },
+                "entityType": {
+                  "S": "MEMBERSHIP"
+                },
+                "schemaVersion": {
+                  "N": "1"
+                },
+                "campusId": {
+                  "S": "4388f523-e895-51ba-9754-a29ce387f6bf"
+                },
+                "id": {
+                  "S": "4d4f4f2f-dd2e-5b01-944e-046eaba0f4cc"
+                },
+                "createdAt": {
+                  "S": "2026-09-20T00:00:00Z"
+                },
+                "updatedAt": {
+                  "S": "2026-09-20T00:00:00Z"
+                },
+                "version": {
+                  "N": "1"
+                },
+                "userId": {
+                  "S": "cc2d8fb6-3006-5716-95a5-6b8f3a0b6e0b"
+                },
+                "status": {
+                  "S": "ACTIVE"
+                },
+                "groupIds": {
+                  "L": []
+                },
+                "roles": {
+                  "L": [
+                    {
+                      "M": {
+                        "id": {
+                          "S": "1f1fc132-7e18-5494-95a4-7d4bbeb731b2"
+                        },
+                        "role": {
+                          "S": "STUDENT"
+                        },
+                        "scope": {
+                          "S": "CAMPUS"
+                        },
+                        "expiresAt": {
+                          "S": "2027-09-20T00:00:00Z"
+                        }
+                      }
+                    }
+                  ]
+                },
+                "authVersion": {
+                  "N": "1"
+                },
+                "joinedAt": {
+                  "S": "2026-09-20T00:00:00Z"
+                },
+                "expiresAt": {
+                  "S": "2027-09-20T00:00:00Z"
+                },
+                "gsi1pk": {
+                  "S": "USER#cc2d8fb6-3006-5716-95a5-6b8f3a0b6e0b"
+                },
+                "gsi1sk": {
+                  "S": "CAMPUS#4388f523-e895-51ba-9754-a29ce387f6bf"
+                },
+                "verifiedEmailHash": {
+                  "S": "b0431fe80744096271f748854d0860ded8fa87bb31cb3c177bae50dd57c2e6f8"
+                }
+              }
+            }
+          },
+          {
+            "PutRequest": {
+              "Item": {
+                "pk": {
+                  "S": "U#cc2d8fb6-3006-5716-95a5-6b8f3a0b6e0b"
+                },
+                "sk": {
+                  "S": "PROFILE"
+                },
+                "entityType": {
+                  "S": "PROFILE"
+                },
+                "id": {
+                  "S": "cc2d8fb6-3006-5716-95a5-6b8f3a0b6e0b"
+                },
+                "displayName": {
+                  "S": "Other Demo"
+                },
+                "schemaVersion": {
+                  "N": "1"
+                },
+                "version": {
+                  "N": "1"
+                },
+                "createdAt": {
+                  "S": "2026-09-20T00:00:00Z"
+                },
+                "updatedAt": {
+                  "S": "2026-09-20T00:00:00Z"
+                },
+                "verifiedEmail": {
+                  "S": "other@example.test"
+                },
+                "emailVerified": {
+                  "BOOL": true
+                },
+                "mfaEnrolled": {
+                  "BOOL": false
+                }
+              }
+            }
+          },
+          {
+            "PutRequest": {
+              "Item": {
+                "pk": {
+                  "S": "C#0a9db255-3522-53e5-a485-843fb69a141d#POST#fe6f698c-3926-5cc5-b464-3b42e867126a"
+                },
+                "sk": {
+                  "S": "META"
+                },
+                "entityType": {
+                  "S": "POST"
+                },
+                "schemaVersion": {
+                  "N": "1"
+                },
+                "campusId": {
+                  "S": "0a9db255-3522-53e5-a485-843fb69a141d"
+                },
+                "id": {
+                  "S": "fe6f698c-3926-5cc5-b464-3b42e867126a"
+                },
+                "createdAt": {
+                  "S": "2026-09-20T00:00:00Z"
+                },
+                "updatedAt": {
+                  "S": "2026-09-20T00:00:00Z"
+                },
+                "version": {
+                  "N": "1"
+                },
+                "type": {
+                  "S": "ISSUE"
+                },
+                "authorId": {
+                  "S": "64e37050-764b-5753-a20b-e55d52a77933"
+                },
+                "title": {
+                  "S": "Demo hostel Wi-Fi interruption"
+                },
+                "body": {
+                  "S": "Synthetic example for scope and ownership tests. No real student report."
+                },
+                "categoryId": {
+                  "S": "0ac5fa02-2868-5d14-a74f-32ba83f186e3"
+                },
+                "locationLabel": {
+                  "S": "Demo Hostel A"
+                },
+                "audience": {
+                  "M": {
+                    "kind": {
+                      "S": "GROUPS"
+                    },
+                    "groupIds": {
+                      "L": [
+                        {
+                          "S": "83848ee1-ef31-5e45-9dfa-efece90ef592"
+                        }
+                      ]
+                    }
+                  }
+                },
+                "aclVersion": {
+                  "N": "1"
+                },
+                "publication": {
+                  "S": "PUBLISHED"
+                },
+                "attachmentIds": {
+                  "L": []
+                },
+                "tags": {
+                  "L": [
+                    {
+                      "S": "synthetic"
+                    }
+                  ]
+                },
+                "detail": {
+                  "M": {
+                    "unitId": {
+                      "S": "106eb8e5-fdc6-526c-8e1f-50c5f7e06691"
+                    },
+                    "primaryOwnerId": {
+                      "S": "8a381ff8-19d9-54fe-b54d-35637b278a47"
+                    },
+                    "collaboratorIds": {
+                      "L": []
+                    },
+                    "status": {
+                      "S": "SUBMITTED"
+                    },
+                    "severity": {
+                      "S": "NORMAL"
+                    },
+                    "supportCount": {
+                      "N": "0"
+                    },
+                    "ackDueAt": {
+                      "S": "2026-09-21T11:30:00Z"
+                    },
+                    "updateDueAt": {
+                      "S": "2026-09-23T11:30:00Z"
+                    }
+                  }
+                },
+                "gsi1pk": {
+                  "S": "C#0a9db255-3522-53e5-a485-843fb69a141d#AUTHOR#64e37050-764b-5753-a20b-e55d52a77933"
+                },
+                "gsi1sk": {
+                  "S": "2026-09-20T00:00:00Z#fe6f698c-3926-5cc5-b464-3b42e867126a"
+                },
+                "gsi2pk": {
+                  "S": "C#0a9db255-3522-53e5-a485-843fb69a141d#QUEUE#106eb8e5-fdc6-526c-8e1f-50c5f7e06691"
+                },
+                "gsi2sk": {
+                  "S": "2026-09-21T11:30:00Z#fe6f698c-3926-5cc5-b464-3b42e867126a"
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "RequestItems": {
+        "campusfix-local-discovery": [
+          {
+            "PutRequest": {
+              "Item": {
+                "pk": {
+                  "S": "C#0a9db255-3522-53e5-a485-843fb69a141d#AUD#GROUP#83848ee1-ef31-5e45-9dfa-efece90ef592#TYPE#ISSUE"
+                },
+                "sk": {
+                  "S": "2026-09-20T00:00:00Z#fe6f698c-3926-5cc5-b464-3b42e867126a"
+                },
+                "canonicalPk": {
+                  "S": "C#0a9db255-3522-53e5-a485-843fb69a141d#POST#fe6f698c-3926-5cc5-b464-3b42e867126a"
+                },
+                "canonicalSk": {
+                  "S": "META"
+                },
+                "sourceVersion": {
+                  "N": "1"
+                },
+                "createdAt": {
+                  "S": "2026-09-20T00:00:00Z"
+                }
+              }
+            }
+          },
+          {
+            "PutRequest": {
+              "Item": {
+                "pk": {
+                  "S": "C#0a9db255-3522-53e5-a485-843fb69a141d#AUD#USER#64e37050-764b-5753-a20b-e55d52a77933#TYPE#ISSUE"
+                },
+                "sk": {
+                  "S": "2026-09-20T00:00:00Z#fe6f698c-3926-5cc5-b464-3b42e867126a"
+                },
+                "canonicalPk": {
+                  "S": "C#0a9db255-3522-53e5-a485-843fb69a141d#POST#fe6f698c-3926-5cc5-b464-3b42e867126a"
+                },
+                "canonicalSk": {
+                  "S": "META"
+                },
+                "sourceVersion": {
+                  "N": "1"
+                },
+                "createdAt": {
+                  "S": "2026-09-20T00:00:00Z"
+                }
+              }
+            }
+          },
+          {
+            "PutRequest": {
+              "Item": {
+                "pk": {
+                  "S": "C#0a9db255-3522-53e5-a485-843fb69a141d#AUD#USER#8a381ff8-19d9-54fe-b54d-35637b278a47#TYPE#ISSUE"
+                },
+                "sk": {
+                  "S": "2026-09-20T00:00:00Z#fe6f698c-3926-5cc5-b464-3b42e867126a"
+                },
+                "canonicalPk": {
+                  "S": "C#0a9db255-3522-53e5-a485-843fb69a141d#POST#fe6f698c-3926-5cc5-b464-3b42e867126a"
+                },
+                "canonicalSk": {
+                  "S": "META"
+                },
+                "sourceVersion": {
+                  "N": "1"
+                },
+                "createdAt": {
+                  "S": "2026-09-20T00:00:00Z"
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

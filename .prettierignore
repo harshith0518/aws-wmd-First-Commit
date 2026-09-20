@@ -1,0 +1,6 @@
+node_modules
+dist
+.local
+.artifacts
+package-lock.json
+docs/source

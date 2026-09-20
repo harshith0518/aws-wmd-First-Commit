@@ -1,0 +1,17 @@
+node_modules/
+.npm-cache/
+dist/
+coverage/
+.env
+.env.*
+!.env.example
+!.env.*.example
+*.log
+.DS_Store
+Thumbs.db
+.aws-sam/
+cdk.out/
+.artifacts/
+~$*.docx
+
+.local/
