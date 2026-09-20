@@ -53,3 +53,12 @@
 - Files: price storage, versions, thumbnails, PUT/GET requests, egress, scanning and discarded quarantine files separately. Include CloudFront, SES, CloudWatch, backup storage and Cognito tier. Exclude hackathon credits when estimating sustainable cost.
 - Practical reductions: fetch one feature tab at a time, use cursor pagination, resize thumbnails, poll notifications only while visible every 60 seconds, refresh feeds on navigation, batch jobs, avoid duplicated raw evidence in events, and keep AI user-triggered.
 - Track daily cost drivers by campus in usage records. A production release needs a saved AWS Pricing Calculator estimate for the actual region and an initial 7-day usage review; obtain account-specific inputs at deployment without delaying local implementation.
+
+## 8F Hackathon release implementation (20 September)
+
+- The immediate deployable release is `infra/stack.ts`, a single synthetic-demo stack in Mumbai. Use `AWS-DEPLOY.md`; the earlier sections remain the full pilot target.
+- Logical Identity/Data/App/Web boundaries are kept in one stack to reduce setup and callback dependencies. CloudFront serves S3; the browser calls the separately authenticated HTTP API origin. Exact CORS and callback URLs are derived from outputs.
+- Node 24 x64 is used with explicitly packaged Linux Sharp. Demo tables, pool, web bucket and cursor secret are retained, with table deletion protection. PITR/restore checks are not claimed for the demo.
+- MFA is optional; no real-college enrollment is supported. Seed creates six synthetic Cognito accounts and expiring memberships, including two hostels and a second campus.
+- Only transfer-expiry scheduling is deployed. Notification delivery, deadline workers, SQS/SES, AI and the GuardDuty/evidence cloud pipeline remain outside this release. Files and AI are disabled.
+- Error alarms have no notification actions. API throttling is configured; Lambda reserved concurrency is deferred because new-account quotas vary. Actual live sign-in, IAM, performance and billing acceptance must follow account deployment.

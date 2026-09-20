@@ -1,11 +1,11 @@
 # Implementation verification
 
-Verified **20 September 2026, afternoon implementation checkpoint**. Identity, issue reporting and the core owner/reporter resolution workflow and evidence pipeline are implemented locally. The entire CampusFix product is not complete or deployed.
+Verified **20 September 2026, AWS release preparation checkpoint**. Identity, issue reporting and the core owner/reporter resolution workflow and evidence pipeline are implemented locally. The entire CampusFix product is not complete. AWS infrastructure is implemented and synthesized; live account deployment/sign-in remains unverified.
 
 ## Passed
 
-- `npm.cmd run check`: 173-operation / 241-schema / 3-table contract structure; strict API/web/contracts TypeScript checks; 82 backend and three frontend-auth tests; Lambda and Vite production builds.
-- `npm.cmd run test:integration`: eight real DynamoDB Local scenarios with isolated tables. **93 automated tests pass in total.**
+- `npm.cmd run check`: 173-operation / 241-schema / 3-table contract structure; strict API/web/contracts TypeScript checks; 82 backend and five frontend-auth/routing tests; six CDK security/navigation/dependency tests; Lambda and Vite production builds.
+- `npm.cmd run test:integration`: nine real DynamoDB Local scenarios with isolated tables. **102 automated tests pass in total** across domain, web, infrastructure and database suites. The added seed scenario was rerun separately after fixing its retry sequence.
 - Actual database tests cover profile/publication/command concurrent idempotency, version races, group/campus isolation, current revocation, staff queue, proposal/confirmation/reopening and preserved resolution attempts/history.
 - Domain/security tests also cover wrong signatures/issuer/client/token purpose/scope, identity mismatch, unknown/spoofed inputs, private drafts, restricted cases, ownerless publication, expired roles, unavailable evidence, atomic quotas, bounded feed pagination and working calendars including DST.
 - Workflow tests reject unauthorized or invalid transitions, stale versions, wrong resolution IDs, role revocation during commit and absent evidence explanations. Staff cannot confirm for the reporter. Closing removes the queue record; reopening restores it and invalidates the attempt.
@@ -15,7 +15,7 @@ Verified **20 September 2026, afternoon implementation checkpoint**. Identity, i
 
 ## Limits
 
-- Cognito pool/app client, real registration/login and verified MFA remain unconfigured/unverified against AWS. The synthetic browser rig is not real Cognito acceptance or a production login mode.
+- Cognito pool/app client are defined in CDK; actual live login and verified MFA remain unverified against AWS. The synthetic browser rig is not real Cognito acceptance or a production login mode.
 - 23 operations fully implemented; twenty-three additional operations explicitly partial. Generic post endpoints currently support ISSUE only. Commands support all fourteen specified actions; queue supports one authorized unit per request. The remainder is designed only.
 - Real AWS scanning acceptance, review evidence/reassignment/appeals, outbox consumers/notifications, optional AI, campus administration and AWS deployment remain pending.
 - Knowledge uses scoped discovery pointers and synchronous canonical source/resolution checks. Reopening invalidates reads/retrieval immediately. Expired/source-stale pointer sweeping remains operational work; stale/retire commands remove their pointers atomically.
@@ -45,7 +45,7 @@ See PROGRESS.md for the handoff and outstanding work. The overnight automation i
 - Added real DynamoDB Local transaction test for concurrent reserve/complete/scan, a resolution citing clean evidence, scoped history/reads and physical deletion/quota release through the ready GSI.
 - Browser verified a private draft, actual file input upload of the generated harmless fixture, checking-to-ready state and report publication. Initial new-tab download was not observed; changed to a same-tab attachment download and observed the browser download event. Evidence removal and mobile layout were checked separately. A test token expired and the API correctly denied further upload; the isolated rig was restarted.
 - Configured mobile width was 375; observed document width and scrollWidth were both 360 CSS px. Full-page screenshot showed stitching repetitions; DOM inspection confirmed one evidence region and one history region. No horizontal overflow in the observed layout. Viewport reset after verification.
-- Real AWS S3/GuardDuty/IAM/CORS and signed-URL expiration enforcement are untested. Offline signing verifies exact policy fields and 60-second versioned URLs. Quota counters cover logical originals, not all billed object versions/derivatives. Full retention, orphan lifecycle and Linux Sharp packaging remain deployment work.
+- Real AWS S3/GuardDuty/IAM/CORS and signed-URL expiration enforcement are untested. Offline signing verifies exact policy fields and 60-second versioned URLs. Quota counters cover logical originals, not all billed object versions/derivatives. Full retention and orphan lifecycle remain deployment work. Linux x64 Sharp packaging is now checked offline; native execution is additionally checked by the CloudShell package script.
 
 ## Discussion checkpoint
 
@@ -83,3 +83,14 @@ See PROGRESS.md for the handoff and outstanding work. The overnight automation i
 - Added 30 labelled synthetic retrieval cases, stored in specs/knowledge-evaluation.json: 30/30 expected top results or correct empty outcomes, including expired/reopened/other-hostel/other-campus records. This is a deterministic search baseline, not an AI generation or routing-quality result.
 - Current-source permissions, source-version changes, canonical confirmed resolution, reviewer role, stale flags, deadlines, retirement, cursor binding, a 100-row discovery ceiling, concurrent creation and atomic pointer deletion/restoration are verified. One card per source resolution. No raw file copies or permanent evidence links in cards.
 - Browser PASS: owner curated a confirmed source, student discovered it in the library and flagged it stale with a reason, search withdrew the card, owner opened it from the source and rereviewed it, and the card returned to search with the new review date/attribution. No browser warnings/errors. The exact 231de68a-8471-43d0-af2a-2b3dd58c4454 synthetic tables were cleaned after stopping the rig.
+
+## AWS release package
+
+- PASS: full `npm.cmd run check`, including 82 API + 5 web + 6 infrastructure tests, contract structure, API/web/contracts/infra types, three Lambda bundles and Vite output. CDK tests verify authenticated business routes, exact CORS/callback derivation, no signup, private OAC origin, planned indexes/TTL, retained storage, disabled uploads/AI, scoped IAM without Scan and absence of resource cycles.
+- PASS: existing eight DynamoDB integration scenarios plus the added real-cloud seed workflow/isolation scenario. First integration attempt failed because the prior in-memory DB process was stopped; restarted existing Java DynamoDB Local. Seed replay then exposed changing expectedVersion values; fixed deterministic initial-workflow requests and verified replay/group/campus/private-review behavior.
+- PASS: `npm.cmd run aws:package` builds a Linux x64 artifact with Sharp/libvips; ELF header and required files checked. Native Lambda startup cannot be executed on this Windows host; the same packaging command imports the Lambda on Linux before any CloudShell deployment. Runtime dependencies have their own committed lockfile.
+- PASS: `npm.cmd run aws:synth` with placeholder account 111111111111 and region ap-south-1; generated real CloudFormation/assets from the packaged Lambda. Synthesis is not deployment. No paid AWS resources were provisioned.
+- Fixed production navigation retaining issue query parameters for library/review creation. Added validated HTTPS API base configuration so CloudFront/Cognito/API dependencies have no cycle. These changes passed automated tests; the live OAuth browser journey still requires account deployment.
+- Added `AWS-DEPLOY.md`, `SUBMISSION.md`, deploy/publish/smoke/demo seed commands. Six genuine Cognito demo users are created only when the operator runs `aws:seed`; passwords stay in ignored mode-0600 artifacts, not Git or CLI arguments.
+- Local AWS default credentials failed STS with InvalidClientTokenId. User can access the AWS Console, so instructions use its preauthenticated CloudShell. Live IAM, Cognito callback/login, CloudFront, CORS, quota/cost and signed-in end-to-end acceptance are pending. Automated public cloud smoke is provided but has not been run against a real account.
+- Release intentionally excludes cloud uploads, Bedrock, notifications, community/admin modules, full review appeals/evidence and real-campus pilot readiness. The revised user instruction authorizes AWS deployment preparation; prior notes deferring deployment are historical.

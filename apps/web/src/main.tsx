@@ -1,3 +1,4 @@
+import { workspacePath } from './deployment';
 import { IssueWorkspace } from './issues';
 import { StrictMode, useEffect, useRef, useState, type FormEvent } from 'react';
 import { createRoot } from 'react-dom/client';
@@ -20,11 +21,12 @@ function navigate(path: string) {
   window.dispatchEvent(new PopStateEvent('popstate'));
 }
 function App() {
-  const [path, setPath] = useState(location.pathname),
+  const [route, setPath] = useState(workspacePath(location)),
     [profile, setProfile] = useState<Profile>(),
     [error, setError] = useState(''),
     [loading, setLoading] = useState(false),
     [needsProfile, setNeedsProfile] = useState(false);
+  const path = route.split('?')[0]!;
   const [campuses, setCampuses] = useState<CampusSummary[]>([]),
     [cursor, setCursor] = useState<string | null>(null),
     [membership, setMembership] = useState<Membership>(),
@@ -41,7 +43,7 @@ function App() {
   };
   useEffect(() => {
     const onRoute = () => {
-      setPath(location.pathname);
+      setPath(workspacePath(location));
       setError('');
     };
     const expired = () => {
@@ -331,7 +333,7 @@ function App() {
             key={selectedCampus.id}
             campus={selectedCampus}
             membership={membership}
-            path={path}
+            path={route}
             navigate={navigate}
           />
         ) : membership && selectedCampus && path.endsWith('/membership') ? (
@@ -406,7 +408,7 @@ function App() {
         )}
       </main>
       <footer>
-        CampusFix · AWS First Commit <span>Development build · Issue reporting</span>
+        CampusFix · AWS First Commit <span>Hackathon demo · Accountability core</span>
       </footer>
     </div>
   );
@@ -462,10 +464,7 @@ function MembershipView({
       {active && (
         <div className="notice">
           <strong>Issue reporting is available.</strong>
-          <p>
-            This screen verifies membership. The reporting workflow is not available in this build
-            yet.
-          </p>
+          <p>Use the campus selector to open the reporting workspace.</p>
         </div>
       )}
     </section>

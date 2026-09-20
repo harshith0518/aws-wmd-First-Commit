@@ -1,3 +1,4 @@
+import { apiBaseUrl } from './deployment';
 import { createContext, useContext } from 'react';
 import { errorSchema } from '@campusfix/contracts';
 import { accessToken, clearSession } from './auth';
@@ -45,6 +46,6 @@ export function createApi(getToken: () => string, base = '/api/v1'): ApiClient {
     return schema.parse(await response.json());
   };
 }
-export const api = createApi(accessToken);
+export const api = createApi(accessToken, apiBaseUrl(import.meta.env?.VITE_API_BASE_URL));
 export const ApiContext = createContext<ApiClient>(api);
 export const useApi = () => useContext(ApiContext);

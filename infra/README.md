@@ -1,15 +1,25 @@
-# Infrastructure implementation boundary
+# AWS demo infrastructure
 
-No cloud resources have been created. The API bundle exports `handler` from `apps/api/dist/lambda.mjs`; it implements only liveness routes. It is not a deployment package or a readiness check for AWS dependencies.
+Use [the deployment guide](../AWS-DEPLOY.md). `stack.ts` implements the AWS release; `app.ts` fixes the stack to `CampusFixDemo` in Mumbai. No resources are created by `npm run check`, tests or offline synthesis.
 
-Implement infrastructure from the low-level design in `docs/` and specifications in `specs/`. The intended services are static web hosting, HTTP API, Lambda, Cognito, DynamoDB, private S3, and optional Bedrock. Define infrastructure as code before deployment, validate its changes, and provision separate development and production resources.
+- Private S3 and CloudFront OAC, HTTPS/security headers, navigation-only SPA rewriting and correct asset/index caching.
+- Cognito Lite/classic hosted UI, email login, public PKCE client, exact callbacks, no open signup. MFA optional for this synthetic demo; required pilot setup is pending.
+- JWT/scoped API Gateway routes and independent JWT/canonical authorization in the Hono Lambda. Exact frontend CORS, 20 rps / burst 40.
+- Three on-demand retained/deletion-protected DynamoDB tables with the agreed GSIs; Jobs TTL. No Scan grant.
+- Node 24 x64 Lambda artifacts with Linux Sharp; a separate scheduled transfer-expiry entry. No VPC or provisioned concurrency. Reserved concurrency is omitted so a low-quota fresh account can deploy; throttle/load tuning remains pending.
+- Generated Secrets Manager cursor key, seven-day function logs and error alarms. No alarm delivery destination yet.
+- Uploads, Bedrock and sensitive-case intake disabled; no GuardDuty/S3 file resources, SES, SQS or notification consumers are provisioned.
 
-Before adding campus-content routes, implement server-side identity verification, active campus membership checks, per-record authorization, and input validation. Never use the anonymous health endpoint as an authentication pattern for product routes.
+This combines the four logical boundaries in chapter 8 into one demo stack. The web distribution is created before the Cognito callback/client; the frontend uses the API's separate HTTPS origin. Tests detect dependency cycles. Production requires separate environments, PITR/restore verification, identity/MFA operations and the missing workers/features.
 
-Deployment commands will be added when real infrastructure exists and can be validated. `npm run build` currently builds frontend assets and the health-only Lambda entry point without provisioning or contacting AWS.
+Offline checks (PowerShell example; placeholder account is for synthesis only):
 
-## Local database
+```powershell
+npm.cmd run aws:package
+$env:CDK_DEFAULT_ACCOUNT='111111111111'
+$env:CDK_DEFAULT_REGION='ap-south-1'
+npm.cmd run aws:synth
+npm.cmd run infra:check
+```
 
-`docker compose up -d dynamodb` starts the AWS DynamoDB Local 3.3.1 image on `http://127.0.0.1:8000`. It uses in-memory storage: stopping the container loses all local test data. This is intentional; create the table and synthetic fixtures from the specifications when implementing persistence. The current health-only API does not connect to DynamoDB.
-
-Docker Desktop must be running with Linux containers. The Docker daemon was unavailable during starter verification, so this container has not been started or tested. The image tag was checked against [AWS's Docker Hub listing](https://hub.docker.com/r/amazon/dynamodb-local/tags) on 19 September 2026. See [DynamoDB Local usage notes](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DynamoDBLocal.UsageNotes.html) for differences from the AWS service.
+`aws:deploy` always obtains the real account from STS and overrides that placeholder. CloudShell performs an additional native Linux cold-start import before deployment. Local Windows verification does not claim Linux execution or live AWS acceptance.

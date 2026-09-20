@@ -1,6 +1,6 @@
 # CampusFix implementation instructions
 
-Build the agreed campus accountability and community product incrementally from the design. This repository currently contains a verified starter and implementation specifications, not completed product features.
+Build the agreed campus accountability and community product incrementally from the design. This repository contains the tested accountability core and a CDK demo deployment package. Read the latest PROGRESS.md and AWS-DEPLOY.md before continuing; the full pilot/community LLD is not complete.
 
 ## Read first
 

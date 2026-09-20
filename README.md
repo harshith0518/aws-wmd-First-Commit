@@ -1,8 +1,23 @@
 # CampusFix for AWS First Commit
 
-CampusFix makes college service issues traceable from student report to accountable resolution, with scoped student questions, event teams and a campus marketplace.
+CampusFix makes college service issues traceable from student report to accountable resolution, with private independent reviews and a permission-aware resolution library.
 
-This folder contains the design and working identity and text reporting slices: private issue drafts, confirmed audience, accountable owner, service deadlines and permission-filtered feeds. See `PROGRESS.md` for current scope and `SETUP-VERIFICATION.md` for verification evidence. The core staff-to-reporter resolution loop and evidence lifecycle also work locally. Real AWS storage/scanning acceptance, review evidence/appeals, notifications and cloud deployment remain pending.
+**Working hackathon core:** private drafts, campus/hostel/department visibility, responsible teams, service deadlines, staff queue, replies and private notes, affected status, ownership handover, all fourteen issue commands, reporter-confirmed closure/reopening, independent service reviews and reviewed resolution search.
+
+**AWS deployment:** follow [AWS-DEPLOY.md](AWS-DEPLOY.md) in AWS CloudShell. The CDK stack and deploy/seed/smoke scripts are implemented; a live URL must be verified after deployment in your account. [SUBMISSION.md](SUBMISSION.md) contains the demo walkthrough and honest release boundary.
+
+The full LLD also includes campus administration, notifications and community features that are not complete. Uploads work in local verification but are disabled in this AWS release until the real scan pipeline is accepted. Bedrock/AI is optional and disabled.
+
+```mermaid
+flowchart LR
+  Browser --> CF[CloudFront + private S3]
+  Browser --> Cognito[Cognito code + PKCE]
+  Browser --> Gateway[HTTP API + JWT]
+  Gateway --> Lambda[Hono Lambda]
+  Lambda --> DB[Core / Discovery / Jobs DynamoDB]
+  Schedule[EventBridge] --> Worker[Transfer expiry Lambda]
+  Worker --> DB
+```
 
 ## Read in this order
 
@@ -50,11 +65,11 @@ Then continue through the prompts in order. The shared contracts let frontend, b
 - `apps/web`: React/Vite identity, reporting, drafts, scoped feed, staff queue resolution/history, evidence, threaded discussions, affected status and ownership handover, private service reviews and reviewed resolution library screens connected to real APIs.
 - `apps/api`: Hono local server and Lambda entry; identity, authorization, atomic drafts/publication, workflow commands, version-bound evidence processing and scoped reads.
 - `packages/contracts`: shared Zod request/response contracts aligned with implemented OpenAPI operations.
-- `infra`: deployment implementation guide; no AWS resources provisioned.
-- `scripts`: development runner, contract checks and local database setup.
+- `infra`: CDK AWS demo stack, scoped IAM and infrastructure/security tests.
+- `scripts`: local development, contract checks, AWS packaging/deploy/publish/seed/smoke commands.
 - `SETUP-VERIFICATION.md`: exact checks, installed versions and limitations.
 
-Typechecks, 93 automated tests, production builds and synthetic browser reporting/evidence checks passed. DynamoDB Local integration runs through Java because Docker is unavailable. Real Cognito/S3/GuardDuty acceptance, review evidence/appeals, notifications, Bedrock and AWS deployment remain unverified or unfinished.
+See `SETUP-VERIFICATION.md` for exact check counts and cloud acceptance limits. DynamoDB Local integration uses Java because Docker is unavailable; it never points at AWS.
 
 The earlier $50/month number is a planning target, not a verified AWS bill. See chapter 8 for the workload model and deployment inputs.
 
