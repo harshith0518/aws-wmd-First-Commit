@@ -1,3 +1,4 @@
+import { OwnershipPanel } from './ownership';
 import { DiscussionPanel, SupportControl } from './discussion';
 import { FilePanel } from './files';
 import { type Attachment } from '@campusfix/contracts';
@@ -1016,6 +1017,19 @@ function IssueDetail({
         apiPrefix={apiPrefix}
         membership={membership}
         onChange={async () => setIssue(await api(`${apiPrefix}/posts/${issue.id}`, issueSchema))}
+      />
+      <OwnershipPanel
+        issue={issue}
+        apiPrefix={apiPrefix}
+        membership={membership}
+        configuration={configuration}
+        onChange={setIssue}
+        onAccessEnded={() => {
+          setIssue(undefined);
+          setError(
+            'Your access to this report has ended. If you declined a handover, the current owner remains accountable.',
+          );
+        }}
       />
       <WorkflowPanel
         issue={issue}

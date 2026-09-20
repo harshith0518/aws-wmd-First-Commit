@@ -239,7 +239,15 @@ export class WorkflowService {
             item: { ...record, ...resolution },
           });
         }
-        const updated: Item = { ...post, version, updatedAt: now, detail: d };
+        const cancelTransfer = data.action === 'propose-resolution' && !!d.pendingTransfer;
+        if (cancelTransfer) delete d.pendingTransfer;
+        const updated: Item = {
+          ...post,
+          version,
+          updatedAt: now,
+          detail: d,
+          ...(cancelTransfer ? { aclVersion: Number(post.aclVersion) + 1 } : {}),
+        };
         if (!['CONFIRMED_CLOSED', 'DECLINED', 'DUPLICATE'].includes(String(d.status))) {
           updated.gsi2pk = `C#${campus}#QUEUE#${d.unitId}`;
           updated.gsi2sk = `${d.nextUpdateAt ?? (d.status === 'SUBMITTED' ? d.ackDueAt : d.updateDueAt)}#${id}`;
@@ -253,6 +261,12 @@ export class WorkflowService {
           before: string | number | boolean | null;
           after: string | number | boolean | null;
         }> = [{ field: 'status', before: previous, after: String(d.status) }];
+        if (cancelTransfer)
+          changes.push({
+            field: 'pendingTransfer',
+            before: 'PENDING',
+            after: 'CANCELLED_BY_RESOLUTION_PROPOSAL',
+          });
         if ('nextAction' in data)
           changes.push({
             field: 'nextAction',

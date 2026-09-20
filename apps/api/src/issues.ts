@@ -32,6 +32,8 @@ import { CampusCommands, type CampusContext } from './commands.js';
 import {
   canReadPost,
   canManageIssue,
+  canAssignIssue,
+  transferRecipient,
   hasRole,
   postAccessSchema,
   type MemberRecord,
@@ -357,6 +359,11 @@ export class IssueService {
         ? [
             'REPLY',
             'SUPPORT',
+            ...(canAssignIssue(member, postAccessSchema.parse(post)) ? ['ASSIGN'] : []),
+            ...(canManageIssue(member, postAccessSchema.parse(post)) ? ['TRANSFER'] : []),
+            ...(transferRecipient(member, postAccessSchema.parse(post))
+              ? ['RESPOND_TRANSFER']
+              : []),
             ...(canManageIssue(member, postAccessSchema.parse(post), true) ? ['MANAGE_ISSUE'] : []),
             ...(post.authorId === member.userId && d.status === 'PROPOSED_RESOLVED'
               ? ['CONFIRM']
@@ -373,6 +380,10 @@ export class IssueService {
         collaborators: await Promise.all(
           ((d.collaboratorIds ?? []) as string[]).map((u) => this.person(String(post.campusId), u)),
         ),
+        ...(d.pendingTransfer &&
+        Date.parse(String((d.pendingTransfer as Record<string, unknown>).expiresAt)) > Date.now()
+          ? { pendingTransfer: d.pendingTransfer }
+          : {}),
         status: d.status,
         severity: d.severity,
         supportCount: d.supportCount,

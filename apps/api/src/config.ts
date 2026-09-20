@@ -16,6 +16,10 @@ const envSchema = z.object({
   COGNITO_CLIENT_ID: z.string().min(1).optional(),
   COGNITO_DOMAIN: z.url().optional(),
   CURSOR_SECRET: z.string().min(32).optional(),
+  WORKFLOW_SCHEDULE_ARN: z
+    .string()
+    .regex(/^arn:aws:events:[a-z0-9-]+:\d{12}:rule\/[A-Za-z0-9_-]+$/)
+    .optional(),
   FILE_SCHEDULE_ARN: z
     .string()
     .regex(/^arn:aws:events:[a-z0-9-]+:\d{12}:rule\/[A-Za-z0-9_-]+$/)

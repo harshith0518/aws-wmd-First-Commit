@@ -3498,7 +3498,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Issue"
+                  "$ref": "#/components/schemas/IssueCommandResult"
                 }
               }
             }
@@ -3545,16 +3545,16 @@
           }
         },
         "x-implementation-status": "partial",
-        "x-implementation-notes": "acknowledge/start/progress/wait/resume/propose-resolution/confirm/reopen implemented. Other commands and attachments pending."
+        "x-implementation-notes": "Eight core workflow commands plus propose-transfer/accept-transfer/reject-transfer are implemented. Rejecting temporary access returns AccessEnded when the caller can no longer read the source. Decline/duplicate/priority commands remain pending."
       }
     },
     "/api/v1/campuses/{campusId}/issues/{postId}/assignment": {
       "put": {
         "operationId": "issue_assignment",
         "summary": "Set collaborators or initial primary assignment",
-        "description": "Authorize the current actor and canonical target; never trust discovery projections as access grants.",
+        "description": "Current authorized unit lead changes up to eight eligible collaborators atomically with source ACL/history/outbox. Existing owner cannot be replaced directly; accepted transfer is required. Current sensitive role is required for restricted assignments.",
         "x-release": "R1",
-        "x-implemented": false,
+        "x-implemented": true,
         "tags": [
           "issue"
         ],
@@ -15544,6 +15544,113 @@
         "x-implementation-status": "partial",
         "x-implementation-notes": "Published ISSUE text replies only; other parent modules, reply files and official-answer metadata remain pending."
       }
+    },
+    "/api/v1/campuses/{campusId}/issues/{postId}/handler-candidates": {
+      "get": {
+        "operationId": "issue_handlerCandidates",
+        "summary": "List eligible handlers for assignment or handover",
+        "description": "Current accountable owner or authorized unit lead only. Query at most 25 current-campus member candidates per page, revalidate profiles/roles and return safe person DTOs. Empty filtered pages may have a continuation.",
+        "x-release": "R1",
+        "x-implemented": true,
+        "tags": [
+          "issue"
+        ],
+        "parameters": [
+          {
+            "name": "campusId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "postId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "unitId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 25
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 16384
+            }
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HandlerCandidatePage"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/StandardError"
+          },
+          "401": {
+            "$ref": "#/components/responses/StandardError"
+          },
+          "403": {
+            "$ref": "#/components/responses/StandardError"
+          },
+          "404": {
+            "$ref": "#/components/responses/StandardError"
+          },
+          "409": {
+            "$ref": "#/components/responses/StandardError"
+          },
+          "413": {
+            "$ref": "#/components/responses/StandardError"
+          },
+          "422": {
+            "$ref": "#/components/responses/StandardError"
+          },
+          "429": {
+            "$ref": "#/components/responses/StandardError"
+          },
+          "500": {
+            "$ref": "#/components/responses/StandardError"
+          },
+          "503": {
+            "$ref": "#/components/responses/StandardError"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -16121,7 +16228,10 @@
               },
               "toOwnerId": {
                 "type": "string",
-                "format": "uuid"
+                "minLength": 1,
+                "maxLength": 128,
+                "pattern": "^[A-Za-z0-9_-]+$",
+                "description": "Opaque verified Cognito subject; not restricted to RFC UUID."
               },
               "proposedAt": {
                 "type": "string",
@@ -16135,6 +16245,10 @@
               "transferId": {
                 "type": "string",
                 "format": "uuid"
+              },
+              "expiresAt": {
+                "type": "string",
+                "format": "date-time"
               }
             },
             "required": [
@@ -16142,7 +16256,8 @@
               "toOwnerId",
               "proposedAt",
               "reason",
-              "transferId"
+              "transferId",
+              "expiresAt"
             ],
             "additionalProperties": false
           },
@@ -16471,7 +16586,9 @@
                 "MODERATE",
                 "MANAGE_ACTIVITY",
                 "MANAGE_LISTING",
-                "REQUEST_REVIEW"
+                "REQUEST_REVIEW",
+                "TRANSFER",
+                "RESPOND_TRANSFER"
               ]
             },
             "maxItems": 20
@@ -16607,7 +16724,9 @@
                 "MODERATE",
                 "MANAGE_ACTIVITY",
                 "MANAGE_LISTING",
-                "REQUEST_REVIEW"
+                "REQUEST_REVIEW",
+                "TRANSFER",
+                "RESPOND_TRANSFER"
               ]
             },
             "maxItems": 20
@@ -16743,7 +16862,9 @@
                 "MODERATE",
                 "MANAGE_ACTIVITY",
                 "MANAGE_LISTING",
-                "REQUEST_REVIEW"
+                "REQUEST_REVIEW",
+                "TRANSFER",
+                "RESPOND_TRANSFER"
               ]
             },
             "maxItems": 20
@@ -16879,7 +17000,9 @@
                 "MODERATE",
                 "MANAGE_ACTIVITY",
                 "MANAGE_LISTING",
-                "REQUEST_REVIEW"
+                "REQUEST_REVIEW",
+                "TRANSFER",
+                "RESPOND_TRANSFER"
               ]
             },
             "maxItems": 20
@@ -17015,7 +17138,9 @@
                 "MODERATE",
                 "MANAGE_ACTIVITY",
                 "MANAGE_LISTING",
-                "REQUEST_REVIEW"
+                "REQUEST_REVIEW",
+                "TRANSFER",
+                "RESPOND_TRANSFER"
               ]
             },
             "maxItems": 20
@@ -18367,13 +18492,19 @@
           },
           "primaryOwnerId": {
             "type": "string",
-            "format": "uuid"
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[A-Za-z0-9_-]+$",
+            "description": "Opaque verified Cognito subject; not restricted to RFC UUID."
           },
           "collaboratorIds": {
             "type": "array",
             "items": {
               "type": "string",
-              "format": "uuid"
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9_-]+$",
+              "description": "Opaque verified Cognito subject; not restricted to RFC UUID."
             },
             "maxItems": 8,
             "uniqueItems": true
@@ -24415,7 +24546,10 @@
           },
           "toOwnerId": {
             "type": "string",
-            "format": "uuid"
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[A-Za-z0-9_-]+$",
+            "description": "Opaque verified Cognito subject; not restricted to RFC UUID."
           },
           "reason": {
             "type": "string",
@@ -25601,6 +25735,64 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/ReplyRevision"
+            },
+            "maxItems": 25
+          },
+          "nextCursor": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 16384
+          }
+        },
+        "required": [
+          "items",
+          "nextCursor"
+        ],
+        "additionalProperties": false
+      },
+      "AccessEnded": {
+        "type": "object",
+        "properties": {
+          "postId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "version": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000000
+          },
+          "accessEnded": {
+            "const": true,
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "postId",
+          "version",
+          "accessEnded"
+        ],
+        "additionalProperties": false
+      },
+      "IssueCommandResult": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/Issue"
+          },
+          {
+            "$ref": "#/components/schemas/AccessEnded"
+          }
+        ]
+      },
+      "HandlerCandidatePage": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Person"
             },
             "maxItems": 25
           },

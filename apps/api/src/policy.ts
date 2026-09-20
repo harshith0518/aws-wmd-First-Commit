@@ -62,11 +62,35 @@ export function hasRole(
       (r.scope === 'CAMPUS' || (r.scope === 'UNIT' && !!unitId && r.scopeId === unitId)),
   );
 }
+export function transferRecipient(m: MemberRecord, post: PostAccess, now = Date.now()): boolean {
+  const t = post.detail.pendingTransfer as Record<string, unknown> | undefined;
+  if (
+    !t ||
+    t.toOwnerId !== m.userId ||
+    typeof t.toUnitId !== 'string' ||
+    typeof t.expiresAt !== 'string' ||
+    Date.parse(t.expiresAt) <= now
+  )
+    return false;
+  return post.audience.kind === 'RESTRICTED' || post.publication === 'RESTRICTED'
+    ? hasRole(m, 'SENSITIVE_HANDLER', t.toUnitId, now)
+    : hasRole(m, 'HANDLER', t.toUnitId, now) || hasRole(m, 'UNIT_LEAD', t.toUnitId, now);
+}
+export function canAssignIssue(m: MemberRecord, post: PostAccess): boolean {
+  // A temporary handover grant cannot make an otherwise-unassigned recipient an assignment manager.
+  if (transferRecipient(m, post) && !canManageIssue(m, post, true)) return false;
+  return (
+    canReadPost(m, post) &&
+    hasRole(m, 'UNIT_LEAD', post.detail.unitId) &&
+    (post.audience.kind !== 'RESTRICTED' || hasRole(m, 'SENSITIVE_HANDLER', post.detail.unitId))
+  );
+}
 export function canReadPost(m: MemberRecord, post: PostAccess, now = Date.now()): boolean {
   if (!activeMember(m, post.campusId, m.userId, now) || post.publication === 'REMOVED')
     return false;
   const author = m.userId === post.authorId;
   if (post.publication === 'DRAFT') return author;
+  if (transferRecipient(m, post, now)) return true;
   const d = post.detail;
   if (post.audience.kind === 'RESTRICTED' || post.publication === 'RESTRICTED')
     return (

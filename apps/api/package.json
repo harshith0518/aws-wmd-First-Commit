@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "tsx watch src/server.ts",
-    "build": "esbuild src/lambda.ts src/files/lambda.ts --bundle --external:sharp --platform=node --target=node24 --format=esm --banner:js=\"import { createRequire } from 'node:module'; const require = createRequire(import.meta.url);\" --outdir=dist --outbase=src --out-extension:.js=.mjs",
+    "build": "esbuild src/lambda.ts src/files/lambda.ts src/workers/workflow.ts --bundle --external:sharp --platform=node --target=node24 --format=esm --banner:js=\"import { createRequire } from 'node:module'; const require = createRequire(import.meta.url);\" --outdir=dist --outbase=src --out-extension:.js=.mjs",
     "typecheck": "tsc -p tsconfig.json",
     "test": "node --import tsx --test test/*.test.ts",
     "test:integration": "node --import tsx --test integration/*.test.ts"

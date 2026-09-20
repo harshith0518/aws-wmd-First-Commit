@@ -818,3 +818,22 @@ form label:first-child {
   background: #e9f4ee;
   border-color: #277561;
 }
+
+.ownership-panel {
+  background: var(--surface, #fff);
+  padding: 1.5rem;
+  border: 1px solid #dbe4e1;
+  border-radius: 1rem;
+  margin: 1.25rem 0;
+}
+.ownership-panel details {
+  margin-top: 1rem;
+}
+.ownership-panel summary {
+  cursor: pointer;
+  padding: 0.7rem 0;
+  font-weight: 600;
+}
+.ownership-panel form {
+  margin-top: 1rem;
+}

@@ -4,8 +4,8 @@ Verified **20 September 2026, afternoon implementation checkpoint**. Identity, i
 
 ## Passed
 
-- `npm.cmd run check`: 171-operation / 236-schema / 3-table contract structure; strict API/web/contracts TypeScript checks; 49 backend and three frontend-auth tests; Lambda and Vite production builds.
-- `npm.cmd run test:integration`: four real DynamoDB Local scenarios with isolated tables. **56 automated tests pass in total.**
+- `npm.cmd run check`: 172-operation / 239-schema / 3-table contract structure; strict API/web/contracts TypeScript checks; 57 backend and three frontend-auth tests; Lambda and Vite production builds.
+- `npm.cmd run test:integration`: five real DynamoDB Local scenarios with isolated tables. **65 automated tests pass in total.**
 - Actual database tests cover profile/publication/command concurrent idempotency, version races, group/campus isolation, current revocation, staff queue, proposal/confirmation/reopening and preserved resolution attempts/history.
 - Domain/security tests also cover wrong signatures/issuer/client/token purpose/scope, identity mismatch, unknown/spoofed inputs, private drafts, restricted cases, ownerless publication, expired roles, unavailable evidence, atomic quotas, bounded feed pagination and working calendars including DST.
 - Workflow tests reject unauthorized or invalid transitions, stale versions, wrong resolution IDs, role revocation during commit and absent evidence explanations. Staff cannot confirm for the reporter. Closing removes the queue record; reopening restores it and invalidates the attempt.
@@ -16,8 +16,8 @@ Verified **20 September 2026, afternoon implementation checkpoint**. Identity, i
 ## Limits
 
 - Cognito pool/app client, real registration/login and verified MFA remain unconfigured/unverified against AWS. The synthetic browser rig is not real Cognito acceptance or a production login mode.
-- 15 operations fully implemented; seventeen additional operations explicitly partial. Generic post endpoints currently support ISSUE only. Commands support eight actions; queue supports one authorized unit per request. The remainder is designed only.
-- Real AWS scanning acceptance, transfers, independent reviews/appeals, outbox consumers/notifications, knowledge/AI, campus administration and AWS deployment remain pending.
+- 17 operations fully implemented; seventeen additional operations explicitly partial. Generic post endpoints currently support ISSUE only. Commands support eight actions; queue supports one authorized unit per request. The remainder is designed only.
+- Real AWS scanning acceptance, independent reviews/appeals, outbox consumers/notifications, knowledge/AI, campus administration and AWS deployment remain pending.
 - Current resolutions preserve history and source validity, but no knowledge index or background invalidation consumer exists yet.
 - External identity changes between profile syncs require a trusted revocation hook before real-campus deployment.
 - No paid AWS resources, live messages, public deployment, load test, restore drill or real-campus pilot. Local emulation does not validate IAM, cloud latency or billing.
@@ -27,7 +27,7 @@ Verified **20 September 2026, afternoon implementation checkpoint**. Identity, i
 
 - Node 24.11.1, npm 11.7.0 (`npm.cmd`), TypeScript 5.9.3; exact dependency versions in package-lock.json.
 - Java DynamoDB Local 3.3.1 with verified download checksum; Docker unavailable. Database is synthetic and in memory on localhost:8000.
-- Frontend JS approximately 115.58 kB gzip; API Lambda approximately 3.6 MB and evidence worker 3.4 MB before compression.
+- Frontend JS approximately 117.37 kB gzip; API Lambda approximately 3.6 MB and evidence worker 3.4 MB before compression.
 - Both servers read root `.env`; only public VITE_ settings enter the browser. `.env`, `.local`, node_modules and build output are ignored.
 
 1. `npm.cmd ci`
@@ -54,3 +54,11 @@ See PROGRESS.md for the handoff and outstanding work. The overnight automation i
 - UI includes public/STAFF composers, nested reply lists, edit/removal reasons, retained revisions and a real affected-status toggle. Question metadata, REPLY evidence and actual mention notifications remain unimplemented.
 
 - Discussion browser verification PASS: student posted and edited a reply; prior text/reason appeared in revisions; affected count changed to one; owner saved a separate private note and posted a one-level response. Switching to the student hid both the note and staff control. Browser warnings/errors: none. Tab/rig stopped; cleanup targeted only test tables for 121821be-a807-4378-8e82-a4cd86f710cd.
+
+## Ownership checkpoint
+
+- Eight domain/security cases cover authorized assignment, owner acceptance, rejection and replay after loss of access, expiry, sensitive grants, revocation at commit, resolution cancellation and a temporary same-unit lead's denied assignment attempt.
+- One added real DynamoDB scenario checks collaborator access, concurrent accept/reject (one winner), stale expiry no-op and duplicate expiry delivery. Initial expiry lookup failed with an invalid key; fixed to use only pk/sk. Full verification result follows below.
+- Workflow worker bundle is approximately 2.1 MB before compression. WORKFLOW_SCHEDULE_ARN must be configured by infrastructure before trusted scheduled execution; no paid resources were provisioned.
+
+- Final ownership gate PASS: npm.cmd run check and npm.cmd run test:integration; 65 tests, typechecks, contracts and all three Lambda/web builds. Browser verified proposal with old ownership retained, recipient discovery/acceptance, new owner controls and former owner losing the scoped feed item. No warning/error logs. The final temporary-lead assignment guard was regression-tested after that browser rig started; it was not re-rendered in a second browser run. Rig/tab stopped and exact ed949974-d026-4a62-82d6-43f2bd66fb31 test tables removed.

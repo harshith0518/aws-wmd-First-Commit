@@ -1,6 +1,8 @@
+import { OwnershipService } from './ownership.js';
+import { ownerCandidatesQuerySchema } from '@campusfix/contracts';
 import { WorkflowService } from './workflow.js';
 import { queueQuerySchema } from '@campusfix/contracts';
-import { Hono } from 'hono';
+import { Hono, type Context } from 'hono';
 import { idSchema, issueFeedQuerySchema } from '@campusfix/contracts';
 import type { Principal } from './auth.js';
 import { IssueService } from './issues.js';
@@ -113,10 +115,24 @@ export function issueRoutes(service: IssueService) {
       ),
     ),
   );
-  const workflow = new WorkflowService(service);
-  routes.post('/:campusId/issues/:postId/commands', async (c) =>
+  const workflow = new WorkflowService(service),
+    ownership = new OwnershipService(service);
+  routes.get('/:campusId/issues/:postId/handler-candidates', async (c) => {
+    const q = ownerCandidatesQuerySchema.parse(c.req.query());
+    return c.json(
+      await ownership.candidates(
+        c.get('principal').sub,
+        idSchema.parse(c.req.param('campusId')),
+        idSchema.parse(c.req.param('postId')),
+        q.unitId,
+        q.limit,
+        q.cursor,
+      ),
+    );
+  });
+  routes.put('/:campusId/issues/:postId/assignment', async (c) =>
     c.json(
-      await workflow.command(
+      await ownership.assign(
         c.get('principal').sub,
         idSchema.parse(c.req.param('campusId')),
         idSchema.parse(c.req.param('postId')),
@@ -125,6 +141,24 @@ export function issueRoutes(service: IssueService) {
       ),
     ),
   );
+  const command = async (
+    c: Context<{ Variables: { principal: Principal; requestId: string } }>,
+  ) => {
+    const input = await body(c);
+    const transfer =
+      typeof input === 'object' &&
+      input !== null &&
+      'action' in input &&
+      ['propose-transfer', 'accept-transfer', 'reject-transfer'].includes(String(input.action));
+    return (transfer ? ownership : workflow).command(
+      c.get('principal').sub,
+      idSchema.parse(c.req.param('campusId')),
+      idSchema.parse(c.req.param('postId')),
+      input,
+      c.req.header('Idempotency-Key')!,
+    );
+  };
+  routes.post('/:campusId/issues/:postId/commands', async (c) => c.json(await command(c)));
   routes.get('/:campusId/posts/:postId/history', async (c) => {
     const q = pageQuery.parse(c.req.query());
     return c.json(

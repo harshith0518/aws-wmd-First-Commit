@@ -65,7 +65,7 @@ Last checkpoint: **20 September 2026, afternoon**. Implementation resumed under 
 ## Remaining work — do not claim complete
 
 1. Real AWS evidence deployment/acceptance: private versioned buckets, GuardDuty/EventBridge, IAM/CORS/lifecycle/alarms and Linux Sharp packaging. Local evidence implementation is complete; production uploads default disabled.
-2. Next implementation priority — finish M3: assignment/collaborators, transfer acceptance/expiry, decline/duplicate/priority commands, due workers and independent service reviews with conflict-free reviewer selection. Review and appeal workflows are not implemented.
+2. Next implementation priority — finish M3: decline/duplicate/priority commands, due workers and independent service reviews with conflict-free reviewer selection. Review and appeal workflows are not implemented.
 3. Outbox consumption, in-app/email delivery and delivery-status UI. Atomic outbox records exist, but no notifications are delivered.
 4. Real campus onboarding, approved invitations/joins, directory administration, verified privileged MFA and trusted account/email-change revocation hook. Active open sessions currently detect external email changes at next profile sync.
 5. Knowledge entries, source validation/invalidation integration and optional Bedrock AI. `knowledgeValid=false` prevents treating current attempts as a published knowledge source; no knowledge index exists yet.
@@ -105,3 +105,15 @@ Last checkpoint: **20 September 2026, afternoon**. Implementation resumed under 
 - Next M3 slice: eligible collaborator assignment and two-party ownership transfer, with immediate removal of temporary grants on rejection/expiry. Then independent service reviews and deadline/notification workers.
 
 - Discussion browser verification PASS: student posted and edited a reply; prior text/reason appeared in revisions; affected count changed to one; owner saved a separate private note and posted a one-level response. Switching to the student hid both the note and staff control. Browser warnings/errors: none. Tab/rig stopped; cleanup targeted only test tables for 121821be-a807-4378-8e82-a4cd86f710cd.
+
+## Afternoon ownership milestone
+
+- Discussion checkpoint pushed as 1bf2b0e. Its exact three browser-test tables were removed successfully after correcting the cleanup prefix; only standard local tables remained.
+- Implemented collaborator assignment by the current authorized unit lead, with current same-unit handler checks, versioned ACL updates, source history/outbox, up to eight collaborators and individual feed pointers. Direct owner replacement is rejected.
+- Implemented propose/accept/reject handovers. The old owner remains accountable until the proposed eligible owner accepts; the 48-hour temporary read grant expires in authorization independently of worker timing. Cross-unit acceptance moves the queue and clears collaborators; original timestamps/deadlines are preserved. Rejection that removes the caller's access returns only an AccessEnded acknowledgement, including on retry.
+- Added a bounded four-shard transfer-expiry worker with atomic event/outbox/source/job writes, conflict retries and discoverable failures after five attempts. Its Lambda entry validates the exact configured EventBridge schedule/account/region. No AWS schedule is deployed yet; due reminders and notification delivery remain pending.
+- Proposal of a resolution cancels a pending transfer. Temporary recipient access alone cannot authorize staff notes, evidence originals, status changes or collaborator assignment before acceptance.
+- Full check target for this checkpoint: 172 operations / 239 schemas, 57 API + 3 auth + 5 real DynamoDB integration tests = 65 tests. Integration found an index-pointer GetItem key-shape error in expiry; corrected to pk/sk-only, then the real concurrency test passed. Final gate result is recorded below.
+- Next priority: independent service-review intake and a conflict-free reviewer workflow, followed by remaining M3 commands/deadline workers and M4 reviewed knowledge. No real AWS, notifications or full-project completion is claimed.
+
+- Final ownership gate PASS: npm.cmd run check and npm.cmd run test:integration; 65 tests, typechecks, contracts and all three Lambda/web builds. Browser verified proposal with old ownership retained, recipient discovery/acceptance, new owner controls and former owner losing the scoped feed item. No warning/error logs. The final temporary-lead assignment guard was regression-tested after that browser rig started; it was not re-rendered in a second browser run. Rig/tab stopped and exact ed949974-d026-4a62-82d6-43f2bd66fb31 test tables removed.

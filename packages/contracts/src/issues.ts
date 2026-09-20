@@ -139,6 +139,16 @@ export const issueDetailSchema = z.strictObject({
   waitingReason: z.string().max(1000).optional(),
   resolutionId: idSchema.optional(),
   duplicateOf: idSchema.optional(),
+  pendingTransfer: z
+    .strictObject({
+      transferId: idSchema,
+      toUnitId: idSchema,
+      toOwnerId: subjectSchema,
+      proposedAt: dateSchema,
+      expiresAt: dateSchema,
+      reason: z.string().max(1000),
+    })
+    .optional(),
   supportCount: z.number().int().min(0),
   caseHandlers: z.array(personSchema).max(9).optional(),
   currentResolution: resolutionSchema.nullable(),
@@ -167,6 +177,8 @@ export const issueSchema = z.strictObject({
         'CONFIRM',
         'REOPEN',
         'ASSIGN',
+        'TRANSFER',
+        'RESPOND_TRANSFER',
         'CHANGE_AUDIENCE',
         'MODERATE',
         'MANAGE_ACTIVITY',
