@@ -18,6 +18,7 @@ import { ApiError, unavailable } from './errors.js';
 import {
   canReadPost,
   canManageIssue,
+  canAssignIssue,
   hasRole,
   postAccessSchema,
   type MemberRecord,
@@ -32,6 +33,9 @@ const summaries: Record<string, string> = {
   'propose-resolution': 'Owner proposed a resolution; reporter confirmation is pending.',
   confirm: 'Reporter confirmed the resolution.',
   reopen: 'Reporter reopened the issue.',
+  decline: 'The responsible owner or lead declined the report with a review route.',
+  duplicate: 'An authorized lead linked this report to an existing issue.',
+  'set-priority': 'The responsible owner or lead changed the issue priority.',
 };
 export class WorkflowService {
   constructor(readonly issues: IssueService) {}
@@ -76,7 +80,11 @@ export class WorkflowService {
         if (
           reporter
             ? post.authorId !== actor
-            : !canManageIssue(ctx.member, access, data.action === 'progress')
+            : data.action === 'duplicate'
+              ? !canAssignIssue(ctx.member, access)
+              : ['decline', 'set-priority'].includes(data.action)
+                ? !(canManageIssue(ctx.member, access) || canAssignIssue(ctx.member, access))
+                : !canManageIssue(ctx.member, access, data.action === 'progress')
         )
           throw new ApiError(
             403,
@@ -126,6 +134,9 @@ export class WorkflowService {
           acknowledge: ['SUBMITTED'],
           start: ['ACKNOWLEDGED', 'REOPENED'],
           progress: active,
+          decline: active,
+          duplicate: active,
+          'set-priority': active,
           wait: ['ACKNOWLEDGED', 'IN_PROGRESS', 'REOPENED'],
           resume: ['WAITING'],
           'propose-resolution': ['IN_PROGRESS', 'WAITING', 'REOPENED'],
@@ -144,6 +155,52 @@ export class WorkflowService {
           ...evidenceGuards,
           ...(!reporter ? await involvement(this.issues, post, [actor]) : []),
         ];
+        if (data.action === 'set-priority') d.severity = data.severity;
+        if (data.action === 'decline') {
+          d.status = 'DECLINED';
+          d.declineReason = data.reason;
+          d.appealContact = data.appealContact;
+        }
+        if (data.action === 'duplicate') {
+          // Every target in the bounded path is guarded in this transaction. Concurrent
+          // A→B / B→A links therefore cannot both commit.
+          const visited = new Set([id]);
+          let targetId = data.targetPostId;
+          for (let hop = 0; ; hop++) {
+            if (visited.has(targetId))
+              throw new ApiError(422, 'DUPLICATE_CYCLE', 'A report cannot link back to itself.');
+            if (hop >= 20)
+              throw new ApiError(
+                422,
+                'DUPLICATE_CHAIN_TOO_LONG',
+                'Choose the original canonical report directly.',
+              );
+            visited.add(targetId);
+            const target = (await this.source(actor, campus, targetId)).post;
+            const targetDetail = target.detail as Record<string, unknown>;
+            if (targetDetail.status === 'DECLINED')
+              throw new ApiError(
+                422,
+                'INVALID_DUPLICATE_TARGET',
+                'Choose an active or confirmed report.',
+              );
+            writes.push(this.issues.guard(target));
+            if (targetDetail.status === 'DUPLICATE') {
+              if (typeof targetDetail.duplicateOf !== 'string') throw unavailable();
+              targetId = targetDetail.duplicateOf;
+            } else {
+              d.duplicateOf = targetId;
+              break;
+            }
+          }
+          d.status = 'DUPLICATE';
+        }
+        if (data.action === 'decline' || data.action === 'duplicate') {
+          delete d.nextAction;
+          delete d.nextUpdateAt;
+          delete d.waitingReason;
+          d.knowledgeValid = false;
+        }
         if ('nextAction' in data) d.nextAction = data.nextAction;
         if ('nextUpdateAt' in data) d.nextUpdateAt = data.nextUpdateAt;
         if (data.action === 'acknowledge') {
@@ -243,7 +300,9 @@ export class WorkflowService {
             item: { ...record, ...resolution },
           });
         }
-        const cancelTransfer = data.action === 'propose-resolution' && !!d.pendingTransfer;
+        const cancelTransfer =
+          ['propose-resolution', 'decline', 'duplicate'].includes(data.action) &&
+          !!d.pendingTransfer;
         if (cancelTransfer) delete d.pendingTransfer;
         const updated: Item = {
           ...post,
@@ -269,7 +328,10 @@ export class WorkflowService {
           changes.push({
             field: 'pendingTransfer',
             before: 'PENDING',
-            after: 'CANCELLED_BY_RESOLUTION_PROPOSAL',
+            after:
+              data.action === 'propose-resolution'
+                ? 'CANCELLED_BY_RESOLUTION_PROPOSAL'
+                : 'CANCELLED_BY_TERMINAL_STATE',
           });
         if ('nextAction' in data)
           changes.push({
@@ -289,6 +351,17 @@ export class WorkflowService {
                 : null,
             after: data.nextUpdateAt,
           });
+        if (data.action === 'set-priority')
+          changes.push({
+            field: 'severity',
+            before: String((post.detail as Record<string, unknown>).severity),
+            after: data.severity,
+          });
+        if (data.action === 'decline')
+          changes.push({ field: 'appealContact', before: null, after: data.appealContact });
+        // Never copy the related target ID into audience-wide history or notifications.
+        if (data.action === 'duplicate')
+          changes.push({ field: 'relatedCase', before: null, after: 'LINKED' });
         if (data.action === 'progress')
           changes.push({ field: 'progress', before: null, after: data.update });
         if (resolution)

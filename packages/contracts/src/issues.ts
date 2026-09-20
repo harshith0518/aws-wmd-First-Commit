@@ -139,6 +139,8 @@ export const issueDetailSchema = z.strictObject({
   waitingReason: z.string().max(1000).optional(),
   resolutionId: idSchema.optional(),
   duplicateOf: idSchema.optional(),
+  declineReason: z.string().max(1000).optional(),
+  appealContact: z.string().max(200).optional(),
   pendingTransfer: z
     .strictObject({
       transferId: idSchema,
@@ -174,6 +176,9 @@ export const issueSchema = z.strictObject({
         'SUPPORT',
         'SUBSCRIBE',
         'MANAGE_ISSUE',
+        'DECLINE',
+        'DUPLICATE',
+        'SET_PRIORITY',
         'CONFIRM',
         'REOPEN',
         'ASSIGN',

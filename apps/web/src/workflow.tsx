@@ -24,6 +24,9 @@ const labels: Record<string, string> = {
   'propose-resolution': 'Propose a resolution',
   confirm: 'Confirm the issue is resolved',
   reopen: 'Reopen this issue',
+  decline: 'Decline with a review route',
+  duplicate: 'Link to an existing issue',
+  'set-priority': 'Change priority',
 };
 const states: Record<string, string[]> = {
   SUBMITTED: ['acknowledge', 'progress'],
@@ -39,6 +42,7 @@ function when(value: string) {
   return new Date(value).toLocaleString();
 }
 export function WorkflowPanel({
+  onRelated,
   issue,
   apiPrefix,
   membership,
@@ -48,6 +52,7 @@ export function WorkflowPanel({
   apiPrefix: string;
   membership: Membership;
   onChange: (issue: Issue) => void;
+  onRelated: (id: string) => void;
 }) {
   const api = useApi();
   const actions = [
@@ -56,6 +61,9 @@ export function WorkflowPanel({
           (a) => a === 'progress' || membership.user.id === issue.detail.primaryOwner.id,
         )
       : []),
+    ...(issue.capabilities.includes('DECLINE') ? ['decline'] : []),
+    ...(issue.capabilities.includes('DUPLICATE') ? ['duplicate'] : []),
+    ...(issue.capabilities.includes('SET_PRIORITY') ? ['set-priority'] : []),
     ...(issue.capabilities.includes('CONFIRM') ? ['confirm'] : []),
     ...(issue.capabilities.includes('REOPEN') ? ['reopen'] : []),
   ];
@@ -64,6 +72,11 @@ export function WorkflowPanel({
     [nextAt, setNextAt] = useState(''),
     [update, setUpdate] = useState(''),
     [reason, setReason] = useState(''),
+    [appealContact, setAppealContact] = useState(
+      'Use Request an independent review on this report.',
+    ),
+    [target, setTarget] = useState(''),
+    [severity, setSeverity] = useState<string>(issue.detail.severity),
     [symptom, setSymptom] = useState(''),
     [cause, setCause] = useState(''),
     [work, setWork] = useState(''),
@@ -113,7 +126,11 @@ export function WorkflowPanel({
       if (['acknowledge', 'start', 'progress', 'wait', 'resume'].includes(action))
         value.nextUpdateAt = new Date(nextAt).toISOString();
       if (action === 'progress') value.update = update;
-      if (action === 'wait' || action === 'reopen') value.reason = reason;
+      if (['wait', 'reopen', 'decline', 'duplicate', 'set-priority'].includes(action))
+        value.reason = reason;
+      if (action === 'decline') value.appealContact = appealContact;
+      if (action === 'duplicate') value.targetPostId = target;
+      if (action === 'set-priority') value.severity = severity;
       if (action === 'propose-resolution')
         value.resolution = {
           symptom,
@@ -163,6 +180,30 @@ export function WorkflowPanel({
           {issue.detail.nextUpdateAt && <p>Next update: {when(issue.detail.nextUpdateAt)}</p>}
           {issue.detail.waitingReason && <p>Waiting on: {issue.detail.waitingReason}</p>}
         </div>
+      )}
+      {issue.detail.status === 'DECLINED' && (
+        <article className="notice">
+          <h2>Report declined</h2>
+          <p>{issue.detail.declineReason}</p>
+          <p>
+            <strong>Review route:</strong> {issue.detail.appealContact}
+          </p>
+        </article>
+      )}
+      {issue.detail.status === 'DUPLICATE' && (
+        <article className="notice">
+          <h2>Related report</h2>
+          <p>
+            {issue.detail.duplicateOf
+              ? 'This report is linked to an existing issue. Its original history and submission date remain available.'
+              : 'This report is linked to a related case. You do not currently have access to that case.'}
+          </p>
+          {issue.detail.duplicateOf && (
+            <button type="button" onClick={() => onRelated(issue.detail.duplicateOf!)}>
+              Open related report
+            </button>
+          )}
+        </article>
       )}
       {current && (
         <article className="card resolution">
@@ -229,12 +270,14 @@ export function WorkflowPanel({
                 />
               </>
             )}
-            {['wait', 'reopen'].includes(action) && (
+            {['wait', 'reopen', 'decline', 'duplicate', 'set-priority'].includes(action) && (
               <>
                 <label htmlFor="workflow-reason">
                   {action === 'wait'
                     ? 'Dependency and reason'
-                    : 'Why should this issue be reopened?'}
+                    : action === 'reopen'
+                      ? 'Why should this issue be reopened?'
+                      : 'Reason for this change'}
                 </label>
                 <textarea
                   id="workflow-reason"
@@ -256,6 +299,44 @@ export function WorkflowPanel({
                   onChange={(e) => setNextAt(e.target.value)}
                 />
               </>
+            )}
+            {action === 'decline' && (
+              <>
+                <label htmlFor="appeal-contact">How can the student request a review?</label>
+                <input
+                  id="appeal-contact"
+                  required
+                  maxLength={200}
+                  value={appealContact}
+                  onChange={(e) => setAppealContact(e.target.value)}
+                />
+              </>
+            )}
+            {action === 'set-priority' && (
+              <>
+                <label htmlFor="priority">Priority</label>
+                <select
+                  id="priority"
+                  value={severity}
+                  onChange={(e) => setSeverity(e.target.value)}
+                >
+                  {['LOW', 'NORMAL', 'HIGH', 'URGENT'].map((v) => (
+                    <option key={v}>{v}</option>
+                  ))}
+                </select>
+                <p className="hint">
+                  Changing priority retains the original deadlines and report age. This service does
+                  not dispatch emergency help.
+                </p>
+              </>
+            )}
+            {action === 'duplicate' && (
+              <DuplicatePicker
+                apiPrefix={apiPrefix}
+                sourceId={issue.id}
+                selected={target}
+                onSelect={setTarget}
+              />
             )}
             {action === 'propose-resolution' && (
               <>
@@ -355,7 +436,7 @@ export function WorkflowPanel({
           )}
         </form>
       )}
-      {!actions.length && !current && (
+      {!actions.length && !current && !['DECLINED', 'DUPLICATE'].includes(issue.detail.status) && (
         <p className="notice">The responsible owner will record the next action here.</p>
       )}
       <IssueHistory key={issue.id} issue={issue} apiPrefix={apiPrefix} />
@@ -699,5 +780,101 @@ export function StaffQueue({
         </button>
       )}
     </>
+  );
+}
+
+function DuplicatePicker({
+  apiPrefix,
+  sourceId,
+  selected,
+  onSelect,
+}: {
+  apiPrefix: string;
+  sourceId: string;
+  selected: string;
+  onSelect: (id: string) => void;
+}) {
+  const api = useApi(),
+    [query, setQuery] = useState(''),
+    [items, setItems] = useState<Issue[]>([]),
+    [cursor, setCursor] = useState<string | null>(null),
+    [busy, setBusy] = useState(false),
+    [error, setError] = useState('');
+  const generation = useRef(0),
+    search = useRef('');
+  async function load(next?: string) {
+    const g = ++generation.current;
+    setBusy(true);
+    setError('');
+    if (!next) {
+      search.current = query;
+      setItems([]);
+      onSelect('');
+    }
+    try {
+      const q = new URLSearchParams({ limit: '25', query: search.current });
+      if (next) q.set('cursor', next);
+      const page = await api(`${apiPrefix}/posts?${q}`, issuePageSchema);
+      if (g !== generation.current) return;
+      const available = page.items.filter(
+        (i) => i.id !== sourceId && !['DUPLICATE', 'DECLINED'].includes(i.detail.status),
+      );
+      setItems((old) =>
+        next ? [...old, ...available.filter((i) => !old.some((o) => o.id === i.id))] : available,
+      );
+      setCursor(page.nextCursor);
+    } catch (e) {
+      if (g === generation.current) {
+        setError(displayError(e));
+        setItems([]);
+        onSelect('');
+        setCursor(null);
+      }
+    } finally {
+      if (g === generation.current) setBusy(false);
+    }
+  }
+  useEffect(
+    () => () => {
+      generation.current++;
+    },
+    [sourceId, apiPrefix],
+  );
+  return (
+    <fieldset aria-label="Find the original report">
+      <legend>Find the original report</legend>
+      <label htmlFor="duplicate-search">Search reports you can access</label>
+      <input
+        id="duplicate-search"
+        maxLength={200}
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+      />
+      <button type="button" disabled={busy} onClick={() => void load()}>
+        Find reports
+      </button>
+      <p className="hint">
+        Select the report covering the same problem. Keep private details out of the public reason.
+        The server checks both reports again when you save.
+      </p>
+      {items.map((i) => (
+        <label className="check" key={i.id}>
+          <input
+            type="radio"
+            name="duplicate-target"
+            checked={selected === i.id}
+            onChange={() => onSelect(i.id)}
+          />
+          {i.title} · {i.detail.status.replaceAll('_', ' ')}
+        </label>
+      ))}
+      {cursor && (
+        <button type="button" disabled={busy} onClick={() => void load(cursor)}>
+          Load more matching reports
+        </button>
+      )}
+      {busy && <p role="status">Checking accessible reports…</p>}
+      {error && <p role="alert">{error}</p>}
+    </fieldset>
   );
 }

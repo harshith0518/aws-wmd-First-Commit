@@ -80,3 +80,9 @@ Sources: [AWS GuardDuty result events](https://docs.aws.amazon.com/guardduty/lat
 - Review closure stores an immutable DECISION child and releases the per-requester active-case marker. COMPLAINT_UPHELD goes through ACTION_REQUIRED and requires a later independent verification reason before CLOSED. Remedy attachments are rejected until review-scoped evidence is implemented.
 - Reviewer availability is revalidated on reads. A reviewer becoming a source handler cannot keep reading or deciding; the requester sees that a replacement is required. Operator reassignment and automated escalation are still pending.
 - Core review text intake/decisions are functional; review evidence, corrective-task sharing/delivery, appeals and operator workflows are not. The website must not imply that recording a corrective action notified the handler. Existing issue evidence cannot be linked into the private review by arbitrary ID.
+
+## Remaining issue commands completed
+
+- Decline and priority change require the accountable eligible owner or an authorized current unit lead; duplicate linking requires the latter. Ordinary collaborators cannot perform these actions. Commands operate only in active issue states.
+- Duplicate path traversal is capped at twenty authorized canonical records and every visited target version is guarded in the source transaction. This blocks cycles even when reciprocal requests race. Target pointers do not grant access. Related-case history uses a generic marker; serializers include duplicateOf only with current target access.
+- Decline stores both its reason and the review route. It does not count as confirmed resolution. Service reviews can be requested, while review-driven restoration is pending. Priority changes never silently reset service clocks. Decline and duplicate cancel temporary handover access.

@@ -45,6 +45,24 @@ export const issueCommandSchema = z.discriminatedUnion('action', [
     action: z.literal('propose-resolution'),
     resolution: resolutionInputSchema,
   }),
+  z.strictObject({
+    ...version,
+    action: z.literal('decline'),
+    reason: text(1000),
+    appealContact: text(200),
+  }),
+  z.strictObject({
+    ...version,
+    action: z.literal('duplicate'),
+    targetPostId: idSchema,
+    reason: text(1000),
+  }),
+  z.strictObject({
+    ...version,
+    action: z.literal('set-priority'),
+    severity: z.enum(['LOW', 'NORMAL', 'HIGH', 'URGENT']),
+    reason: text(1000),
+  }),
   z.strictObject({ ...version, action: z.literal('confirm'), resolutionId: idSchema }),
   z.strictObject({
     ...version,

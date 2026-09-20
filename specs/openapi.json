@@ -3289,7 +3289,7 @@
       "put": {
         "operationId": "issue_support",
         "summary": "Set own affected/support state once",
-        "description": "Set the current reader’s affected state. Atomic per-member record and source count; same desired state is a safe no-op, including a stale expectedVersion. A changed state requires current expectedVersion. Hourly mutation quota and current source ACL apply.",
+        "description": "Set the current reader\u2019s affected state. Atomic per-member record and source count; same desired state is a safe no-op, including a stale expectedVersion. A changed state requires current expectedVersion. Hourly mutation quota and current source ACL apply.",
         "x-release": "R1",
         "x-implemented": true,
         "tags": [
@@ -3379,7 +3379,7 @@
       "get": {
         "operationId": "issue_support_get",
         "summary": "Read own affected state and authorized total",
-        "description": "Set the current reader’s affected state. Atomic per-member record and source count; same desired state is a safe no-op, including a stale expectedVersion. A changed state requires current expectedVersion. Hourly mutation quota and current source ACL apply.",
+        "description": "Set the current reader\u2019s affected state. Atomic per-member record and source count; same desired state is a safe no-op, including a stale expectedVersion. A changed state requires current expectedVersion. Hourly mutation quota and current source ACL apply.",
         "x-release": "R1",
         "x-implemented": true,
         "tags": [
@@ -3460,7 +3460,7 @@
         "summary": "Execute version-checked issue command",
         "description": "Discriminated action payload. Handler transitions enforce state matrix and role. Confirm only by reporter; transfer retains previous owner until accepted. Resolution requires CLEAN evidence or evidenceOmissionReason. Commands write event and outbox atomically.",
         "x-release": "R1",
-        "x-implemented": false,
+        "x-implemented": true,
         "tags": [
           "issue"
         ],
@@ -3544,8 +3544,8 @@
             }
           }
         },
-        "x-implementation-status": "partial",
-        "x-implementation-notes": "Eight core workflow commands plus propose-transfer/accept-transfer/reject-transfer are implemented. Rejecting temporary access returns AccessEnded when the caller can no longer read the source. Decline/duplicate/priority commands remain pending."
+        "x-implementation-status": "implemented",
+        "x-implementation-notes": "All fourteen commands implemented with current authorization, atomic history/outbox, expected versions and idempotency. Duplicate linking guards every canonical target in a bounded path; target references are hidden from readers lacking current access."
       }
     },
     "/api/v1/campuses/{campusId}/issues/{postId}/assignment": {
@@ -14556,7 +14556,7 @@
       "put": {
         "operationId": "issue_caseHandlers",
         "summary": "Set authoritative sensitive-case handler list",
-        "description": "Restricted issues only. Primary owner with active sensitive-handler grant, or explicitly designated sensitive unit lead, may set 1â€“9 eligible active sensitive-handler IDs including current primary owner. Exclude complaint subjects/conflicts. Ordinary admin/lead insufficient. Transaction checks membership/authVersion, issue version, updates ACL+aclVersion, feed pointers and attributed event.",
+        "description": "Restricted issues only. Primary owner with active sensitive-handler grant, or explicitly designated sensitive unit lead, may set 1\u00e2\u20ac\u201c9 eligible active sensitive-handler IDs including current primary owner. Exclude complaint subjects/conflicts. Ordinary admin/lead insufficient. Transaction checks membership/authVersion, issue version, updates ACL+aclVersion, feed pointers and attributed event.",
         "x-release": "R1",
         "x-implemented": false,
         "tags": [
@@ -16394,6 +16394,14 @@
                 "type": "null"
               }
             ]
+          },
+          "declineReason": {
+            "type": "string",
+            "maxLength": 1000
+          },
+          "appealContact": {
+            "type": "string",
+            "maxLength": 200
           }
         },
         "required": [
@@ -16700,7 +16708,10 @@
                 "MANAGE_LISTING",
                 "REQUEST_REVIEW",
                 "TRANSFER",
-                "RESPOND_TRANSFER"
+                "RESPOND_TRANSFER",
+                "DECLINE",
+                "DUPLICATE",
+                "SET_PRIORITY"
               ]
             },
             "maxItems": 20
@@ -16838,7 +16849,10 @@
                 "MANAGE_LISTING",
                 "REQUEST_REVIEW",
                 "TRANSFER",
-                "RESPOND_TRANSFER"
+                "RESPOND_TRANSFER",
+                "DECLINE",
+                "DUPLICATE",
+                "SET_PRIORITY"
               ]
             },
             "maxItems": 20
@@ -16976,7 +16990,10 @@
                 "MANAGE_LISTING",
                 "REQUEST_REVIEW",
                 "TRANSFER",
-                "RESPOND_TRANSFER"
+                "RESPOND_TRANSFER",
+                "DECLINE",
+                "DUPLICATE",
+                "SET_PRIORITY"
               ]
             },
             "maxItems": 20
@@ -17114,7 +17131,10 @@
                 "MANAGE_LISTING",
                 "REQUEST_REVIEW",
                 "TRANSFER",
-                "RESPOND_TRANSFER"
+                "RESPOND_TRANSFER",
+                "DECLINE",
+                "DUPLICATE",
+                "SET_PRIORITY"
               ]
             },
             "maxItems": 20
@@ -17252,7 +17272,10 @@
                 "MANAGE_LISTING",
                 "REQUEST_REVIEW",
                 "TRANSFER",
-                "RESPOND_TRANSFER"
+                "RESPOND_TRANSFER",
+                "DECLINE",
+                "DUPLICATE",
+                "SET_PRIORITY"
               ]
             },
             "maxItems": 20

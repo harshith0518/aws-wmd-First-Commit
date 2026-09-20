@@ -54,7 +54,7 @@ Then continue through the prompts in order. The shared contracts let frontend, b
 - `scripts`: development runner, contract checks and local database setup.
 - `SETUP-VERIFICATION.md`: exact checks, installed versions and limitations.
 
-Typechecks, 75 automated tests, production builds and synthetic browser reporting/evidence checks passed. DynamoDB Local integration runs through Java because Docker is unavailable. Real Cognito/S3/GuardDuty acceptance, review evidence/appeals, notifications, Bedrock and AWS deployment remain unverified or unfinished.
+Typechecks, 83 automated tests, production builds and synthetic browser reporting/evidence checks passed. DynamoDB Local integration runs through Java because Docker is unavailable. Real Cognito/S3/GuardDuty acceptance, review evidence/appeals, notifications, Bedrock and AWS deployment remain unverified or unfinished.
 
 The earlier $50/month number is a planning target, not a verified AWS bill. See chapter 8 for the workload model and deployment inputs.
 

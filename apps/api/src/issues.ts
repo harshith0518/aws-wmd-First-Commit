@@ -361,6 +361,18 @@ export class IssueService {
             'REPLY',
             'SUPPORT',
             'REQUEST_REVIEW',
+            ...(['SUBMITTED', 'ACKNOWLEDGED', 'IN_PROGRESS', 'WAITING', 'REOPENED'].includes(
+              String(d.status),
+            ) &&
+            (canManageIssue(member, postAccessSchema.parse(post)) ||
+              canAssignIssue(member, postAccessSchema.parse(post)))
+              ? ['DECLINE', 'SET_PRIORITY']
+              : []),
+            ...(['SUBMITTED', 'ACKNOWLEDGED', 'IN_PROGRESS', 'WAITING', 'REOPENED'].includes(
+              String(d.status),
+            ) && canAssignIssue(member, postAccessSchema.parse(post))
+              ? ['DUPLICATE']
+              : []),
             ...(canAssignIssue(member, postAccessSchema.parse(post)) ? ['ASSIGN'] : []),
             ...(canManageIssue(member, postAccessSchema.parse(post)) ? ['TRANSFER'] : []),
             ...(transferRecipient(member, postAccessSchema.parse(post))
@@ -388,6 +400,9 @@ export class IssueService {
           : {}),
         status: d.status,
         severity: d.severity,
+        ...(member ? await this.visibleDuplicate(post, member) : {}),
+        ...(d.declineReason ? { declineReason: d.declineReason } : {}),
+        ...(d.appealContact ? { appealContact: d.appealContact } : {}),
         supportCount: d.supportCount,
         currentResolution: d.currentResolution
           ? await this.resolutionDto(d.currentResolution as Record<string, unknown>, post, member)
@@ -409,6 +424,29 @@ export class IssueService {
           : {}),
       },
     });
+  }
+  async visibleDuplicate(post: Item, member: MemberRecord) {
+    const id = (post.detail as Record<string, unknown>).duplicateOf;
+    if (typeof id !== 'string' || id === post.id) return {};
+    const target = await this.store.get(
+      this.config.CORE_TABLE,
+      keys.post(String(post.campusId), id),
+    );
+    if (
+      !target ||
+      target.type !== 'ISSUE' ||
+      target.publication === 'DRAFT' ||
+      !canReadPost(member, postAccessSchema.parse(target))
+    )
+      return {};
+    const current = await this.store.get(
+      this.config.CORE_TABLE,
+      keys.post(String(post.campusId), id),
+    );
+    return current?.version === target.version &&
+      canReadPost(member, postAccessSchema.parse(current))
+      ? { duplicateOf: id }
+      : {};
   }
   async getIssue(actor: string, campus: string, id: string) {
     const post = await this.canonical(campus, id);

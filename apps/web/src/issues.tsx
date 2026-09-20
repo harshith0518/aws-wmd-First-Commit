@@ -147,6 +147,7 @@ export function IssueWorkspace({
           key={issueId}
           onReview={() => navigate(`${prefix}/service-reviews/new?issue=${issueId}`)}
           id={issueId}
+          onRelated={(id) => navigate(`${prefix}/issues/${id}`)}
           apiPrefix={apiPrefix}
           configuration={configuration}
           membership={membership}
@@ -904,6 +905,7 @@ function DraftList({ apiPrefix, open }: { apiPrefix: string; open: (id: string) 
   );
 }
 function IssueDetail({
+  onRelated,
   onReview,
   id,
   apiPrefix,
@@ -912,6 +914,7 @@ function IssueDetail({
 }: {
   id: string;
   onReview: () => void;
+  onRelated: (id: string) => void;
   apiPrefix: string;
   configuration: PublicConfiguration;
   membership: Membership;
@@ -1052,6 +1055,7 @@ function IssueDetail({
         }}
       />
       <WorkflowPanel
+        onRelated={onRelated}
         issue={issue}
         apiPrefix={apiPrefix}
         membership={membership}

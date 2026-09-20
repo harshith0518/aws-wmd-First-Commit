@@ -4,8 +4,8 @@ Verified **20 September 2026, afternoon implementation checkpoint**. Identity, i
 
 ## Passed
 
-- `npm.cmd run check`: 173-operation / 241-schema / 3-table contract structure; strict API/web/contracts TypeScript checks; 66 backend and three frontend-auth tests; Lambda and Vite production builds.
-- `npm.cmd run test:integration`: six real DynamoDB Local scenarios with isolated tables. **75 automated tests pass in total.**
+- `npm.cmd run check`: 173-operation / 241-schema / 3-table contract structure; strict API/web/contracts TypeScript checks; 73 backend and three frontend-auth tests; Lambda and Vite production builds.
+- `npm.cmd run test:integration`: seven real DynamoDB Local scenarios with isolated tables. **83 automated tests pass in total.**
 - Actual database tests cover profile/publication/command concurrent idempotency, version races, group/campus isolation, current revocation, staff queue, proposal/confirmation/reopening and preserved resolution attempts/history.
 - Domain/security tests also cover wrong signatures/issuer/client/token purpose/scope, identity mismatch, unknown/spoofed inputs, private drafts, restricted cases, ownerless publication, expired roles, unavailable evidence, atomic quotas, bounded feed pagination and working calendars including DST.
 - Workflow tests reject unauthorized or invalid transitions, stale versions, wrong resolution IDs, role revocation during commit and absent evidence explanations. Staff cannot confirm for the reporter. Closing removes the queue record; reopening restores it and invalidates the attempt.
@@ -16,7 +16,7 @@ Verified **20 September 2026, afternoon implementation checkpoint**. Identity, i
 ## Limits
 
 - Cognito pool/app client, real registration/login and verified MFA remain unconfigured/unverified against AWS. The synthetic browser rig is not real Cognito acceptance or a production login mode.
-- 18 operations fully implemented; twenty-four additional operations explicitly partial. Generic post endpoints currently support ISSUE only. Commands support eight actions; queue supports one authorized unit per request. The remainder is designed only.
+- 19 operations fully implemented; twenty-three additional operations explicitly partial. Generic post endpoints currently support ISSUE only. Commands support all fourteen specified actions; queue supports one authorized unit per request. The remainder is designed only.
 - Real AWS scanning acceptance, review evidence/reassignment/appeals, outbox consumers/notifications, knowledge/AI, campus administration and AWS deployment remain pending.
 - Current resolutions preserve history and source validity, but no knowledge index or background invalidation consumer exists yet.
 - External identity changes between profile syncs require a trusted revocation hook before real-campus deployment.
@@ -27,7 +27,7 @@ Verified **20 September 2026, afternoon implementation checkpoint**. Identity, i
 
 - Node 24.11.1, npm 11.7.0 (`npm.cmd`), TypeScript 5.9.3; exact dependency versions in package-lock.json.
 - Java DynamoDB Local 3.3.1 with verified download checksum; Docker unavailable. Database is synthetic and in memory on localhost:8000.
-- Frontend JS approximately 121.49 kB gzip; API Lambda approximately 3.6 MB and evidence worker 3.4 MB before compression.
+- Frontend JS approximately 122.59 kB gzip; API Lambda approximately 3.6 MB and evidence worker 3.4 MB before compression.
 - Both servers read root `.env`; only public VITE_ settings enter the browser. `.env`, `.local`, node_modules and build output are ignored.
 
 1. `npm.cmd ci`
@@ -69,3 +69,10 @@ See PROGRESS.md for the handoff and outstanding work. The overnight automation i
 - Full contract/typecheck/test/build and integration gate passes: 75 automated tests. No real AWS, email or corrective-task delivery is claimed. Review files/reassignment/escalation/appeals remain partial.
 
 - Browser PASS: student intake → original owner denied discovery → independent reviewer begins, adds private note and records reasoned decision → student sees decision with reviewer-only note/history filtered. No browser warnings/errors. Test server stopped and exact synthetic tables cleaned.
+
+## Complete issue command surface
+
+- PASS: full npm.cmd run check plus seven disposable DynamoDB integration scenarios; added explicit inaccessible/cross-campus duplicate regression after the full gate, and reran its complete seven-test triage file and contract validation. 73 backend + 3 frontend-auth + 7 integration = 83 passing tests.
+- Browser PASS: owner priority change persisted as High with unchanged deadlines; student published another report; lead used scoped search to link it as a duplicate, followed the related report button, then declined the original with a reason/review route. Attributed history was visible; no browser warning/error logs. Terminal states showed a misleading next-action hint, which was removed and web typecheck/build verified after the journey.
+- Duplicate target references never enter public history; source readers only receive the target ID after current target authorization. Canonical target path is bounded at twenty hops and guarded transactionally, preventing reciprocal cycles. Original submission age and service clocks are retained. Review-driven restoration of a declined issue remains pending with the full review corrective-action workflow.
+- Per user instruction, keep AWS credits/deployment aside; continue completing real local behavior. No paid resources have been provisioned.
