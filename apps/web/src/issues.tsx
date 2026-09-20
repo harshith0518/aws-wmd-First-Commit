@@ -1,3 +1,4 @@
+import { DiscussionPanel, SupportControl } from './discussion';
 import { FilePanel } from './files';
 import { type Attachment } from '@campusfix/contracts';
 import { WorkflowPanel, StaffQueue } from './workflow';
@@ -996,6 +997,11 @@ function IssueDetail({
           </p>
         </aside>
       </div>
+      <SupportControl
+        issue={issue}
+        apiPrefix={apiPrefix}
+        onChange={async () => setIssue(await api(`${apiPrefix}/posts/${issue.id}`, issueSchema))}
+      />
       <FilePanel
         apiPrefix={apiPrefix}
         postId={issue.id}
@@ -1003,6 +1009,12 @@ function IssueDetail({
           membership.user.id === issue.author?.id || issue.capabilities.includes('MANAGE_ISSUE')
         }
         isHandler={issue.capabilities.includes('MANAGE_ISSUE')}
+        onChange={async () => setIssue(await api(`${apiPrefix}/posts/${issue.id}`, issueSchema))}
+      />
+      <DiscussionPanel
+        issue={issue}
+        apiPrefix={apiPrefix}
+        membership={membership}
         onChange={async () => setIssue(await api(`${apiPrefix}/posts/${issue.id}`, issueSchema))}
       />
       <WorkflowPanel

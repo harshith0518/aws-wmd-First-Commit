@@ -18,7 +18,7 @@ Last checkpoint: **20 September 2026, afternoon**. Implementation resumed under 
 - Heartbeat `campusfix-overnight-implementation` was explicitly set to PAUSED after the cutoff. Do not restart it without a new user request.
 - Coding workspace: `C:\Users\ASUS\Desktop\my_files\Competitions\AWS Hackathon CampusFix`.
 - Original task cwd is sibling `aws - first commit`; only scratch generation scripts live there. Never copy its stale staging tree over this project.
-- Branch `codex/campusfix-lld`, origin `harshith0518/aws-wmd-First-Commit`. Baseline design/implementation committed and pushed as df2c0ad. The evidence milestone is verified and included in the next commit/push. GitHub connector refused draft PR creation with 403; Git push itself succeeded.
+- Branch `codex/campusfix-lld`, origin `harshith0518/aws-wmd-First-Commit`. Baseline design/implementation committed and pushed as df2c0ad. Evidence milestone committed and pushed as 3cb7801; working tree was clean after the push. Current uncommitted work is the replies/support vertical slice. GitHub connector refused draft PR creation with 403; Git push itself succeeded.
 - Preserve all files and user remarks. Latest developer instruction forbids proactive subagents; implement locally unless explicitly requested.
 
 ## Implemented behavior
@@ -65,7 +65,7 @@ Last checkpoint: **20 September 2026, afternoon**. Implementation resumed under 
 ## Remaining work — do not claim complete
 
 1. Real AWS evidence deployment/acceptance: private versioned buckets, GuardDuty/EventBridge, IAM/CORS/lifecycle/alarms and Linux Sharp packaging. Local evidence implementation is complete; production uploads default disabled.
-2. Next implementation priority — finish M3: replies, support, assignment/collaborators, transfer acceptance/expiry, decline/duplicate/priority commands, due workers and independent service reviews with conflict-free reviewer selection. Review and appeal workflows are not implemented.
+2. Next implementation priority — finish M3: assignment/collaborators, transfer acceptance/expiry, decline/duplicate/priority commands, due workers and independent service reviews with conflict-free reviewer selection. Review and appeal workflows are not implemented.
 3. Outbox consumption, in-app/email delivery and delivery-status UI. Atomic outbox records exist, but no notifications are delivered.
 4. Real campus onboarding, approved invitations/joins, directory administration, verified privileged MFA and trusted account/email-change revocation hook. Active open sessions currently detect external email changes at next profile sync.
 5. Knowledge entries, source validation/invalidation integration and optional Bedrock AI. `knowledgeValid=false` prevents treating current attempts as a published knowledge source; no knowledge index exists yet.
@@ -93,4 +93,15 @@ Last checkpoint: **20 September 2026, afternoon**. Implementation resumed under 
 - Final evidence verification PASS: npm.cmd run check (169 operations, 234 schemas, 41 API + 3 frontend-auth tests, typechecks and builds) plus npm.cmd run test:integration (3 real DynamoDB Local tests). 47 tests total. Offline AWS policy test was corrected to the actual lowercase conditions field and passed.
 - Browser upload/publication passed, corrected same-tab safe download produced a download event, and a narrow mobile layout had equal 360px document/scroll widths. Browser removal succeeded; final console warning/error list was empty. Viewport reset, tab closed, and rig stopped. Cleanup is limited to the nine exact tables created for suffixes d72e286d-4e62-433d-afa8-23457b1a11e4, 50e4b991-8621-4059-91c0-195a563de595 and 3ab491fc-2205-4182-9bcf-437a411c9a3b. No real data is present.
 - No paid resources or deployment. Production file parent support remains ISSUE-only; other modules are not claimed complete. The quota is a logical-original admission counter, not a complete S3 bill cap. Lifecycle for replayed/orphan objects, cloud scan acceptance and deployment packaging remain explicit blockers for real evidence use.
-- Next: publish this verified evidence checkpoint, then implement replies/support as the next real M3 slice. Continue through remaining LLD modules without claiming the entire product complete.
+- Evidence checkpoint pushed as 3cb7801 on codex/campusfix-lld. Replies/support follow below. Continue through remaining LLD modules without claiming the entire product complete.
+
+## Afternoon discussion and support milestone
+
+- Published ISSUE replies now support one child level, PUBLIC or assigned-handler-only STAFF scope, up to ten validated current-reader mentions, immutable role-at-posting labels and attributed edit history. Authors can remove their reply; the placeholder remains and removed text is available only to the author/current assigned handlers. Current permissions are checked for lists, empty pages, revisions and retries.
+- The affected toggle writes one versioned per-member record and the source count atomically. Repeated equivalent toggles cannot double-count/decrement; changed state requires the current source version. Default hourly limits are 30 reply writes and 60 support writes per actor, with downward campus overrides.
+- Real React composers, nested threads, mention choices, edit/remove reason forms, revision pagination and affected state are connected to these APIs. Version conflicts preserve unsent text. Mentions currently select from known conversation participants; full people search is pending.
+- Verification PASS: npm.cmd run check (171 operations / 236 schemas, strict typechecks, 49 API + 3 auth tests, production builds) and npm.cmd run test:integration (4 real DynamoDB Local scenarios). Total 56 tests. Integration adds concurrent same-key replies/mentions, scope protection, revisions/removal and competing support writes.
+- Evidence already pushed as 3cb7801; this discussion slice is the next checkpoint. No paid cloud resources. Reply attachments, official Question-answer metadata, votes and notification delivery remain pending; corresponding generic reply operations are marked partial.
+- Next M3 slice: eligible collaborator assignment and two-party ownership transfer, with immediate removal of temporary grants on rejection/expiry. Then independent service reviews and deadline/notification workers.
+
+- Discussion browser verification PASS: student posted and edited a reply; prior text/reason appeared in revisions; affected count changed to one; owner saved a separate private note and posted a one-level response. Switching to the student hid both the note and staff control. Browser warnings/errors: none. Tab/rig stopped; cleanup targeted only test tables for 121821be-a807-4378-8e82-a4cd86f710cd.

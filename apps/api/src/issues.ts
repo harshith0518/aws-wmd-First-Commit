@@ -355,6 +355,8 @@ export class IssueService {
         : {}),
       capabilities: member
         ? [
+            'REPLY',
+            'SUPPORT',
             ...(canManageIssue(member, postAccessSchema.parse(post), true) ? ['MANAGE_ISSUE'] : []),
             ...(post.authorId === member.userId && d.status === 'PROPOSED_RESOLVED'
               ? ['CONFIRM']

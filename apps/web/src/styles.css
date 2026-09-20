@@ -756,3 +756,65 @@ form label:first-child {
 .evidence-upload input {
   max-width: 100%;
 }
+
+.support-control {
+  margin: 1rem 0;
+  padding: 1rem 0;
+}
+.support-control p {
+  margin: 0.4rem 0 0.8rem;
+}
+.discussion-panel {
+  margin: 2rem 0;
+}
+.reply-card,
+.reply-composer {
+  padding: 1.2rem;
+  margin: 1rem 0;
+  border: 1px solid #d7dfdb;
+  border-radius: 12px;
+  background: #fff;
+  overflow-wrap: anywhere;
+}
+.reply-card header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.9rem;
+  align-items: baseline;
+}
+.reply-card time {
+  color: #54635e;
+  font-size: 0.85rem;
+}
+.reply-children {
+  margin-top: 1rem;
+  border-left: 3px solid #277561;
+  padding-left: 0.6rem;
+}
+.reply-children .reply-card,
+.reply-children .reply-composer {
+  padding: 0.8rem;
+}
+.reply-revisions {
+  border-left: 2px solid #d7dfdb;
+  padding-left: 1rem;
+}
+.reply-revisions article {
+  border-bottom: 1px solid #e5e9e7;
+  padding: 0.7rem 0;
+}
+.reply-composer details {
+  margin: 0.6rem 0 1rem;
+}
+.reply-composer summary {
+  cursor: pointer;
+}
+.mention-options {
+  display: grid;
+  gap: 0.5rem;
+  padding-top: 0.5rem;
+}
+.discussion-panel button[aria-pressed='true'] {
+  background: #e9f4ee;
+  border-color: #277561;
+}

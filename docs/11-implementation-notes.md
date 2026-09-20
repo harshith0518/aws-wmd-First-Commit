@@ -27,7 +27,7 @@ Sources: [AWS access-token semantics and subject IDs](https://docs.aws.amazon.co
 
 ## M3 core workflow clarifications
 
-- Eight explicit commands are implemented: acknowledge/start/progress/wait/resume/propose-resolution/confirm/reopen. Remaining commands, service reviews, replies, support and workers remain pending. The generic command operation is marked partial.
+- Eight explicit commands are implemented: acknowledge/start/progress/wait/resume/propose-resolution/confirm/reopen. Remaining workflow commands, service reviews and workers remain pending. Replies/support are implemented below. The generic command operation is marked partial.
 - Only eligible current owners change work state; eligible assigned collaborators may add progress. Confirmation/reopening requires the original reporter and current source version. Confirmation also binds the current resolution ID.
 - Resolution attempts are canonical RESOLUTION#id records under the post partition, with the current serialized attempt embedded on the source for atomic detail reads. Proposal, confirmation and invalidation update both in the same transaction with history/outbox. No automatic closure on silence.
 - Reopening invalidates the attempt while retaining its former confirmation attribution. knowledgeValid stays false because publication to a knowledge index is not implemented. Future retrieval must check current source state/version and cannot treat a stale confirmed attempt as valid.
@@ -53,3 +53,11 @@ Sources: [AWS access-token semantics and subject IDs](https://docs.aws.amazon.co
 - The standalone browser rig accepts only its generated harmless fixture hash. Its synthetic scanner and two-hour test tokens are never imported by production entries. The local flow uses real API authorization and DynamoDB transactions, but does not prove real GuardDuty or S3 execution.
 
 Sources: [AWS GuardDuty result events](https://docs.aws.amazon.com/guardduty/latest/ug/monitor-with-eventbridge-s3-malware-protection.html), [S3 HEAD/version/checksum](https://docs.aws.amazon.com/AmazonS3/latest/API/API_HeadObject.html), [Sharp metadata handling](https://sharp.pixelplumbing.com/api-output/).
+
+## M3 discussions and support
+
+- Replies are canonical children of the post. A campus-scoped REPLY reference resolves its ID to a post/sort key without scanning. Reads reauthorize the current post and reply scope. STAFF requires current assigned-handler authority; expired/revoked roles remove note and revision access immediately.
+- Only one nesting level; children retain the parent scope. Mentions are current readers, at most ten, with canonical membership/profile guards in the transaction. Staff-note mentions must also be assigned handlers. Mention IDs are recorded for the future notification consumer; delivery is not claimed.
+- Edit stores the previous version under REV#replyId#zero-padded-version. Removal retains a named placeholder and restricts old text to its author/current assigned handlers. A historical role label is not an official-answer badge.
+- Support uses SUPPORT#subject with an enabled flag and version. This deliberately replaces the design's physical Delete with a disabled tombstone so the existing conditional-write repository can guard re-add/remove races. Disabled records have no My Activity index keys; counts change exactly once per actual state change. Equivalent PUT is a guarded no-op with a receipt, audit/outbox and quota consumption.
+- POST/PATCH/remove reply endpoints remain partial because only ISSUE text discussions are implemented. Files under REPLY and Question official-source metadata must not be accepted until those full lifecycles exist.

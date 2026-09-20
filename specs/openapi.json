@@ -2601,7 +2601,7 @@
       "get": {
         "operationId": "reply_list",
         "summary": "Read replies and permitted staff notes",
-        "description": "Authorize the current actor and canonical target; never trust discovery projections as access grants.",
+        "description": "Authorize the current actor and canonical target; never trust discovery projections as access grants. Implemented for published ISSUE text discussions: one child level, current audience checks, assigned-handler-only STAFF notes, validated mentions, attributed revisions and removal placeholders. REPLY attachments and official question-answer metadata remain unimplemented; unsupported fields are rejected.",
         "x-release": "R1",
         "x-implemented": false,
         "tags": [
@@ -2653,6 +2653,19 @@
               "type": "string",
               "format": "uuid"
             }
+          },
+          {
+            "name": "scope",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "PUBLIC",
+                "STAFF"
+              ],
+              "default": "PUBLIC"
+            }
           }
         ],
         "security": [
@@ -2701,12 +2714,14 @@
           "503": {
             "$ref": "#/components/responses/StandardError"
           }
-        }
+        },
+        "x-implementation-status": "partial",
+        "x-implementation-notes": "Published ISSUE text replies only; other parent modules, reply files and official-answer metadata remain pending."
       },
       "post": {
         "operationId": "reply_create",
         "summary": "Reply with one nesting level",
-        "description": "Create text reply first; response returns reply ID and attachmentIds=[]. Then reserve/upload using parentKind=REPLY and parentId=this reply. Successful complete atomically links attachment ID under the existing parent; worker makes CLEAN eligible. No preexisting reply attachment IDs accepted at create.",
+        "description": "Create text reply first; response returns reply ID and attachmentIds=[]. Then reserve/upload using parentKind=REPLY and parentId=this reply. Successful complete atomically links attachment ID under the existing parent; worker makes CLEAN eligible. No preexisting reply attachment IDs accepted at create. Implemented for published ISSUE text discussions: one child level, current audience checks, assigned-handler-only STAFF notes, validated mentions, attributed revisions and removal placeholders. REPLY attachments and official question-answer metadata remain unimplemented; unsupported fields are rejected.",
         "x-release": "R1",
         "x-implemented": false,
         "tags": [
@@ -2791,14 +2806,16 @@
               }
             }
           }
-        }
+        },
+        "x-implementation-status": "partial",
+        "x-implementation-notes": "Published ISSUE text replies only; other parent modules, reply files and official-answer metadata remain pending."
       }
     },
     "/api/v1/campuses/{campusId}/posts/{postId}/replies/{replyId}": {
       "patch": {
         "operationId": "reply_revise",
         "summary": "Revise own reply with history",
-        "description": "Authorize the current actor and canonical target; never trust discovery projections as access grants.",
+        "description": "Authorize the current actor and canonical target; never trust discovery projections as access grants. Implemented for published ISSUE text discussions: one child level, current audience checks, assigned-handler-only STAFF notes, validated mentions, attributed revisions and removal placeholders. REPLY attachments and official question-answer metadata remain unimplemented; unsupported fields are rejected.",
         "x-release": "R1",
         "x-implemented": false,
         "tags": [
@@ -2892,14 +2909,16 @@
               }
             }
           }
-        }
+        },
+        "x-implementation-status": "partial",
+        "x-implementation-notes": "Published ISSUE text replies only; other parent modules, reply files and official-answer metadata remain pending."
       }
     },
     "/api/v1/campuses/{campusId}/posts/{postId}/replies/{replyId}/remove": {
       "post": {
         "operationId": "reply_remove",
         "summary": "Remove own reply leaving attributed placeholder",
-        "description": "Authorize the current actor and canonical target; never trust discovery projections as access grants.",
+        "description": "Authorize the current actor and canonical target; never trust discovery projections as access grants. Implemented for published ISSUE text discussions: one child level, current audience checks, assigned-handler-only STAFF notes, validated mentions, attributed revisions and removal placeholders. REPLY attachments and official question-answer metadata remain unimplemented; unsupported fields are rejected.",
         "x-release": "R1",
         "x-implemented": false,
         "tags": [
@@ -2993,7 +3012,9 @@
               }
             }
           }
-        }
+        },
+        "x-implementation-status": "partial",
+        "x-implementation-notes": "Published ISSUE text replies only; other parent modules, reply files and official-answer metadata remain pending."
       }
     },
     "/api/v1/campuses/{campusId}/posts/{postId}/subscription": {
@@ -3268,9 +3289,9 @@
       "put": {
         "operationId": "issue_support",
         "summary": "Set own affected/support state once",
-        "description": "Authorize the current actor and canonical target; never trust discovery projections as access grants.",
+        "description": "Set the current reader’s affected state. Atomic per-member record and source count; same desired state is a safe no-op, including a stale expectedVersion. A changed state requires current expectedVersion. Hourly mutation quota and current source ACL apply.",
         "x-release": "R1",
-        "x-implemented": false,
+        "x-implemented": true,
         "tags": [
           "issue"
         ],
@@ -3352,6 +3373,83 @@
                 "$ref": "#/components/schemas/Toggle"
               }
             }
+          }
+        }
+      },
+      "get": {
+        "operationId": "issue_support_get",
+        "summary": "Read own affected state and authorized total",
+        "description": "Set the current reader’s affected state. Atomic per-member record and source count; same desired state is a safe no-op, including a stale expectedVersion. A changed state requires current expectedVersion. Hourly mutation quota and current source ACL apply.",
+        "x-release": "R1",
+        "x-implemented": true,
+        "tags": [
+          "issue"
+        ],
+        "parameters": [
+          {
+            "name": "campusId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "postId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SupportResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/StandardError"
+          },
+          "401": {
+            "$ref": "#/components/responses/StandardError"
+          },
+          "403": {
+            "$ref": "#/components/responses/StandardError"
+          },
+          "404": {
+            "$ref": "#/components/responses/StandardError"
+          },
+          "409": {
+            "$ref": "#/components/responses/StandardError"
+          },
+          "413": {
+            "$ref": "#/components/responses/StandardError"
+          },
+          "422": {
+            "$ref": "#/components/responses/StandardError"
+          },
+          "429": {
+            "$ref": "#/components/responses/StandardError"
+          },
+          "500": {
+            "$ref": "#/components/responses/StandardError"
+          },
+          "503": {
+            "$ref": "#/components/responses/StandardError"
           }
         }
       }
@@ -15337,6 +15435,115 @@
         "x-implementation-status": "partial",
         "x-implementation-notes": "Implemented for ISSUE posts and their private drafts. Other post types are pending."
       }
+    },
+    "/api/v1/campuses/{campusId}/posts/{postId}/replies/{replyId}/revisions": {
+      "get": {
+        "operationId": "reply_revisions",
+        "summary": "Read permitted prior reply versions",
+        "description": "Current source and reply scope authorize each request. Removed bodies are retained only for the author and current assigned handlers. Implemented for ISSUE replies. Cursors bind current actor, authorization and source ACL.",
+        "x-release": "R1",
+        "x-implemented": false,
+        "tags": [
+          "reply"
+        ],
+        "parameters": [
+          {
+            "name": "campusId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "postId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "replyId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 16384
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 25
+            }
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReplyRevisionPage"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/StandardError"
+          },
+          "401": {
+            "$ref": "#/components/responses/StandardError"
+          },
+          "403": {
+            "$ref": "#/components/responses/StandardError"
+          },
+          "404": {
+            "$ref": "#/components/responses/StandardError"
+          },
+          "409": {
+            "$ref": "#/components/responses/StandardError"
+          },
+          "413": {
+            "$ref": "#/components/responses/StandardError"
+          },
+          "422": {
+            "$ref": "#/components/responses/StandardError"
+          },
+          "429": {
+            "$ref": "#/components/responses/StandardError"
+          },
+          "500": {
+            "$ref": "#/components/responses/StandardError"
+          },
+          "503": {
+            "$ref": "#/components/responses/StandardError"
+          }
+        },
+        "x-implementation-status": "partial",
+        "x-implementation-notes": "Published ISSUE text replies only; other parent modules, reply files and official-answer metadata remain pending."
+      }
     }
   },
   "components": {
@@ -17749,6 +17956,22 @@
             },
             "maxItems": 3,
             "uniqueItems": true
+          },
+          "mentions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Person"
+            },
+            "maxItems": 10
+          },
+          "roleAtPosting": {
+            "type": "string",
+            "enum": [
+              "MEMBER",
+              "HANDLER",
+              "UNIT_LEAD",
+              "SENSITIVE_HANDLER"
+            ]
           }
         },
         "required": [
@@ -17762,7 +17985,9 @@
           "scope",
           "usefulCount",
           "viewerVoted",
-          "attachmentIds"
+          "attachmentIds",
+          "mentions",
+          "roleAtPosting"
         ],
         "additionalProperties": false
       },
@@ -17789,7 +18014,10 @@
             "type": "array",
             "items": {
               "type": "string",
-              "format": "uuid"
+              "minLength": 1,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z0-9_-]+$",
+              "description": "Opaque verified Cognito subject; not restricted to RFC UUID."
             },
             "maxItems": 10,
             "uniqueItems": true
@@ -25301,6 +25529,92 @@
         "required": [
           "items",
           "uploadsEnabled"
+        ],
+        "additionalProperties": false
+      },
+      "ReplyRevision": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "campusId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "version": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000000
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "body": {
+            "type": "string",
+            "maxLength": 2000
+          },
+          "scope": {
+            "type": "string",
+            "enum": [
+              "PUBLIC",
+              "STAFF"
+            ]
+          },
+          "replyId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "actor": {
+            "$ref": "#/components/schemas/Person"
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          }
+        },
+        "required": [
+          "id",
+          "campusId",
+          "version",
+          "createdAt",
+          "updatedAt",
+          "body",
+          "scope",
+          "replyId",
+          "actor",
+          "reason"
+        ],
+        "additionalProperties": false
+      },
+      "ReplyRevisionPage": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReplyRevision"
+            },
+            "maxItems": 25
+          },
+          "nextCursor": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 16384
+          }
+        },
+        "required": [
+          "items",
+          "nextCursor"
         ],
         "additionalProperties": false
       }

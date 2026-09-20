@@ -10,12 +10,14 @@ export type CommandPlan<T> = {
   response: T;
   writes: Write[];
   eventType: string;
-  eventScope: 'AUTHOR' | 'READERS';
+  eventScope: 'AUTHOR' | 'READERS' | 'HANDLERS';
   sourceVersion: number;
   newPost?: boolean;
   event?: {
     summary: string;
     attachmentIds?: string[];
+    replyId?: string;
+    mentionIds?: string[];
     reason?: string;
     changes?: Array<{
       field: string;
