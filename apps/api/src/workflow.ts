@@ -1,3 +1,4 @@
+import { involvement } from './involvement.js';
 import { canReadAttachment, fileKey } from './files/policy.js';
 import { randomUUID } from 'node:crypto';
 import {
@@ -139,7 +140,10 @@ export class WorkflowService {
           );
         if ('nextUpdateAt' in data && Date.parse(data.nextUpdateAt) <= Date.now())
           throw new ApiError(422, 'INVALID_NEXT_UPDATE', 'Choose a future next-update time.');
-        const writes: Write[] = [...evidenceGuards];
+        const writes: Write[] = [
+          ...evidenceGuards,
+          ...(!reporter ? await involvement(this.issues, post, [actor]) : []),
+        ];
         if ('nextAction' in data) d.nextAction = data.nextAction;
         if ('nextUpdateAt' in data) d.nextUpdateAt = data.nextUpdateAt;
         if (data.action === 'acknowledge') {

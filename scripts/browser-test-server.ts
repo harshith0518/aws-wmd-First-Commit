@@ -26,6 +26,7 @@ import { IdentityService } from '../apps/api/src/identity-service.js';
 import { CursorCodec } from '../apps/api/src/cursor.js';
 import { issueFixture } from '../apps/api/test/issue-fixture.js';
 import { keys } from '../apps/api/src/data/keys.js';
+import {hash} from '../apps/api/src/identity-service.js';
 const root = fileURLToPath(new URL('../', import.meta.url));
 const id = randomUUID();
 const prefix = `campusfix-browser-test-${id}`;
@@ -78,6 +79,11 @@ try {
       },
     ],
   });
+  const reviewer=randomUUID();
+  fixture.store.seed(fixture.config.CORE_TABLE,{...fixture.profile,...keys.profile(reviewer),id:reviewer,displayName:'Independent reviewer',verifiedEmail:'reviewer@example.test'});
+  fixture.store.seed(fixture.config.CORE_TABLE,{...fixture.member,...keys.member(fixture.campus,reviewer),id:randomUUID(),userId:reviewer,groupIds:[],verifiedEmailHash:hash('reviewer@example.test'),roles:[{id:randomUUID(),role:'REVIEWER',scope:'UNIT',scopeId:fixture.unit,expiresAt:'2099-01-01T00:00:00Z'}]});
+  const testCampus=(await fixture.store.get(fixture.config.CORE_TABLE,keys.campus(fixture.campus)))!;
+  fixture.store.seed(fixture.config.CORE_TABLE,{...testCampus,independentReviewerId:reviewer});
   await store.transact(
     [...fixture.store.items.values()].map((item) => ({
       table: config.CORE_TABLE,
@@ -138,6 +144,8 @@ try {
     .setExpirationTime('2h')
     .setProtectedHeader({ alg: 'RS256', kid: jwk.kid })
     .sign(pair.privateKey);
+  const reviewerMembership=await identity.membership(reviewer,fixture.campus);
+  const reviewerToken=await new SignJWT({token_use:'access',client_id:clientId,scope:'openid email campusfix/api'}).setSubject(reviewer).setIssuer(issuer).setIssuedAt().setExpirationTime('2h').setProtectedHeader({alg:'RS256',kid:jwk.kid}).sign(pair.privateKey);
   const campus = {
     id: fixture.campus,
     name: 'Synthetic Browser Test Campus',
@@ -145,7 +153,7 @@ try {
     status: 'ACTIVE',
     membershipStatus: 'ACTIVE',
   };
-  const contents = `import React,{useState} from 'react';import {createRoot} from 'react-dom/client';import {IssueWorkspace} from './src/issues';import {ApiContext,createApi} from './src/api';import './src/styles.css';const actors=[{label:'Synthetic student',token:${JSON.stringify(token)},membership:${JSON.stringify(membership)}},{label:'Synthetic owner',token:${JSON.stringify(ownerToken)},membership:${JSON.stringify(ownerMembership)}},{label:'Synthetic recipient',token:${JSON.stringify(recipientToken)},membership:${JSON.stringify(recipientMembership)}}];const clients=actors.map(a=>createApi(()=>a.token));function TestApp(){const [role,setRole]=useState(0);const [route,setRoute]=useState('/c/${fixture.campus}/issues');function navigate(next){history.pushState(null,'',next);setRoute(next);}return <ApiContext.Provider value={clients[role]}><div className="shell"><header className="header"><strong>CampusFix browser verification</strong><span className="badge">Synthetic identities and test-only tables</span><label>Test identity<select value={role} onChange={e=>{setRole(Number(e.target.value));navigate('/c/${fixture.campus}/issues');}}>{actors.map((a,i)=><option key={i} value={i}>{a.label}</option>)}</select></label></header><main><IssueWorkspace key={role} campus={${JSON.stringify(campus)}} membership={actors[role].membership} path={route} navigate={navigate}/></main></div></ApiContext.Provider>;}createRoot(document.getElementById('root')).render(<TestApp/>);`;
+  const contents = `import React,{useState} from 'react';import {createRoot} from 'react-dom/client';import {IssueWorkspace} from './src/issues';import {ApiContext,createApi} from './src/api';import './src/styles.css';const actors=[{label:'Synthetic student',token:${JSON.stringify(token)},membership:${JSON.stringify(membership)}},{label:'Synthetic owner',token:${JSON.stringify(ownerToken)},membership:${JSON.stringify(ownerMembership)}},{label:'Synthetic recipient',token:${JSON.stringify(recipientToken)},membership:${JSON.stringify(recipientMembership)}},{label:'Synthetic reviewer',token:${JSON.stringify(reviewerToken)},membership:${JSON.stringify(reviewerMembership)}}];const clients=actors.map(a=>createApi(()=>a.token));function TestApp(){const [role,setRole]=useState(0);const [route,setRoute]=useState('/c/${fixture.campus}/issues');function navigate(next){history.pushState(null,'',next);setRoute(next);}return <ApiContext.Provider value={clients[role]}><div className="shell"><header className="header"><strong>CampusFix browser verification</strong><span className="badge">Synthetic identities and test-only tables</span><label>Test identity<select value={role} onChange={e=>{setRole(Number(e.target.value));navigate('/c/${fixture.campus}/issues');}}>{actors.map((a,i)=><option key={i} value={i}>{a.label}</option>)}</select></label></header><main><IssueWorkspace key={role} campus={${JSON.stringify(campus)}} membership={actors[role].membership} path={route} navigate={navigate}/></main></div></ApiContext.Provider>;}createRoot(document.getElementById('root')).render(<TestApp/>);`;
   await writeFile(path.join(folder, 'ui-entry.tsx'), contents);
   await build({
     stdin: { contents, loader: 'tsx', resolveDir: path.join(root, 'apps', 'web') },

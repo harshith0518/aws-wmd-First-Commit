@@ -1,3 +1,4 @@
+import { ReviewWorkspace } from './reviews';
 import { OwnershipPanel } from './ownership';
 import { DiscussionPanel, SupportControl } from './discussion';
 import { FilePanel } from './files';
@@ -91,6 +92,9 @@ export function IssueWorkspace({
             >
               My drafts
             </button>
+            <button className="tab" onClick={() => navigate(`${prefix}/service-reviews`)}>
+              Service reviews
+            </button>
             <button className="tab" onClick={() => navigate(`${prefix}/membership`)}>
               My access
             </button>
@@ -113,6 +117,14 @@ export function IssueWorkspace({
         </div>
       ) : !configuration ? (
         <p role="status">Loading your campus and current permissions…</p>
+      ) : tail.startsWith('/service-reviews') ? (
+        <ReviewWorkspace
+          apiPrefix={apiPrefix}
+          tail={tail}
+          membership={membership}
+          navigate={navigate}
+          routePrefix={prefix}
+        />
       ) : tail === '/issues/new' || draftId ? (
         <ReportForm
           key={draftId ?? 'new'}
@@ -133,6 +145,7 @@ export function IssueWorkspace({
       ) : issueId ? (
         <IssueDetail
           key={issueId}
+          onReview={() => navigate(`${prefix}/service-reviews/new?issue=${issueId}`)}
           id={issueId}
           apiPrefix={apiPrefix}
           configuration={configuration}
@@ -891,12 +904,14 @@ function DraftList({ apiPrefix, open }: { apiPrefix: string; open: (id: string) 
   );
 }
 function IssueDetail({
+  onReview,
   id,
   apiPrefix,
   configuration,
   membership,
 }: {
   id: string;
+  onReview: () => void;
   apiPrefix: string;
   configuration: PublicConfiguration;
   membership: Membership;
@@ -1018,6 +1033,11 @@ function IssueDetail({
         membership={membership}
         onChange={async () => setIssue(await api(`${apiPrefix}/posts/${issue.id}`, issueSchema))}
       />
+      {issue.capabilities.includes('REQUEST_REVIEW') && (
+        <button type="button" className="secondary" onClick={onReview}>
+          Request an independent review
+        </button>
+      )}
       <OwnershipPanel
         issue={issue}
         apiPrefix={apiPrefix}

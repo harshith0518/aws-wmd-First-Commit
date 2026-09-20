@@ -8426,7 +8426,9 @@
               }
             }
           }
-        }
+        },
+        "x-implementation-status": "partial",
+        "x-implementation-notes": "Private text service reviews for ISSUE sources: intake, safe own/assigned list, current independent-role read, responses/notes, begin/decide/require-action/close and private history. Review evidence, corrective-task delivery, configured-reviewer reassignment, escalation jobs and appeals remain pending. Reviewer must not be current/past handler, requester, reply author or named subject."
       },
       "get": {
         "operationId": "review_mine",
@@ -8513,7 +8515,9 @@
           "503": {
             "$ref": "#/components/responses/StandardError"
           }
-        }
+        },
+        "x-implementation-status": "partial",
+        "x-implementation-notes": "Private text service reviews for ISSUE sources: intake, safe own/assigned list, current independent-role read, responses/notes, begin/decide/require-action/close and private history. Review evidence, corrective-task delivery, configured-reviewer reassignment, escalation jobs and appeals remain pending. Reviewer must not be current/past handler, requester, reply author or named subject."
       }
     },
     "/api/v1/campuses/{campusId}/service-reviews/{reviewId}": {
@@ -8592,7 +8596,9 @@
           "503": {
             "$ref": "#/components/responses/StandardError"
           }
-        }
+        },
+        "x-implementation-status": "partial",
+        "x-implementation-notes": "Private text service reviews for ISSUE sources: intake, safe own/assigned list, current independent-role read, responses/notes, begin/decide/require-action/close and private history. Review evidence, corrective-task delivery, configured-reviewer reassignment, escalation jobs and appeals remain pending. Reviewer must not be current/past handler, requester, reply author or named subject."
       }
     },
     "/api/v1/campuses/{campusId}/service-reviews/{reviewId}/responses": {
@@ -8690,7 +8696,9 @@
           "503": {
             "$ref": "#/components/responses/StandardError"
           }
-        }
+        },
+        "x-implementation-status": "partial",
+        "x-implementation-notes": "Private text service reviews for ISSUE sources: intake, safe own/assigned list, current independent-role read, responses/notes, begin/decide/require-action/close and private history. Review evidence, corrective-task delivery, configured-reviewer reassignment, escalation jobs and appeals remain pending. Reviewer must not be current/past handler, requester, reply author or named subject."
       },
       "post": {
         "operationId": "review_respond",
@@ -8780,7 +8788,9 @@
               }
             }
           }
-        }
+        },
+        "x-implementation-status": "partial",
+        "x-implementation-notes": "Private text service reviews for ISSUE sources: intake, safe own/assigned list, current independent-role read, responses/notes, begin/decide/require-action/close and private history. Review evidence, corrective-task delivery, configured-reviewer reassignment, escalation jobs and appeals remain pending. Reviewer must not be current/past handler, requester, reply author or named subject."
       }
     },
     "/api/v1/campuses/{campusId}/service-reviews/{reviewId}/commands": {
@@ -8872,7 +8882,9 @@
               }
             }
           }
-        }
+        },
+        "x-implementation-status": "partial",
+        "x-implementation-notes": "Private text service reviews for ISSUE sources: intake, safe own/assigned list, current independent-role read, responses/notes, begin/decide/require-action/close and private history. Review evidence, corrective-task delivery, configured-reviewer reassignment, escalation jobs and appeals remain pending. Reviewer must not be current/past handler, requester, reply author or named subject."
       }
     },
     "/api/v1/campuses/{campusId}/service-reviews/{reviewId}/history": {
@@ -8935,7 +8947,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/EventPage"
+                  "$ref": "#/components/schemas/ReviewEventPage"
                 }
               }
             }
@@ -8970,7 +8982,9 @@
           "503": {
             "$ref": "#/components/responses/StandardError"
           }
-        }
+        },
+        "x-implementation-status": "partial",
+        "x-implementation-notes": "Private text service reviews for ISSUE sources: intake, safe own/assigned list, current independent-role read, responses/notes, begin/decide/require-action/close and private history. Review evidence, corrective-task delivery, configured-reviewer reassignment, escalation jobs and appeals remain pending. Reviewer must not be current/past handler, requester, reply author or named subject."
       }
     },
     "/api/v1/campuses/{campusId}/service-reviews/{reviewId}/appeals": {
@@ -15651,6 +15665,104 @@
           }
         }
       }
+    },
+    "/api/v1/campuses/{campusId}/service-reviews/{reviewId}/handler-candidates": {
+      "get": {
+        "operationId": "review_handlerCandidates",
+        "summary": "Choose an eligible corrective handler without granting access to the complaint",
+        "description": "Authorize the current actor and canonical target; never trust discovery projections as access grants.",
+        "x-release": "R1",
+        "x-implemented": true,
+        "tags": [
+          "review"
+        ],
+        "parameters": [
+          {
+            "name": "campusId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "reviewId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 16384
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 25
+            }
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HandlerCandidatePage"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/StandardError"
+          },
+          "401": {
+            "$ref": "#/components/responses/StandardError"
+          },
+          "403": {
+            "$ref": "#/components/responses/StandardError"
+          },
+          "404": {
+            "$ref": "#/components/responses/StandardError"
+          },
+          "409": {
+            "$ref": "#/components/responses/StandardError"
+          },
+          "413": {
+            "$ref": "#/components/responses/StandardError"
+          },
+          "422": {
+            "$ref": "#/components/responses/StandardError"
+          },
+          "429": {
+            "$ref": "#/components/responses/StandardError"
+          },
+          "500": {
+            "$ref": "#/components/responses/StandardError"
+          },
+          "503": {
+            "$ref": "#/components/responses/StandardError"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -20509,7 +20621,10 @@
           },
           "correctiveOwnerId": {
             "type": "string",
-            "format": "uuid"
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[A-Za-z0-9_-]+$",
+            "description": "Opaque verified Cognito subject; not restricted to RFC UUID."
           },
           "decisionId": {
             "type": "string",
@@ -20522,6 +20637,34 @@
           "decisionDueAt": {
             "type": "string",
             "format": "date-time"
+          },
+          "subject": {
+            "$ref": "#/components/schemas/Person"
+          },
+          "reviewerAvailable": {
+            "type": "boolean"
+          },
+          "nextUpdateAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "appealDeadline": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "capabilities": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "RESPOND",
+                "BEGIN",
+                "DECIDE",
+                "REQUIRE_ACTION",
+                "CLOSE"
+              ]
+            },
+            "maxItems": 5
           }
         },
         "required": [
@@ -20537,7 +20680,9 @@
           "evidenceIds",
           "state",
           "ackDueAt",
-          "decisionDueAt"
+          "decisionDueAt",
+          "capabilities",
+          "reviewerAvailable"
         ],
         "additionalProperties": false
       },
@@ -20569,6 +20714,13 @@
           "desiredOutcome": {
             "type": "string",
             "maxLength": 1000
+          },
+          "subjectId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[A-Za-z0-9_-]+$",
+            "description": "Opaque verified Cognito subject; not restricted to RFC UUID."
           }
         },
         "required": [
@@ -25029,7 +25181,10 @@
           },
           "correctiveOwnerId": {
             "type": "string",
-            "format": "uuid"
+            "minLength": 1,
+            "maxLength": 128,
+            "pattern": "^[A-Za-z0-9_-]+$",
+            "description": "Opaque verified Cognito subject; not restricted to RFC UUID."
           },
           "dueAt": {
             "type": "string",
@@ -25793,6 +25948,92 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/Person"
+            },
+            "maxItems": 25
+          },
+          "nextCursor": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 16384
+          }
+        },
+        "required": [
+          "items",
+          "nextCursor"
+        ],
+        "additionalProperties": false
+      },
+      "ReviewEvent": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "campusId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "version": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1000000
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "eventType": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80
+          },
+          "actor": {
+            "$ref": "#/components/schemas/Person"
+          },
+          "summary": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          },
+          "reason": {
+            "type": "string",
+            "maxLength": 2000
+          },
+          "visibility": {
+            "type": "string",
+            "enum": [
+              "COMPLAINANT_REVIEWERS",
+              "REVIEWERS"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "campusId",
+          "version",
+          "createdAt",
+          "updatedAt",
+          "eventType",
+          "actor",
+          "summary",
+          "visibility"
+        ],
+        "additionalProperties": false
+      },
+      "ReviewEventPage": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReviewEvent"
             },
             "maxItems": 25
           },

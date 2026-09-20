@@ -1,3 +1,5 @@
+import { ReviewService } from './reviews.js';
+import { reviewRoutes } from './review-routes.js';
 import { DiscussionService } from './discussion.js';
 import { discussionRoutes } from './discussion-routes.js';
 import { FileService } from './files/service.js';
@@ -93,6 +95,7 @@ export function createApp(
   if (dependencies.identity) {
     const issues = new IssueService(dependencies.identity);
     app.route('/api/v1/campuses', issueRoutes(issues));
+    app.route('/api/v1/campuses', reviewRoutes(new ReviewService(issues)));
     app.route('/api/v1/campuses', discussionRoutes(new DiscussionService(issues)));
     app.route('/api/v1/campuses', fileRoutes(new FileService(issues, dependencies.evidence)));
   }

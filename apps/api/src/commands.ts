@@ -10,7 +10,8 @@ export type CommandPlan<T> = {
   response: T;
   writes: Write[];
   eventType: string;
-  eventScope: 'AUTHOR' | 'READERS' | 'HANDLERS';
+  eventScope: 'AUTHOR' | 'READERS' | 'HANDLERS' | 'REVIEW_PARTIES' | 'REVIEWERS';
+  resourceKind?: 'POST' | 'REVIEW';
   sourceVersion: number;
   newPost?: boolean;
   event?: {
@@ -79,7 +80,10 @@ export class CampusCommands {
     }
     const eventId = randomUUID();
     const eventKey = {
-      pk: keys.post(campus, prepared.resourceId).pk,
+      pk:
+        prepared.resourceKind === 'REVIEW'
+          ? `C#${campus}#REVIEW#${prepared.resourceId}`
+          : keys.post(campus, prepared.resourceId).pk,
       sk: `EVENT#${date}#${eventId}`,
     };
     const jobKey = { pk: `C#${campus}#JOB#${eventId}`, sk: 'META' };
@@ -177,6 +181,8 @@ export class CampusCommands {
           ...jobKey,
           kind: prepared.eventType,
           sourceId: prepared.resourceId,
+          sourceKind: prepared.resourceKind ?? 'POST',
+          campusId: campus,
           sourceVersion: prepared.sourceVersion,
           state: 'PENDING',
           attempts: 0,
@@ -217,7 +223,12 @@ export class CampusCommands {
       const committed = await recover();
       if (committed) return committed.response;
       context = await this.identity.member(actor, campus);
-      const current = await store.get(config.CORE_TABLE, keys.post(campus, prepared.resourceId));
+      const current = await store.get(
+        config.CORE_TABLE,
+        prepared.resourceKind === 'REVIEW'
+          ? { pk: `C#${campus}#REVIEW#${prepared.resourceId}`, sk: 'META' }
+          : keys.post(campus, prepared.resourceId),
+      );
       throw new ApiError(
         409,
         'VERSION_CONFLICT',

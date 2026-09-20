@@ -1,3 +1,4 @@
+import { involvement } from './involvement.js';
 import { randomUUID } from 'node:crypto';
 import {
   assignmentSchema,
@@ -202,6 +203,7 @@ export class OwnershipService {
           response: await this.issues.issueDto(updated, ctx.member),
           writes: [
             ...guards,
+            ...(await involvement(this.issues, post, data.collaboratorIds)),
             { ...this.issues.guard(post), item: updated },
             ...(await this.pointers(updated, data.collaboratorIds)),
           ],
@@ -347,6 +349,8 @@ export class OwnershipService {
             data.action === 'propose-transfer' ? [data.toOwnerId] : [],
           )),
         );
+        if (data.action === 'accept-transfer')
+          writes.push(...(await involvement(this.issues, post, [actor])));
         const response = canReadPost(ctx.member, postAccessSchema.parse(updated))
           ? await this.issues.issueDto(updated, ctx.member)
           : accessEndedSchema.parse({ postId: id, version: updated.version, accessEnded: true });

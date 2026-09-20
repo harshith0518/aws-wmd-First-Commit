@@ -1,3 +1,4 @@
+import { involvement } from './involvement.js';
 import { randomUUID } from 'node:crypto';
 import {
   replyCreateSchema,
@@ -272,6 +273,9 @@ export class DiscussionService {
           response: await this.dto(reply),
           writes: [
             ...guards,
+            ...(this.role(ctx.member, post) !== 'MEMBER'
+              ? await involvement(this.issues, post, [actor])
+              : []),
             await this.quota(actor, campus, (ctx.campus.quotas ?? {}) as Record<string, unknown>),
             { ...this.issues.guard(post), item: updated },
             {

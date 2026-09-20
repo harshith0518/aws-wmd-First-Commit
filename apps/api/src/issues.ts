@@ -1,3 +1,4 @@
+import { involvement } from './involvement.js';
 import { fileKey, canReadAttachment } from './files/policy.js';
 import { randomUUID } from 'node:crypto';
 import { z } from 'zod';
@@ -359,6 +360,7 @@ export class IssueService {
         ? [
             'REPLY',
             'SUPPORT',
+            'REQUEST_REVIEW',
             ...(canAssignIssue(member, postAccessSchema.parse(post)) ? ['ASSIGN'] : []),
             ...(canManageIssue(member, postAccessSchema.parse(post)) ? ['TRANSFER'] : []),
             ...(transferRecipient(member, postAccessSchema.parse(post))
@@ -620,6 +622,7 @@ export class IssueService {
             item: post,
           },
         ];
+        writes.push(...(await involvement(this, post, [unit.leadId, ...handlers])));
         for (const scope of scopes) {
           const k = { pk: discoveryKey(campus, scope), sk: `${post.createdAt}#${id}` };
           writes.push({

@@ -2,7 +2,7 @@
 
 CampusFix makes college service issues traceable from student report to accountable resolution, with scoped student questions, event teams and a campus marketplace.
 
-This folder contains the design and working identity and text reporting slices: private issue drafts, confirmed audience, accountable owner, service deadlines and permission-filtered feeds. See `PROGRESS.md` for current scope and `SETUP-VERIFICATION.md` for verification evidence. The core staff-to-reporter resolution loop and evidence lifecycle also work locally. Real AWS storage/scanning acceptance, independent reviews, notifications and cloud deployment remain pending.
+This folder contains the design and working identity and text reporting slices: private issue drafts, confirmed audience, accountable owner, service deadlines and permission-filtered feeds. See `PROGRESS.md` for current scope and `SETUP-VERIFICATION.md` for verification evidence. The core staff-to-reporter resolution loop and evidence lifecycle also work locally. Real AWS storage/scanning acceptance, review evidence/appeals, notifications and cloud deployment remain pending.
 
 ## Read in this order
 
@@ -47,14 +47,14 @@ Then continue through the prompts in order. The shared contracts let frontend, b
 
 ## Contents and status
 
-- `apps/web`: React/Vite identity, reporting, drafts, scoped feed, staff queue resolution/history, evidence, threaded discussions, affected status and ownership handover screens connected to real APIs.
+- `apps/web`: React/Vite identity, reporting, drafts, scoped feed, staff queue resolution/history, evidence, threaded discussions, affected status and ownership handover and private service-review screens connected to real APIs.
 - `apps/api`: Hono local server and Lambda entry; identity, authorization, atomic drafts/publication, workflow commands, version-bound evidence processing and scoped reads.
 - `packages/contracts`: shared Zod request/response contracts aligned with implemented OpenAPI operations.
 - `infra`: deployment implementation guide; no AWS resources provisioned.
 - `scripts`: development runner, contract checks and local database setup.
 - `SETUP-VERIFICATION.md`: exact checks, installed versions and limitations.
 
-Typechecks, 65 automated tests, production builds and synthetic browser reporting/evidence checks passed. DynamoDB Local integration runs through Java because Docker is unavailable. Real Cognito/S3/GuardDuty acceptance, independent reviews, notifications, Bedrock and AWS deployment remain unverified or unfinished.
+Typechecks, 75 automated tests, production builds and synthetic browser reporting/evidence checks passed. DynamoDB Local integration runs through Java because Docker is unavailable. Real Cognito/S3/GuardDuty acceptance, review evidence/appeals, notifications, Bedrock and AWS deployment remain unverified or unfinished.
 
 The earlier $50/month number is a planning target, not a verified AWS bill. See chapter 8 for the workload model and deployment inputs.
 
