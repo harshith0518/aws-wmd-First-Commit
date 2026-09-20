@@ -15,7 +15,7 @@
     "build": "npm run build --workspace @campusfix/api && npm run build --workspace @campusfix/web",
     "typecheck": "npm run typecheck --workspaces --if-present",
     "test": "npm run test --workspaces --if-present",
-    "check": "npm run specs:check && npm run typecheck && npm test && npm run build && npm run infra:check",
+    "check": "npm run specs:check && npm run typecheck && npm test && npm run build && npm run infra:check && npm run demo:check",
     "specs:check": "node scripts/validate-specs.mjs",
     "test:integration": "npm run test:integration --workspace @campusfix/api",
     "format": "prettier --write \"apps/**/*.{ts,tsx,css}\" \"packages/**/*.ts\" \"scripts/*.mjs\"",
@@ -26,7 +26,10 @@
     "aws:publish": "node scripts/aws/publish.mjs",
     "aws:smoke": "node scripts/aws/smoke.mjs",
     "aws:seed": "node --import tsx scripts/aws/seed-demo.ts",
-    "infra:check": "tsc -p infra/tsconfig.json && node --import tsx --test infra/test/*.test.ts"
+    "infra:check": "tsc -p infra/tsconfig.json && node --import tsx --test infra/test/*.test.ts",
+    "demo": "node scripts/demo/start.mjs",
+    "demo:reset": "node scripts/demo/start.mjs --reset",
+    "demo:check": "tsc -p scripts/demo/tsconfig.json && node --import tsx --test scripts/demo/test/*.test.ts"
   },
   "devDependencies": {
     "@aws-sdk/client-cognito-identity-provider": "3.1136.0",

@@ -4,9 +4,35 @@ CampusFix makes college service issues traceable from student report to accounta
 
 **Working hackathon core:** private drafts, campus/hostel/department visibility, responsible teams, service deadlines, staff queue, replies and private notes, affected status, ownership handover, all fourteen issue commands, reporter-confirmed closure/reopening, independent service reviews and reviewed resolution search.
 
-**AWS deployment:** follow [AWS-DEPLOY.md](AWS-DEPLOY.md) in AWS CloudShell. The CDK stack and deploy/seed/smoke scripts are implemented; a live URL must be verified after deployment in your account. [SUBMISSION.md](SUBMISSION.md) contains the demo walkthrough and honest release boundary.
+## Run the IIT Dholakpur demo
 
-The full LLD also includes campus administration, notifications and community features that are not complete. Uploads work in local verification but are disabled in this AWS release until the real scan pipeline is accepted. Bedrock/AI is optional and disabled.
+**No AWS login required.** Install Node 24 and a Java 17+ JDK, then:
+
+```bash
+npm ci
+npm run demo
+```
+
+Open **http://127.0.0.1:3002**. On Windows use `npm.cmd` if needed. The launcher starts DynamoDB Local, seeds a fictional college and serves the real API and UI. Normal restarts preserve data. Stop it and run `npm run demo:reset` to restore the recording dataset.
+
+- **8 personas:** four students, accountable owner, collaborator, independent reviewer and an outsider from another college.
+- **9 reports:** hostel, CSE, Mechanical, Coding club, fees, placement and shared facilities; plus a private draft/review and a reviewed Wi-Fi fix.
+- **Real writes:** replies, status changes, ownership, reporter confirmation and history persist in isolated local DynamoDB tables.
+- **Visible access rules:** switch personas to compare hostel/department feeds, private staff notes and independent reviews.
+
+Read [DEMO.md](DEMO.md) for prerequisites, people, persistence and reset. Use [DEMO-VIDEO.md](DEMO-VIDEO.md) for the **under-three-minute recording** and [SUBMISSION.md](SUBMISSION.md) for form answers.
+
+### Architecture and AWS status
+
+```mermaid
+flowchart LR
+  Browser[React browser] --> Local[Loopback Hono API]
+  Local --> SDK[AWS SDK v3]
+  SDK --> DB[DynamoDB Local: Core / Discovery / Jobs]
+  Personas[Local signed demo personas] --> Local
+```
+
+The local persona selector is excluded from production builds. The AWS deployment design uses genuine Cognito authentication:
 
 ```mermaid
 flowchart LR
@@ -19,6 +45,10 @@ flowchart LR
   Worker --> DB
 ```
 
+**Live AWS deployment is pending account access.** CDK, packaging, deploy/seed/smoke commands and an offline-synthesized template are prepared; follow [AWS-DEPLOY.md](AWS-DEPLOY.md) when access is available. Do not publicly host the local persona server or describe localhost as AWS deployment.
+
+The **complete LLD is not finished**: campus administration/onboarding, notifications and overdue escalation, full review appeals/evidence and community Q&A/activities/marketplace remain. Uploads are tested separately but disabled in this demo and AWS release pending real storage/scanner acceptance. AI/Bedrock is not implemented. No real IIT affiliation or real student data is claimed.
+
 ## Read in this order
 
 1. `docs/00-remarks-and-decisions.md` — all three remarks from your Word draft and the resulting decisions.
@@ -30,7 +60,7 @@ flowchart LR
 
 Original requirements and the copy containing your remarks are in `docs/source/`. The original project folder remains separate.
 
-## Start locally
+## Production-auth development mode
 
 Use Node 24. On this Windows machine use `npm.cmd` because the PowerShell npm shim is broken.
 
@@ -73,7 +103,7 @@ See `SETUP-VERIFICATION.md` for exact check counts and cloud acceptance limits. 
 
 The earlier $50/month number is a planning target, not a verified AWS bill. See chapter 8 for the workload model and deployment inputs.
 
-## Database fallback and verification
+## Other development database and verification options
 
 If Docker is unavailable, start the official Java distribution in a separate terminal:
 
@@ -82,7 +112,7 @@ powershell -ExecutionPolicy Bypass -File scripts/start-local-db.ps1
 ```
 
 Then initialize and seed with the scripts above and run `npm.cmd run test:integration`.
-The database is synthetic and in memory; recreate it after restarting. No cloud credentials are used.
+That legacy development database is synthetic and in memory; recreate it after restarting. The recommended `npm run demo` launcher instead uses its own file-backed database when port 8000 is free. No cloud credentials are used.
 Run `npm.cmd run check` for contracts, all type checks, unit/security tests and production builds.
 Run `npm.cmd run format` to format application code.
 

@@ -21,7 +21,7 @@ sudo alternatives --set node /usr/bin/node-24
 node --version
 npm --version
 export npm_config_cache=/tmp/campusfix-npm-cache
-git clone --branch codex/campusfix-lld --single-branch https://github.com/harshith0518/aws-wmd-First-Commit.git campusfix-release
+git clone --branch main --single-branch https://github.com/harshith0518/aws-wmd-First-Commit.git campusfix-release
 cd campusfix-release
 npm ci
 npm run check
@@ -61,14 +61,16 @@ The second command shows **your generated demo passwords** in your private Cloud
 
 | Login | What to demonstrate |
 | --- | --- |
-| student-a@campusfix.example | Hostel A, Computer Science, coding club; report and confirm a fix |
-| student-b@campusfix.example | Hostel B, Computer Science; cannot read Hostel A reports |
+| student-a@campusfix.example | Kaveri hostel, Computer Science, coding club; report and confirm a fix |
+| student-b@campusfix.example | Narmada hostel, Computer Science; cannot read Kaveri hostel reports |
+| student-c@campusfix.example | Kabir: Kaveri, CSE, Coding club; private ramp review requester |
+| student-d@campusfix.example | Sana: Narmada, Mechanical; workshop/mess reports |
 | owner@campusfix.example | Campus services lead; staff queue, replies, progress, resolution proposal, curation |
 | backup@campusfix.example | Second eligible lead; collaborator and accepted ownership handover |
 | reviewer@campusfix.example | Independent review of a poor response; no automatic source-issue access |
 | outsider@campusfix.example | Separate campus; cannot enter the main demo campus |
 
-Seed includes a Hostel A issue, a campus-wide placement issue and a completed Wi-Fi issue with a reviewed library card. Students still create and change real records through the app. Memberships/roles expire after 14 days. Preserve the credentials file: reruns retain users/passwords and do not reset an existing campus. Initial retry is supported; do not use seeding as a reset tool after editing demo records.
+Dataset v2 creates eight identities and the same nine IIT Dholakpur reports, replies, private draft/review and reviewed Wi-Fi card described in DEMO.md. It uses the shared scripts/aws/seed-data.ts with real Cognito users. An older seed version is refused; do not overwrite an existing deployed campus to update it. Students still create and change real records through the app. Memberships/roles expire after 14 days. Preserve the credentials file: reruns retain users/passwords and do not reset an existing campus. Initial retry is supported; do not use seeding as a reset tool after editing demo records.
 
 Save deployment state before leaving CloudShell:
 
@@ -90,8 +92,8 @@ Automated cloud checks: Lambda health; absent/invalid JWT rejected; allowed-orig
 
 Then open the printed CloudFront URL:
 
-1. Sign in as student A; choose the synthetic campus; open the Hostel A issue and create one report with an explicitly selected audience.
-2. Sign out; sign in as student B. Confirm the Hostel A issue is absent while campus-wide placement is visible. A copied Hostel A issue URL must not reveal its content.
+1. Sign in as student A; choose the synthetic campus; open the Kaveri hostel issue and create one report with an explicitly selected audience.
+2. Sign out; sign in as student B. Confirm the Kaveri hostel issue is absent while campus-wide placement is visible. A copied Kaveri hostel issue URL must not reveal its content.
 3. Sign in as owner. Open **Staff queue**, acknowledge/start a report, add a reply, and propose a resolution with a truthful evidence-omission reason. Staff must not be able to confirm for the student.
 4. Sign in as its reporter; confirm the fix, inspect attributed history, and reopen if needed.
 5. On an unresolved report, student A requests a service review. The original owner must not discover that private case. The independent reviewer can begin/respond/decide.
@@ -103,8 +105,8 @@ Access tokens stay in memory. A full page refresh requires signing in again in t
 ## 6. Submit
 
 - Live URL: the `WebUrl` value printed by deployment.
-- Code: the `codex/campusfix-lld` branch, including `README.md`, the LLD and this guide.
-- Demo: record the short walkthrough in `SUBMISSION.md`. Show AWS CloudFormation/Lambda/CloudFront to establish deployment, without exposing credentials or private data.
+- Code: the `main` branch, including `README.md`, the LLD and this guide.
+- Demo: adapt the <=3-minute walkthrough in `DEMO-VIDEO.md` to real Cognito logins after deployment. Show AWS CloudFormation/Lambda/CloudFront to establish deployment, without exposing credentials or private data.
 - Description: student report → responsible team → visible progress → reporter-confirmed resolution → reusable reviewed knowledge, with private independent service reviews.
 - Be explicit: AI/Bedrock, community modules and the complete campus-admin/pilot scope are not included in this release.
 

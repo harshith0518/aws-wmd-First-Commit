@@ -1,17 +1,28 @@
 # Implementation verification
 
-Verified **20 September 2026, AWS release preparation checkpoint**. Identity, issue reporting and the core owner/reporter resolution workflow and evidence pipeline are implemented locally. The entire CampusFix product is not complete. AWS infrastructure is implemented and synthesized; live account deployment/sign-in remains unverified.
+Verified **20 September 2026, IIT Dholakpur reproducible demo checkpoint**. Identity, issue reporting and the core owner/reporter resolution workflow and evidence pipeline are implemented locally. The entire CampusFix product is not complete. AWS infrastructure is implemented and synthesized; live account deployment/sign-in remains unverified.
 
 ## Passed
 
-- `npm.cmd run check`: 173-operation / 241-schema / 3-table contract structure; strict API/web/contracts TypeScript checks; 82 backend and five frontend-auth/routing tests; six CDK security/navigation/dependency tests; Lambda and Vite production builds.
-- `npm.cmd run test:integration`: nine real DynamoDB Local scenarios with isolated tables. **102 automated tests pass in total** across domain, web, infrastructure and database suites. The added seed scenario was rerun separately after fixing its retry sequence.
+- `npm.cmd run check`: 173-operation / 241-schema / 3-table contract structure; strict API/web/contracts TypeScript checks; 82 backend and five frontend-auth/routing tests; six CDK security/navigation/dependency tests; three local-demo security tests and demo TypeScript checks; Lambda and Vite production builds.
+- `npm.cmd run test:integration`: nine real DynamoDB Local scenarios with isolated tables. **105 automated tests pass in total** across API (82), web (5), infrastructure (6), local-demo (3) and database (9) suites. The entire check gate and all nine integration scenarios passed with the final IIT Dholakpur dataset.
 - Actual database tests cover profile/publication/command concurrent idempotency, version races, group/campus isolation, current revocation, staff queue, proposal/confirmation/reopening and preserved resolution attempts/history.
 - Domain/security tests also cover wrong signatures/issuer/client/token purpose/scope, identity mismatch, unknown/spoofed inputs, private drafts, restricted cases, ownerless publication, expired roles, unavailable evidence, atomic quotas, bounded feed pagination and working calendars including DST.
 - Workflow tests reject unauthorized or invalid transitions, stale versions, wrong resolution IDs, role revocation during commit and absent evidence explanations. Staff cannot confirm for the reporter. Closing removes the queue record; reopening restores it and invalidates the attempt.
 - Synthetic browser journeys use actual React components, HTTP APIs, signed JWT verification and disposable DynamoDB Local tables: report/draft/feed, staff queue, acknowledgement/start/proposal, reporter confirmation/reopening and visible attributed history.
 - No browser warning/error entries and no horizontal overflow at the observed 375 CSS px. Viewport reset. Temporary test server/tab stopped and its nine test tables removed; standard seed tables preserved.
 - Browser-discovered stale next-action text and resolution capitalization were fixed. Full checks reran after both fixes; capitalization CSS was not separately visually re-rendered.
+
+## Reproducible local demo acceptance
+
+- `npm.cmd run demo` cold-started DynamoDB Local 3.3.1 in file-backed mode, created only three `campusfix-demo-*` tables, seeded eight personas/nine reports and served http://127.0.0.1:3002. No AWS login was required.
+- Signed local persona sessions use actual HTTP authentication and canonical domain authorization. Tests reject remote Hosts, foreign Origins, originless writes, forged JWTs, cross-hostel source access and original-handler access to independent reviews. Production entry points do not import the demo surface.
+- Browser PASS: overview/personas; Aarav versus Meera hostel visibility; student view hides private staff notes; Neha is an assigned collaborator; Prakash proposed a structured purifier resolution; Aarav explicitly confirmed it; Dr Saira opened Kabir's private ramp review.
+- Persistence PASS: stopped the app and its file-backed Java database, restarted `npm.cmd run demo`, reselected Aarav and observed the same purifier report as confirmed closed with the recorded resolution.
+- `npm.cmd run test:integration` reran successfully against that standalone local server: all nine cases passed using separate test tables; no demo records were reset by the integration suite.
+- Rehearsal changes are restored using `npm.cmd run demo:reset` before delivery. The video script uses the shared seed stories, exact persona names and observed form labels; it is a recording guide, not an uploaded video.
+- Documentation includes `DEMO.md`, `DEMO-VIDEO.md` (2:48 target), updated `SUBMISSION.md`, README and the future AWS deployment guide. GitHub visibility was checked through its public API: public repository, default branch main.
+- Verified on Windows with Node 24.11.1, npm 11.7.0 and installed Java. The launcher is written for Windows/macOS/Linux but macOS/Linux execution has not been performed in this session. The first download is pinned to a SHA-256 and fails closed if AWS replaces its latest archive.
 
 ## Limits
 
@@ -26,8 +37,8 @@ Verified **20 September 2026, AWS release preparation checkpoint**. Identity, is
 ## Environment and repeat
 
 - Node 24.11.1, npm 11.7.0 (`npm.cmd`), TypeScript 5.9.3; exact dependency versions in package-lock.json.
-- Java DynamoDB Local 3.3.1 with verified download checksum; Docker unavailable. Database is synthetic and in memory on localhost:8000.
-- Frontend JS approximately 125.39 kB gzip; API Lambda approximately 3.6 MB and evidence worker 3.4 MB before compression.
+- Java DynamoDB Local 3.3.1 with verified download checksum; Docker unavailable. The recommended demo uses a file-backed synthetic database at `.local/demo/database` on localhost:8000; legacy test scripts use an in-memory database.
+- Production frontend JS approximately 125.53 kB gzip; API Lambda approximately 3.6 MB and evidence worker 3.4 MB before compression.
 - Both servers read root `.env`; only public VITE_ settings enter the browser. `.env`, `.local`, node_modules and build output are ignored.
 
 1. `npm.cmd ci`

@@ -1,8 +1,19 @@
 # CampusFix progress
 
-Last checkpoint: **20 September 2026, afternoon**. Implementation resumed under the user’s new instruction to push and finish the LLD for tonight’s deadline. The expired overnight heartbeat remains PAUSED; current work is directly authorized.
+Last checkpoint: **20 September 2026, 23:10 IST — reproducible IIT Dholakpur demo**. User cannot access the AWS account and now requests an account-free seeded demo, matching video data and publication on **main**. This supersedes the preceding instruction to proceed with cloud setup. No AWS resources were provisioned.
 
-## Current result
+## Current release
+
+- `npm ci` then `npm run demo`: local signed personas, real API and persistent DynamoDB Local; `npm run demo:reset` restores the recording dataset. Node 24 and Java 17+ JDK are prerequisites. No AWS credentials or Docker needed.
+- Eight fictional personas, two hostels, CSE/Mechanical/Coding club, four topics, nine reports in several real workflow states, public replies/private note, assigned collaborator, private independent review, draft and reviewed knowledge. Shared seed supports the future Cognito AWS mode too.
+- Full check gate PASS: contracts/types, 82 API + 5 web + 6 CDK + 3 demo tests and production builds. All 9 DynamoDB integration scenarios PASS. **105 automated tests total**.
+- Browser verified the owner-proposal/reporter-confirmation loop, independent review, scoped feeds and private staff-note filtering. Confirmed changes survive an app/database restart. Final reset leaves the exact starting dataset for the recording.
+- Public repository defaults to main. Publish the tested commit there by fast-forward, retaining all existing history; do not force push or create a deployment to bypass the current account blocker.
+- `DEMO.md` is the local run/reset guide, `DEMO-VIDEO.md` the <=3-minute recording plan and `SUBMISSION.md` ready-to-review form copy. No video has been recorded/uploaded by this task; the user still supplies YouTube and personal profile URLs.
+- **Still pending:** live AWS/Cognito acceptance, enabled cloud evidence, campus onboarding/admin, notifications/outbox delivery, overdue escalation, review appeals/files/reassignment, optional AI and community modules. This is a working accountability-core demo, not the entire LLD.
+- Next immediate step: record the seeded walkthrough, upload unlisted/public YouTube, fill the user's personal submission details and select an eligible track. The official Ship It track requires AWS deployment; the local release documents actual AWS SDK/CDK/Local usage for evaluating Build It.
+
+## Earlier afternoon checkpoint (historical)
 
 - Working local vertical flow: private draft / direct report → eligible owner → staff queue → acknowledgement → work/progress/wait/resume → structured resolution proposal → reporter confirmation → reporter reopening with prior attempt retained and invalidated.
 - Real API and DynamoDB Local persistence back the UI. Browser verification used separately signed synthetic student and owner identities. Real Cognito login has not been configured or accepted against AWS.
@@ -156,3 +167,11 @@ Last checkpoint: **20 September 2026, afternoon**. Implementation resumed under 
 - PASS: eight existing DynamoDB integration scenarios plus the new seed replay/isolation/reviewer scenario = 102 tests overall. Initial DB attempt failed ECONNREFUSED after the long session gap; restarted existing in-memory Java DB. Corrected a test method name, CDK exact-optional type mismatch, Sharp 0.35.4 artifact paths and seed retry expectedVersion mismatch, then reran affected checks successfully. No cloud resources were created.
 - Local AWS default profile fails STS InvalidClientTokenId. User confirms access to an AWS Free Tier console. Use CloudShell in Mumbai; no need for access keys in chat. Wrote direct `AWS-DEPLOY.md` and `SUBMISSION.md` with commands, private credentials, acceptance, failure recovery, costs/retained cleanup and truthful missing scope.
 - Next: user runs CloudShell npm ci/check/aws:deploy/aws:seed; verify actual Cognito login and the student→owner→reporter loop, cross-hostel/campus restrictions, private reviewer behavior and library. Capture real CloudFront URL and deployment evidence before submission. Cloud smoke alone does not prove signed-in behavior. Full LLD remains unfinished: onboarding/admin, notifications/deadline/escalation workers, review files/reassignment/appeals, optional AI and community modules. Real uploads remain disabled pending GuardDuty acceptance; do not claim them as deployed.
+
+## Late-evening reproducible demo implementation
+
+- Added separate `scripts/demo/` launcher, signed local session surface, React campus/persona entry and three authorization/security tests; production API/Cognito frontend entry points remain separate. Loopback binding, exact Host/Origin guards, bounded local token map and no-store/CSP headers restrict the demo surface.
+- Expanded `scripts/aws/seed-data.ts` to version 2 / IIT Dholakpur and eight named actors. Generated scenarios use real domain services, idempotency keys, workflow versions, history and outbox transactions. The AWS seed rejects mismatched older seed state rather than overwriting it.
+- Seeded collaborator assignment and canonical source checks fixed an inaccessible shortcut for Neha. Added an actual membership view for My access. Local boot resumes incomplete seeding and preserves completed edits; reset targets only the three exact loopback demo tables.
+- Fixed a missing dataset-version import found by infrastructure typecheck; reran the complete check gate successfully. Integration seed replay and audience/reviewer isolation pass with the expanded dataset. No external credentials, real college data or generated local database files are committed.
+- Persistent restart accepted; demo reset and final Git publication are recorded in the final release handoff. No paid deployment, YouTube publication or full-product completion is claimed.

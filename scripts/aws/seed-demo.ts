@@ -12,7 +12,14 @@ import { DynamoStore } from '../../apps/api/src/data/dynamo.js';
 import { IdentityService } from '../../apps/api/src/identity-service.js';
 import { CursorCodec } from '../../apps/api/src/cursor.js';
 import { keys } from '../../apps/api/src/data/keys.js';
-import { demoActors, demoIds, demoRecords, demoScenarios, type DemoActor } from './seed-data.js';
+import {
+  demoActors,
+  demoDatasetVersion,
+  demoIds,
+  demoRecords,
+  demoScenarios,
+  type DemoActor,
+} from './seed-data.js';
 // CLI helper contains no AWS secrets; ambient SDK credentials are supplied by CloudShell/SSO.
 // @ts-expect-error Shared executable JS helper intentionally has no generated declarations.
 import { outputs, aws, root } from './common.mjs';
@@ -56,7 +63,10 @@ const save = async () => {
 };
 try {
   const existing = await store.get(config.CORE_TABLE, keys.campus(demoIds.campus));
-  if (existing && (existing.demoSeedVersion !== 1 || existing.createdAt !== state.date))
+  if (
+    existing &&
+    (existing.demoSeedVersion !== demoDatasetVersion || existing.createdAt !== state.date)
+  )
     throw new Error(
       'Demo records already exist without matching local seed state. Refusing to overwrite them.',
     );
@@ -138,7 +148,7 @@ try {
     state.complete = true;
     await save();
     console.log(
-      `Synthetic demo initialized at ${o.WebUrl}. Six genuine Cognito accounts; passwords are only in .artifacts/demo-credentials.json. Do not commit or publish that file.`,
+      `Synthetic demo initialized at ${o.WebUrl}. Eight genuine Cognito accounts; passwords are only in .artifacts/demo-credentials.json. Do not commit or publish that file.`,
     );
   }
 } finally {

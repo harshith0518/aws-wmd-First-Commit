@@ -1,0 +1,254 @@
+.demo-notice {
+  padding: 9px 12px;
+  text-align: center;
+  background: #e8eee7;
+  color: #38554b;
+  font-size: 11px;
+  letter-spacing: 0.2px;
+  border-radius: 0 0 10px 10px;
+}
+.demo-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 0;
+  background: transparent;
+  color: #172b2b;
+  font-size: 20px;
+  padding: 0;
+  text-align: left;
+}
+.demo-brand:hover {
+  background: transparent;
+  color: #11654f;
+}
+.demo-brand small {
+  display: block;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  margin-top: 2px;
+}
+.demo-hero {
+  display: grid;
+  grid-template-columns: 1.35fr 1fr;
+  gap: 48px;
+  align-items: center;
+  padding: 62px 0 55px;
+}
+.demo-hero h1 {
+  font-size: clamp(34px, 4.9vw, 58px);
+  line-height: 1.08;
+  letter-spacing: -2px;
+  margin: 0 0 24px;
+}
+.demo-hero h1 span {
+  color: #11654f;
+}
+.demo-hero .intro {
+  font-size: 17px;
+  max-width: 550px;
+  line-height: 1.7;
+}
+.demo-campus-card {
+  background: #e9eee2;
+  border: 1px solid #d7dfd0;
+  border-radius: 22px;
+  padding: 32px;
+  position: relative;
+}
+.demo-campus-card h2 {
+  font-size: 32px;
+  line-height: 1.16;
+  margin: 24px 0;
+}
+.demo-campus-card p {
+  font-size: 14px;
+  line-height: 1.6;
+}
+.demo-campus-card hr {
+  border: 0;
+  border-top: 1px solid #cbd5c5;
+  margin: 24px 0;
+}
+.demo-people {
+  border-top: 1px solid #dce4df;
+  padding-top: 36px;
+}
+.demo-people h2 {
+  font-size: 30px;
+  margin: 0;
+}
+.demo-people .section-heading p {
+  font-size: 13px;
+  max-width: 270px;
+  color: #54695e;
+}
+.demo-personas {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+.demo-persona {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  text-align: left;
+  padding: 20px;
+  background: white;
+  border: 1px solid #dce4df;
+  color: #172b2b;
+  border-radius: 14px;
+}
+.demo-persona:hover {
+  border-color: #11654f;
+  background: #edf3ec;
+  color: #172b2b;
+}
+.demo-avatar {
+  display: inline-grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: #dce9df;
+  color: #155c48;
+  flex: none;
+  font-weight: 700;
+  font-size: 13px;
+}
+.demo-persona-text {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.demo-persona-text strong {
+  font-size: 16px;
+}
+.demo-persona-text span {
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.5;
+}
+.demo-persona-text em {
+  font-size: 11px;
+  font-style: normal;
+  color: #11654f;
+}
+.demo-scenarios {
+  padding: 40px 0;
+}
+.demo-scenarios h2 {
+  font-size: 24px;
+}
+.demo-scenarios h3 {
+  font-size: 18px;
+  margin: 18px 0 10px;
+}
+.demo-scenarios p {
+  font-size: 14px;
+  line-height: 1.6;
+}
+.demo-switch {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+.demo-switch label {
+  font-size: 11px;
+  white-space: nowrap;
+}
+.demo-switch select {
+  margin: 0;
+  max-width: 280px;
+}
+.demo-switch button {
+  white-space: nowrap;
+}
+.demo-person {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 24px 0 16px;
+}
+.demo-person p {
+  margin: 5px 0 0;
+  font-size: 12px;
+  color: #52675d;
+}
+.demo-person > .badge {
+  margin-left: auto;
+}
+.demo-shortcuts {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 12px 14px;
+  border: 1px dashed #bbcdbd;
+  border-radius: 12px;
+  margin-bottom: 20px;
+}
+.demo-shortcuts > span {
+  font-size: 11px;
+  font-weight: 650;
+  margin-right: 4px;
+  color: #536b5e;
+}
+.demo-shortcuts button {
+  font-size: 11px;
+  padding: 8px 10px;
+}
+.demo-shell .workspace {
+  padding-top: 12px;
+}
+@media (max-width: 720px) {
+  .demo-hero {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    padding: 36px 0;
+  }
+  .demo-campus-card {
+    padding: 24px;
+  }
+  .demo-campus-card h2 {
+    font-size: 26px;
+  }
+  .demo-personas {
+    grid-template-columns: 1fr;
+  }
+  .demo-switch {
+    gap: 8px;
+    flex-wrap: wrap;
+    max-width: 220px;
+  }
+  .demo-switch label {
+    display: none;
+  }
+  .demo-switch select {
+    font-size: 12px;
+    max-width: 100%;
+  }
+  .demo-switch button {
+    padding: 7px 10px;
+    font-size: 11px;
+  }
+  .demo-person .badge {
+    display: none;
+  }
+  .demo-person p {
+    font-size: 11px;
+  }
+  .demo-notice {
+    font-size: 10px;
+  }
+  .demo-people .section-heading {
+    display: block;
+  }
+  .demo-hero h1 {
+    letter-spacing: -1px;
+  }
+  .demo-brand small {
+    font-size: 10px;
+  }
+}
